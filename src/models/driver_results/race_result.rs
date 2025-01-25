@@ -14,7 +14,7 @@ impl Race {
         let mut laptimes = "".to_string();
 
         for lap in &self.laptimes {
-            let lap = format!("Lap: {} | Time: {}", lap.number, lap.time).to_string();
+            let lap = format!("Lap: {} | Time: {}", lap.lap_number, lap.time).to_string();
             laptimes += &lap;
         }
 

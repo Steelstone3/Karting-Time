@@ -1,2 +1,2 @@
-pub mod add_race;
+pub mod race;
 pub mod profile_overview;

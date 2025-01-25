@@ -8,8 +8,8 @@ impl KartingTime {
             Message::FileNew => self.file_new(),
             // TODO File importer
             Message::FileImport => {}
-            Message::FileSave => self.file_save(),
-            Message::FileLoad => self.file_load(),
+            Message::FileSave => self.file_save_json(),
+            Message::FileLoad => self.file_load_json(),
             Message::ViewToggleTheme => self.switch_theme(),
         }
     }
