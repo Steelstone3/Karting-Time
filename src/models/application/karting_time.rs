@@ -1,10 +1,11 @@
-use crate::models::driver_profile::profile::DriverProfile;
+use crate::models::{driver_profile::profile::DriverProfile, driver_results::race_result::Race};
 
 use super::application_state::ApplicationState;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct KartingTime {
     pub application_state: ApplicationState,
     pub driver_profile: DriverProfile,
+    pub new_race: Race,
 }

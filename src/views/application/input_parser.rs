@@ -9,7 +9,6 @@ pub fn parse_input_f32(input: String, minimum_value: f32, maximum_value: f32) ->
     value
 }
 
-#[allow(dead_code)]
 pub fn parse_input_u32(input: String, minimum_value: u32, maximum_value: u32) -> u32 {
     let value = input.parse::<u32>().unwrap_or(minimum_value);
 

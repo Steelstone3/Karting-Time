@@ -20,78 +20,14 @@ Project to document all race times in a profile
 
 To import races use the following formats
 
-#### JSON
-
-##### Single JSON
-
-```json
-"track_name": "Three Sisters",
-"date": "31/12/2025",
-"session_id": 1,
-"laptimes": [
-    {
-        "lap_number": 1,
-        "time": 50.4
-    },
-    {
-        "lap_number": 2,
-        "time": 54.6
-    },
-    {
-        "lap_number": 3,
-        "time": 52.8
-    },
-    {
-        "lap_number": 4,
-        "time": 55.1
-    },
-]
-```
-
-##### Multiple JSON
-
-```json
-"driver_profile": {
-    "driver_id": 12,
-    "name": "Jack Jackson",
-    "races": [{
-        "track_name": "Three Sisters",
-        "date": "12/12/2025",
-        "session_id": 1,
-        "laptimes": [
-            {
-                "lap_number": 1,
-                "time": 50.4
-            },
-            {
-                "lap_number": 2,
-                "time": 55.5
-            }
-        ]
-    }]
-}
-```
-
 #### TOML
 
-##### Single TOML
+##### Race
 
 ```toml
-[races]
-track_name = "Three Sisters"
-date = "31/12/25"
-session_id = 1
-
-[[races.laptimes]]
-lap_number = 1
-time = 50.4
-
-[[races.laptimes]]
-lap_number = 1
-time = 55.4
 ```
 
-##### Multiple
+##### Driver Profile
 
 ```toml
 [driver_profile]
@@ -102,6 +38,7 @@ name = "Jack Jackson"
 track_name = "Three Sisters"
 date = "31/12/2025"
 session_id = 1
+position = 1
 
 [[driver_profile.races.laptimes]]
 lap_number = 1
@@ -117,6 +54,7 @@ time = 55.5
 track_name = "Llandow"
 date = "01/01/2025"
 session_id = 1
+position = 1
 
 [[driver_profile.races.laptimes]]
 lap_number = 1
@@ -125,6 +63,12 @@ time = 50.4
 [[driver_profile.races.laptimes]]
 lap_number = 2
 time = 55.5
+```
+
+##### Multiple Driver Profiles (TODO)
+
+```toml
+
 ```
 
 ### Dependencies

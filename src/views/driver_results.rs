@@ -35,8 +35,13 @@ impl KartingTime {
             )
             .to_string();
 
-            result_cards
-                .push(Card::new("Dive Profile", text(race.get_laptimes())).foot(text(footer)));
+            result_cards.push(
+                Card::new(
+                    text(format!("{} Session: {}", race.track_name, race.session_id,)),
+                    text(race.get_laptimes()),
+                )
+                .foot(text(footer)),
+            );
         }
 
         result_cards

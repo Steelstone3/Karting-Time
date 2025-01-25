@@ -11,8 +11,8 @@ impl KartingTime {
 
     pub fn switch_tab(&mut self, tab_identifier: TabIdentifier) {
         match tab_identifier {
-            TabIdentifier::AddRace => {
-                self.application_state.tab_identifier = TabIdentifier::AddRace;
+            TabIdentifier::Race => {
+                self.application_state.tab_identifier = TabIdentifier::Race;
             }
             TabIdentifier::Overview => {
                 self.application_state.tab_identifier = TabIdentifier::Overview;

@@ -1,5 +1,5 @@
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
-use iced::widget::{column, text, Column};
+use iced::widget::{column, row, text, Column};
 use iced_aw::Card;
 
 impl KartingTime {
@@ -12,21 +12,36 @@ impl KartingTime {
             .push(text(self.driver_profile.name.to_string()).size(24))
             .padding(10)
             .spacing(10)
-            .push(text("Races:"))
-            .padding(10)
-            .spacing(10)
-            .push(text("Wins:"))
-            .padding(10)
-            .spacing(10)
-            .push(text("Podiums:"))
-            .padding(10)
-            .spacing(10)
-            .push(text("Top Fives:"))
-            .padding(10)
-            .spacing(10)
-            .push(text("Unique Tracks:"))
-            .padding(10)
-            .spacing(10);
+            .push(
+                row!()
+                    .push(text("Races:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_races())),
+            )
+            .push(
+                row!()
+                    .push(text("Wins:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_wins())),
+            )
+            .push(
+                row!()
+                    .push(text("Podiums:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_podiums())),
+            )
+            .push(
+                row!()
+                    .push(text("Top Fives:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_top_fives())),
+            )
+            .push(
+                row!()
+                    .push(text("Unique Tracks:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_unique_tracks())),
+            );
 
         column!()
             .push(Card::new(

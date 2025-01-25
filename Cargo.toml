@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "0.1.0"
+version = "0.3.0"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2021"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -31,6 +31,8 @@ rstest = "0"
 [dependencies]
 iced = "0.13"
 iced_aw = "0.11"
-toml = "0.8"
+toml = "0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+chrono = "0"
+# derive_more = "1"

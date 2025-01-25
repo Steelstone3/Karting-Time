@@ -14,17 +14,21 @@ impl KartingTime {
             menu_template(menu_items!((button("New")
                 .width(Length::Fill)
                 .on_press(Message::FileNew))(
-                button("Import")
+                button("Save Application")
                     .width(Length::Fill)
-                    .on_press(Message::FileImport)
+                    .on_press(Message::SaveApplication)
             )(
-                button("Save")
+                button("Load Application")
                     .width(Length::Fill)
-                    .on_press(Message::FileSave)
+                    .on_press(Message::LoadApplication)
             )(
-                button("Load")
+                button("Save Profile")
                     .width(Length::Fill)
-                    .on_press(Message::FileLoad)
+                    .on_press(Message::SaveDriverProfile)
+            )(
+                button("Load Profile")
+                    .width(Length::Fill)
+                    .on_press(Message::LoadDriverProfile)
             )))
         )(
             button("View").on_press(Message::MenuBar),

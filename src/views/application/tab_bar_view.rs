@@ -9,8 +9,8 @@ use crate::{
 impl KartingTime {
     pub fn tab_bar_view(&self) -> Column<Message> {
         match self.application_state.tab_identifier {
-            TabIdentifier::AddRace => {
-                let tab_bar = selected_tab_bar(&TabIdentifier::AddRace);
+            TabIdentifier::Race => {
+                let tab_bar = selected_tab_bar(&TabIdentifier::Race);
 
                 let contents = Scrollable::new(column!().push(self.race_view()));
 
@@ -45,8 +45,8 @@ impl KartingTime {
 fn selected_tab_bar(active_tab: &TabIdentifier) -> TabBar<'static, Message, TabIdentifier> {
     let tab_bar = TabBar::new(Message::SelectedTabChanged)
         .push(
-            TabIdentifier::AddRace,
-            TabLabel::IconText('\u{1F3CE}', "Add Race".to_string()),
+            TabIdentifier::Race,
+            TabLabel::IconText('\u{1F3CE}', "Race".to_string()),
         )
         .push(
             TabIdentifier::Overview,

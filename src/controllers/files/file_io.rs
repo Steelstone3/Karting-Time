@@ -2,32 +2,41 @@ use std::fs::File;
 use std::io::{Read, Write};
 
 use crate::models::application::karting_time::KartingTime;
+use crate::models::driver_profile::profile::DriverProfile;
 
-pub fn upsert_application_state_json(file_name: &str, karting_time: &KartingTime) {
-    let mut file = File::create(file_name).expect("Can't create file.");
-    let json = serde_json::ser::to_string_pretty(&karting_time)
-        .expect("Can't parse application data to string");
-    write!(file, "{}", json).expect("Can't update file with application data");
-}
+// const PATH: &str = "/files/drivers";
 
-pub fn read_application_state_json(file_name: &str) -> KartingTime {
-    let contents = get_file_contents(file_name);
+// pub fn create_file_repository() {
+//     fs::create_dir_all(PATH).expect("Can't create repository");
+// }
 
-    if contents.is_empty() {
-        return KartingTime::default();
-    }
-
-    serde_json::from_str(&contents).expect("Can't parse file contents to application data")
-}
-
-pub fn upsert_application_state_toml(file_name: &str, karting_time: &KartingTime) {
-    let mut file = File::create(file_name).expect("Can't create file.");
-    let toml = toml::to_string_pretty(&karting_time)
-        .expect("Can't parse application data to string");
+// TODO Test
+pub fn upsert_driver_profile(driver_profile: &DriverProfile) {
+    let mut file = File::create(driver_profile.create_file_path()).expect("Can't create file.");
+    let toml =
+        toml::to_string_pretty(&driver_profile).expect("Can't parse application data to string");
     write!(file, "{}", toml).expect("Can't update file with application data");
 }
 
-pub fn read_application_state_toml(file_name: &str) -> KartingTime {
+// TODO Test
+pub fn read_driver_profile(driver_profile: &DriverProfile) -> DriverProfile {
+    let contents = get_file_contents(&driver_profile.create_file_path());
+
+    if contents.is_empty() {
+        return Default::default();
+    }
+
+    toml::from_str(&contents).expect("Can't parse file contents to application data")
+}
+
+pub fn upsert_application_state(file_name: &str, karting_time: &KartingTime) {
+    let mut file = File::create(file_name).expect("Can't create file.");
+    let toml =
+        toml::to_string_pretty(&karting_time).expect("Can't parse application data to string");
+    write!(file, "{}", toml).expect("Can't update file with application data");
+}
+
+pub fn read_application_state(file_name: &str) -> KartingTime {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
@@ -53,54 +62,26 @@ mod file_integration_should {
     use std::fs;
 
     #[test]
-    fn handle_loading_an_empty_application_state() {
+    fn read_application_state_empty() {
         // Given
-        let file_name = "non_existant_file.json";
-        let expected_dive_planner = KartingTime::default();
+        let file_name = "non_existant_file.toml";
+        let expected_application = KartingTime::default();
 
         // When
-        let dive_planner = read_application_state_json(file_name);
+        let dive_planner = read_application_state(file_name);
 
         // Then
-        assert_eq!(expected_dive_planner, dive_planner);
+        assert_eq!(expected_application, dive_planner);
     }
 
     #[test]
-    fn save_application_state_file_json() {
-        // Given
-        let dive_planner_state_file_name = "test_file_1.json";
-        let dive_planner = KartingTime::default();
-
-        // When
-        upsert_application_state_json(dive_planner_state_file_name, &dive_planner);
-
-        // Then
-        assert!(fs::metadata(dive_planner_state_file_name).is_ok());
-        assert!(fs::metadata(dive_planner_state_file_name).unwrap().len() != 0);
-    }
-
-    #[test]
-    fn create_a_file_saving_and_loading_application_state_json() {
-        // Given
-        let file_name = "test_file_2.json";
-        let expected_dive_planner = KartingTime::default();
-
-        // When
-        upsert_application_state_json(file_name, &expected_dive_planner);
-        let dive_planner = read_application_state_json(file_name);
-
-        // Then
-        assert_eq!(expected_dive_planner, dive_planner);
-    }
-
-    #[test]
-    fn save_application_state_file_toml() {
+    fn upsert_application_state_to_file() {
         // Given
         let dive_planner_state_file_name = "test_file_1.toml";
         let dive_planner = KartingTime::default();
 
         // When
-        upsert_application_state_toml(dive_planner_state_file_name, &dive_planner);
+        upsert_application_state(dive_planner_state_file_name, &dive_planner);
 
         // Then
         assert!(fs::metadata(dive_planner_state_file_name).is_ok());
@@ -108,14 +89,14 @@ mod file_integration_should {
     }
 
     #[test]
-    fn create_a_file_saving_and_loading_application_state_toml() {
+    fn acceptance_test_read_application_state_from_file() {
         // Given
         let file_name = "test_file_2.toml";
         let expected_dive_planner = KartingTime::default();
 
         // When
-        upsert_application_state_toml(file_name, &expected_dive_planner);
-        let dive_planner = read_application_state_toml(file_name);
+        upsert_application_state(file_name, &expected_dive_planner);
+        let dive_planner = read_application_state(file_name);
 
         // Then
         assert_eq!(expected_dive_planner, dive_planner);
