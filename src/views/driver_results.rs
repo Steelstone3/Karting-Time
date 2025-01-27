@@ -29,19 +29,22 @@ impl KartingTime {
         let mut result_cards = vec![];
 
         for race in &self.driver_profile.races {
+            let header = format!(
+                "{} Session: {} Date: {}",
+                race.track_name, race.session_id, race.date
+            );
+
             let footer = format!(
-                "Track Name: {}\nSession: {}\nDate: {}",
-                race.track_name, race.session_id, race.date,
+                "Number of laps: {}\nFastest lap: {:.2}\nAverage lap (105%): {:.2}\n\nRace Pace:\n{}\n{}",
+                race.get_number_of_laps(),
+                race.get_fastest_lap(),
+                race.get_average_lap(),
+                race.convert_total_times_to_string(),
+                race.convert_average_total_times_to_string()
             )
             .to_string();
 
-            result_cards.push(
-                Card::new(
-                    text(format!("{} Session: {}", race.track_name, race.session_id,)),
-                    text(race.get_laptimes()),
-                )
-                .foot(text(footer)),
-            );
+            result_cards.push(Card::new(text(header), text(race.to_string())).foot(text(footer)));
         }
 
         result_cards
