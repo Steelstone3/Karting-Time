@@ -26,9 +26,9 @@ impl KartingTime {
                     .width(Length::Fill)
                     .on_press(Message::SaveDriverProfile)
             )(
-                button("Load Profile")
+                button("Import Profile")
                     .width(Length::Fill)
-                    .on_press(Message::LoadDriverProfile)
+                    .on_press(Message::ImportDriverProfile)
             )))
         )(
             button("View").on_press(Message::MenuBar),

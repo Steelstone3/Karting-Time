@@ -4,11 +4,7 @@ use std::io::{Read, Write};
 use crate::models::application::karting_time::KartingTime;
 use crate::models::driver_profile::profile::DriverProfile;
 
-// const PATH: &str = "/files/drivers";
-
-// pub fn create_file_repository() {
-//     fs::create_dir_all(PATH).expect("Can't create repository");
-// }
+// TODO improve the safety of loading and saving here
 
 // TODO Test
 pub fn upsert_driver_profile(driver_profile: &DriverProfile) {
@@ -19,21 +15,24 @@ pub fn upsert_driver_profile(driver_profile: &DriverProfile) {
 }
 
 // TODO Test
-pub fn read_driver_profile(driver_profile: &DriverProfile) -> DriverProfile {
-    let contents = get_file_contents(&driver_profile.create_file_path());
+pub fn read_driver_profile(file_name: &str) -> DriverProfile {
+    let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
         return Default::default();
     }
 
-    toml::from_str(&contents).expect("Can't parse file contents to application data")
+    toml::from_str(&contents).unwrap_or_default()
 }
 
 pub fn upsert_application_state(file_name: &str, karting_time: &KartingTime) {
     let mut file = File::create(file_name).expect("Can't create file.");
-    let toml =
-        toml::to_string_pretty(&karting_time).expect("Can't parse application data to string");
-    write!(file, "{}", toml).expect("Can't update file with application data");
+    let toml = match toml::to_string_pretty(&karting_time) {
+        Ok(toml) => toml,
+        Err(_) => "".to_string(),
+    };
+
+    write!(file, "{}", toml).unwrap_or_default();
 }
 
 pub fn read_application_state(file_name: &str) -> KartingTime {
@@ -43,14 +42,14 @@ pub fn read_application_state(file_name: &str) -> KartingTime {
         return KartingTime::default();
     }
 
-    toml::from_str(&contents).expect("Can't parse file contents to application data")
+    toml::from_str(&contents).unwrap_or_default()
 }
 
 fn get_file_contents(file_name: &str) -> String {
     let mut contents = String::new();
 
     if let Ok(mut file) = File::open(file_name) {
-        file.read_to_string(&mut contents).expect("Can't read file");
+        file.read_to_string(&mut contents).unwrap_or_default();
     }
 
     contents
@@ -68,10 +67,10 @@ mod file_integration_should {
         let expected_application = KartingTime::default();
 
         // When
-        let dive_planner = read_application_state(file_name);
+        let karting_time = read_application_state(file_name);
 
         // Then
-        assert_eq!(expected_application, dive_planner);
+        assert_eq!(expected_application, karting_time);
     }
 
     #[test]

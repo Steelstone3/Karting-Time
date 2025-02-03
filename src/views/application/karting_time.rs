@@ -1,4 +1,8 @@
-use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
+use crate::{
+    commands::messages::Message,
+    controllers::files::file_picker::{save_file_location, select_file_to_load},
+    models::application::karting_time::KartingTime,
+};
 
 impl KartingTime {
     pub fn update(&mut self, message: Message) {
@@ -6,10 +10,10 @@ impl KartingTime {
             Message::MenuBar => {}
             Message::SelectedTabChanged(tab_identifier) => self.switch_tab(tab_identifier),
             Message::FileNew => self.file_new(),
-            Message::LoadDriverProfile => self.load_driver_profile(),
+            Message::ImportDriverProfile => self.import_driver_profile(&select_file_to_load()),
             Message::SaveDriverProfile => self.save_driver_profile(),
-            Message::SaveApplication => self.save_application(),
-            Message::LoadApplication => self.load_application(),
+            Message::SaveApplication => self.save_application(&save_file_location()),
+            Message::LoadApplication => self.load_application(&select_file_to_load()),
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
             Message::TrackNameChanged(track_name) => self.new_race.track_name = track_name,

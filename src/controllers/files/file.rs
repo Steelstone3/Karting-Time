@@ -4,8 +4,6 @@ use super::file_io::{
     read_application_state, read_driver_profile, upsert_application_state, upsert_driver_profile,
 };
 
-const APPLICATION_STATE_FILE_NAME_TOML: &str = "karting_time_state.toml";
-
 impl KartingTime {
     pub fn file_new(&mut self) {
         *self = KartingTime::default();
@@ -17,33 +15,35 @@ impl KartingTime {
     }
 
     // TODO Test
-    pub fn load_driver_profile(&mut self) {
-        let mut driver_profile = read_driver_profile(&self.driver_profile);
+    pub fn import_driver_profile(&mut self, file_name: &str) {
+        let mut driver_profile = read_driver_profile(file_name);
+
+        // TODO When Multiple Driver Profiles: Match Driver
+        // TODO When Multiple Driver Profiles: Append to driver or create new driver profile
 
         self.driver_profile.races.append(&mut driver_profile.races);
     }
 
-    pub fn save_application(&self) {
-        upsert_application_state(APPLICATION_STATE_FILE_NAME_TOML, self);
+    pub fn save_application(&self, file_name: &str) {
+        upsert_application_state(file_name, self);
     }
 
-    pub fn load_application(&mut self) {
-        *self = read_application_state(APPLICATION_STATE_FILE_NAME_TOML)
+    pub fn load_application(&mut self, file_name: &str) {
+        *self = read_application_state(file_name)
     }
 }
 
 #[cfg(test)]
 mod file_should {
-    use crate::{
-        controllers::files::file::APPLICATION_STATE_FILE_NAME_TOML,
-        models::{
-            application::{application_state::ApplicationState, karting_time::KartingTime},
-            date::Date,
-            driver_profile::profile::DriverProfile,
-            driver_results::{lap::Lap, race_result::Race},
-        },
+    use crate::models::{
+        application::{application_state::ApplicationState, karting_time::KartingTime},
+        date::Date,
+        driver_profile::profile::DriverProfile,
+        driver_results::{lap::Lap, race_result::Race},
     };
     use std::fs;
+
+    const APPLICATION_STATE_FILE_NAME_TOML: &str = "karting_time_state.toml";
 
     #[test]
     fn new_karting_time_default_state() {
@@ -152,8 +152,8 @@ mod file_should {
         };
 
         // When
-        karting_time.save_application();
-        karting_time.load_application();
+        karting_time.save_application(APPLICATION_STATE_FILE_NAME_TOML);
+        karting_time.load_application(APPLICATION_STATE_FILE_NAME_TOML);
 
         // Then
         assert!(fs::metadata(APPLICATION_STATE_FILE_NAME_TOML).is_ok());
