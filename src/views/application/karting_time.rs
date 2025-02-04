@@ -44,7 +44,7 @@ impl KartingTime {
                     self.application_state.clear_text_editor();
                 }
                 else {
-                    
+                    // TODO toast "Save Failed: Race requires unique indentifier"
                 }
             }
             Message::EditRacePressed => todo!(),
