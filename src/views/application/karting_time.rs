@@ -47,7 +47,7 @@ impl KartingTime {
                 }
             }
             Message::EditRacesPressed => {
-                self.application_state.toggle_editing_races();
+                self.application_state.is_editing_races = true;
             }
             Message::SaveRacesPressed => {
                 self.application_state.is_editing_races = false;

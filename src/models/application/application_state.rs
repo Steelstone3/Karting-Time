@@ -29,15 +29,4 @@ impl ApplicationState {
         self.text_editor
             .perform(Action::Edit(Edit::Paste("".to_string().into())));
     }
-
-    pub fn toggle_editing_races(&mut self) {
-        match self.is_editing_races {
-            true => {
-                self.is_editing_races = false;
-            }
-            false => {
-                self.is_editing_races = true;
-            }
-        }
-    }
 }
