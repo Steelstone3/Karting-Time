@@ -84,7 +84,7 @@ impl KartingTime {
                 .spacing(10)
                 .padding(10)
                 .push(
-                    text_editor(&self.application_state.text_editor)
+                    text_editor(&race.race_editor.text_editor)
                         .placeholder("Add laptimes here...")
                         .on_action(Message::LaptimeEditor),
                 )

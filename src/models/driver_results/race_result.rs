@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt::Display};
 
-use super::lap::Lap;
+use super::{lap::Lap, race_editor::RaceEditor};
 use crate::{models::date::Date, views::application::input_parser::parse_input_u32};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
@@ -12,6 +12,7 @@ pub struct Race {
     pub session_id: u32,
     pub race_position: u32,
     pub laptimes: Vec<Lap>,
+    pub race_editor: RaceEditor,
 }
 
 impl Default for Race {
@@ -22,6 +23,7 @@ impl Default for Race {
             track_name: Default::default(),
             date: Default::default(),
             laptimes: Default::default(),
+            race_editor: Default::default(),
         }
     }
 }
