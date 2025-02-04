@@ -2,7 +2,7 @@ use crate::{commands::messages::Message, models::application::karting_time::Kart
 use iced::widget::{button, column};
 
 impl KartingTime {
-    pub fn race_editing_view(&mut self) -> iced::widget::Column<Message> {
+    pub fn race_editing_view(&self) -> iced::widget::Column<Message> {
         column!()
             .push(button("Save").on_press(Message::SaveRacesPressed))
             .padding(10)
