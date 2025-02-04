@@ -46,10 +46,10 @@ impl KartingTime {
                     // TODO toast "Save Failed: Race requires unique indentifier"
                 }
             }
-            Message::EditRacePressed => {
+            Message::EditRacesPressed => {
                 self.application_state.toggle_editing_races();
             }
-            Message::SaveRacePressed => todo!(),
+            Message::SaveRacesPressed => {}
         }
     }
 }

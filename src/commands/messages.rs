@@ -20,6 +20,6 @@ pub enum Message {
     RacePositionChanged(String),
     LaptimeEditor(text_editor::Action),
     AddRacePressed,
-    EditRacePressed,
-    SaveRacePressed,
+    EditRacesPressed,
+    SaveRacesPressed,
 }

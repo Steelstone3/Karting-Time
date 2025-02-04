@@ -1,16 +1,19 @@
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
 use iced::{
-    widget::{column, text},
+    widget::{button, column, text},
     Renderer, Theme,
 };
 use iced_aw::widgets::Card;
 
 impl KartingTime {
-    pub fn results_view(&self) -> iced::widget::Column<Message> {
+    pub fn race_results_view(&self) -> iced::widget::Column<Message> {
         if self.driver_profile.name.is_empty() {
             column!()
         } else {
-            let mut column = column![];
+            let mut column = column!()
+                .push(button("Edit").on_press(Message::EditRacesPressed))
+                .padding(10)
+                .spacing(10);
 
             column = column
                 .push(text("Results").size(24))
