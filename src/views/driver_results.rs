@@ -17,7 +17,7 @@ impl KartingTime {
                 .padding(10)
                 .spacing(10);
 
-            for result in self.result_cards() {
+            for result in self.read_only_result_cards() {
                 column = column.push(result).padding(10).spacing(10);
             }
 
@@ -25,7 +25,7 @@ impl KartingTime {
         }
     }
 
-    fn result_cards(&self) -> Vec<Card<Message, Theme, Renderer>> {
+    fn read_only_result_cards(&self) -> Vec<Card<Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
         for race in &self.driver_profile.races {

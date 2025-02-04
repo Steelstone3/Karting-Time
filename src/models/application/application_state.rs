@@ -8,6 +8,8 @@ pub struct ApplicationState {
     pub is_light_theme: bool,
     #[serde(skip)]
     pub text_editor: text_editor::Content,
+    #[serde(skip)]
+    pub is_editing_races: bool,
 }
 
 impl PartialEq for ApplicationState {
@@ -20,10 +22,22 @@ impl ApplicationState {
     pub fn get_text_from_text_editor(&self) -> String {
         self.text_editor.text()
     }
+
     pub fn clear_text_editor(&mut self) {
         self.text_editor.perform(Action::SelectAll);
 
         self.text_editor
             .perform(Action::Edit(Edit::Paste("".to_string().into())));
+    }
+
+    pub fn toggle_editing_races(&mut self) {
+        match self.is_editing_races {
+            true => {
+                self.is_editing_races = false;
+            }
+            false => {
+                self.is_editing_races = true;
+            }
+        }
     }
 }

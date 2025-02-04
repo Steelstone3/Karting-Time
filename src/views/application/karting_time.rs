@@ -42,12 +42,13 @@ impl KartingTime {
                 {
                     self.driver_profile.races.push(self.new_race.clone());
                     self.application_state.clear_text_editor();
-                }
-                else {
+                } else {
                     // TODO toast "Save Failed: Race requires unique indentifier"
                 }
             }
-            Message::EditRacePressed => todo!(),
+            Message::EditRacePressed => {
+                self.application_state.toggle_editing_races();
+            }
             Message::SaveRacePressed => todo!(),
         }
     }
