@@ -6,14 +6,26 @@ use crate::models::driver_results::race_result::Race;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct DriverProfile {
-    pub driver_id: u32,
     pub name: String,
     pub races: Vec<Race>,
 }
 
 impl DriverProfile {
-    pub fn create_file_path(&self) -> String {
-        format!("{} {}.toml", self.driver_id, self.name)
+    // TODO Test
+    pub fn sort_races(&mut self) {
+        self.races.sort_by(|a, b| {
+            let track_name_ordering = a.track_name.cmp(&b.track_name);
+            if track_name_ordering != std::cmp::Ordering::Equal {
+                return track_name_ordering;
+            }
+
+            let session_id_ordering = a.session_id.cmp(&b.session_id);
+            if session_id_ordering != std::cmp::Ordering::Equal {
+                return session_id_ordering;
+            }
+
+            b.date.cmp(&a.date)
+        });
     }
 
     pub fn get_number_of_races(&self) -> u32 {

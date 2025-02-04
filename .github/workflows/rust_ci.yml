@@ -29,7 +29,12 @@ jobs:
     - uses: actions/checkout@v4
     - uses: Swatinem/rust-cache@v2
     - name: Lint
-      run: cargo clippy -- -D warnings
+      run: |
+        cargo clippy -- -D warnings
+        cargo clippy -- -D clippy::unwrap_used
+        cargo clippy -- -D clippy::expect_used
+        cargo clippy -- -D clippy::panic
+        cargo clippy -- -D unused_must_use
 
   test:
     runs-on: ubuntu-latest

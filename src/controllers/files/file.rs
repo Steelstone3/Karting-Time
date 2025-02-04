@@ -1,8 +1,6 @@
 use crate::models::application::karting_time::KartingTime;
 
-use super::file_io::{
-    read_application_state, read_driver_profile, upsert_application_state, upsert_driver_profile,
-};
+use super::file_io::{read_application_state, read_race, upsert_application_state, upsert_races};
 
 impl KartingTime {
     pub fn file_new(&mut self) {
@@ -10,15 +8,17 @@ impl KartingTime {
     }
 
     // TODO Test
-    pub fn save_driver_profile(&self) {
-        upsert_driver_profile(&self.driver_profile);
+    pub fn save_races(&self) {
+        upsert_races(&self.driver_profile.races);
     }
 
     // TODO Test
-    pub fn import_driver_profile(&mut self, file_name: &str) {
-        let mut driver_profile = read_driver_profile(file_name);
+    pub fn import_race(&mut self, file_name: &str) {
+        let race = read_race(file_name);
 
-        self.driver_profile.races.append(&mut driver_profile.races);
+        if race.is_unique_identifer(&self.driver_profile.races) {
+            self.driver_profile.races.push(race);
+        }
     }
 
     pub fn save_application(&self, file_name: &str) {
@@ -51,7 +51,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: DriverProfile {
-                driver_id: 12,
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
                     track_name: "Three Sisters".to_string(),
@@ -92,7 +91,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: DriverProfile {
-                driver_id: 12,
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
                     track_name: "Three Sisters".to_string(),
@@ -122,7 +120,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: DriverProfile {
-                driver_id: 12,
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
                     track_name: "Three Sisters".to_string(),

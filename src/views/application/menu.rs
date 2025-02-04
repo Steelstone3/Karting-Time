@@ -22,13 +22,13 @@ impl KartingTime {
                     .width(Length::Fill)
                     .on_press(Message::LoadApplication)
             )(
-                button("Save Profile")
+                button("Import Race")
                     .width(Length::Fill)
-                    .on_press(Message::SaveDriverProfile)
+                    .on_press(Message::ImportRace)
             )(
-                button("Import Profile")
+                button("Export Races")
                     .width(Length::Fill)
-                    .on_press(Message::ImportDriverProfile)
+                    .on_press(Message::ExportRaces)
             )))
         )(
             button("View").on_press(Message::MenuBar),

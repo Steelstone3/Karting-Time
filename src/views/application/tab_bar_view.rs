@@ -12,7 +12,11 @@ impl KartingTime {
             TabIdentifier::Race => {
                 let tab_bar = selected_tab_bar(&TabIdentifier::Race);
 
-                let contents = Scrollable::new(column!().push(self.race_view()));
+                let contents = Scrollable::new(
+                    column!()
+                        .push(self.edit_driver_profile_view())
+                        .push(self.add_race_view()),
+                );
 
                 column!(self.menu_view(), tab_bar, contents)
             }
@@ -26,15 +30,7 @@ impl KartingTime {
             TabIdentifier::Results => {
                 let tab_bar = selected_tab_bar(&TabIdentifier::Results);
 
-                let contents = Scrollable::new(column!().push(self.results_view()));
-
-                column!(self.menu_view(), tab_bar, contents)
-            }
-            TabIdentifier::Comparison => {
-                let tab_bar = selected_tab_bar(&TabIdentifier::Comparison);
-
-                // TODO comparison view
-                let contents = Scrollable::new(column!().push(column![])); //self.information_view()
+                let contents = Scrollable::new(column!().push(self.race_results_view()));
 
                 column!(self.menu_view(), tab_bar, contents)
             }
@@ -55,10 +51,6 @@ fn selected_tab_bar(active_tab: &TabIdentifier) -> TabBar<'static, Message, TabI
         .push(
             TabIdentifier::Results,
             TabLabel::IconText('\u{1F4CA}', "Results".to_string()),
-        )
-        .push(
-            TabIdentifier::Comparison,
-            TabLabel::IconText('\u{1F50D}', "Comparison".to_string()),
         )
         .set_active_tab(active_tab);
     tab_bar

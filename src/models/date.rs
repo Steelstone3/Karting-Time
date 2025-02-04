@@ -1,15 +1,37 @@
-use std::fmt::Display;
+use std::{cmp::Ordering, fmt::Display};
 
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
 use crate::views::application::input_parser::parse_input_u32;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq)]
 pub struct Date {
     pub day: u32,
     pub month: u32,
     pub year: i32,
+}
+
+impl Ord for Date {
+    fn cmp(&self, other: &Self) -> Ordering {
+        let year_ordering = self.year.cmp(&other.year);
+        if year_ordering != Ordering::Equal {
+            return year_ordering;
+        }
+
+        let month_ordering = self.month.cmp(&other.month);
+        if month_ordering != Ordering::Equal {
+            return month_ordering;
+        }
+
+        self.day.cmp(&other.day)
+    }
+}
+
+impl PartialOrd for Date {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl Date {
