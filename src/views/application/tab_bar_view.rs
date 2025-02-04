@@ -12,7 +12,11 @@ impl KartingTime {
             TabIdentifier::Race => {
                 let tab_bar = selected_tab_bar(&TabIdentifier::Race);
 
-                let contents = Scrollable::new(column!().push(self.race_view()));
+                let contents = Scrollable::new(
+                    column!()
+                        .push(self.edit_driver_profile_view())
+                        .push(self.add_race_view()),
+                );
 
                 column!(self.menu_view(), tab_bar, contents)
             }
