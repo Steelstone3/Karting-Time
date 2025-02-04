@@ -18,9 +18,6 @@ impl KartingTime {
     pub fn import_driver_profile(&mut self, file_name: &str) {
         let mut driver_profile = read_driver_profile(file_name);
 
-        // TODO When Multiple Driver Profiles: Match Driver
-        // TODO When Multiple Driver Profiles: Append to driver or create new driver profile
-
         self.driver_profile.races.append(&mut driver_profile.races);
     }
 
