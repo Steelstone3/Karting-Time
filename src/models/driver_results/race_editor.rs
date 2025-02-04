@@ -17,7 +17,7 @@ impl Clone for RaceEditor {
 
 impl PartialEq for RaceEditor {
     fn eq(&self, _: &Self) -> bool {
-        false
+        true
     }
 }
 

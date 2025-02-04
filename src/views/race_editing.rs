@@ -8,7 +8,7 @@ use iced_aw::Card;
 impl KartingTime {
     pub fn race_editing_view(&self) -> iced::widget::Column<Message> {
         let mut column = column!()
-            .push(button("Save").on_press(Message::SaveRacesPressed))
+            .push(button("Read Only").on_press(Message::ReadOnlyPressed))
             .padding(10)
             .spacing(10);
 
@@ -83,8 +83,9 @@ impl KartingTime {
                 .push(text("Laps"))
                 .spacing(10)
                 .padding(10)
+                // TODO Come up with a means for editing lap time
                 .push(
-                    text_editor(&race.race_editor.text_editor)
+                    text_editor(&self.application_state.race_editor.text_editor)
                         .placeholder("Add laptimes here...")
                         .on_action(Message::LaptimeEditor),
                 )

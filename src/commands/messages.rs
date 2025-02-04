@@ -21,5 +21,5 @@ pub enum Message {
     LaptimeEditor(text_editor::Action),
     AddRacePressed,
     EditRacesPressed,
-    SaveRacesPressed,
+    ReadOnlyPressed,
 }
