@@ -77,6 +77,7 @@ impl Race {
         self.laptimes = converted_laptimes;
     }
 
+    // TODO Test
     pub fn check_unique_identifer(&self, races: &Vec<Race>) -> bool {
         let new_race_identifier = format!("{}_{}_{}", self.session_id, self.track_name, self.date);
 
@@ -124,6 +125,7 @@ impl Race {
         }
     }
 
+    // TODO Test
     pub fn order_by_fastest_lap(&self) -> Vec<Lap> {
         let mut sorted_laps = self.laptimes.clone();
         sorted_laps.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap());
