@@ -77,6 +77,20 @@ impl Race {
         self.laptimes = converted_laptimes;
     }
 
+    pub fn check_unique_identifer(&self, races: &Vec<Race>) -> bool {
+        let new_race_identifier = format!("{}_{}_{}", self.session_id, self.track_name, self.date);
+
+        for race in races {
+            let race_identifier = format!("{}_{}_{}", race.session_id, race.track_name, race.date);
+
+            if new_race_identifier == race_identifier {
+                return false;
+            }
+        }
+
+        true
+    }
+
     // TODO Test
     pub fn get_number_of_laps(&self) -> u32 {
         self.laptimes.len() as u32

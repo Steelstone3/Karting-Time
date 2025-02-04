@@ -36,9 +36,19 @@ impl KartingTime {
             Message::AddRacePressed => {
                 self.new_race
                     .convert_to_laps(self.application_state.get_text_from_text_editor());
-                self.driver_profile.races.push(self.new_race.clone());
-                self.application_state.clear_text_editor();
+                if self
+                    .new_race
+                    .check_unique_identifer(&self.driver_profile.races)
+                {
+                    self.driver_profile.races.push(self.new_race.clone());
+                    self.application_state.clear_text_editor();
+                }
+                else {
+                    
+                }
             }
+            Message::EditRacePressed => todo!(),
+            Message::SaveRacePressed => todo!(),
         }
     }
 }
