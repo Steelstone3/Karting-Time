@@ -6,5 +6,5 @@ pub enum TabIdentifier {
     #[default]
     Overview,
     Results,
-    Comparison,
+    // Comparison,
 }

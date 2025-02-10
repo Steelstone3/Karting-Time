@@ -17,9 +17,6 @@ impl KartingTime {
             TabIdentifier::Overview => {
                 self.application_state.tab_identifier = TabIdentifier::Overview;
             }
-            TabIdentifier::Comparison => {
-                self.application_state.tab_identifier = TabIdentifier::Comparison;
-            }
             TabIdentifier::Results => {
                 self.application_state.tab_identifier = TabIdentifier::Results;
             }

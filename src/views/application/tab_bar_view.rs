@@ -34,14 +34,6 @@ impl KartingTime {
 
                 column!(self.menu_view(), tab_bar, contents)
             }
-            TabIdentifier::Comparison => {
-                let tab_bar = selected_tab_bar(&TabIdentifier::Comparison);
-
-                // TODO comparison view
-                let contents = Scrollable::new(column!().push(column![])); //self.information_view()
-
-                column!(self.menu_view(), tab_bar, contents)
-            }
         }
     }
 }
@@ -59,10 +51,6 @@ fn selected_tab_bar(active_tab: &TabIdentifier) -> TabBar<'static, Message, TabI
         .push(
             TabIdentifier::Results,
             TabLabel::IconText('\u{1F4CA}', "Results".to_string()),
-        )
-        .push(
-            TabIdentifier::Comparison,
-            TabLabel::IconText('\u{1F50D}', "Comparison".to_string()),
         )
         .set_active_tab(active_tab);
     tab_bar

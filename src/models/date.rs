@@ -14,19 +14,16 @@ pub struct Date {
 
 impl Ord for Date {
     fn cmp(&self, other: &Self) -> Ordering {
-        // First, compare years
         let year_ordering = self.year.cmp(&other.year);
         if year_ordering != Ordering::Equal {
             return year_ordering;
         }
 
-        // If years are equal, compare months
         let month_ordering = self.month.cmp(&other.month);
         if month_ordering != Ordering::Equal {
             return month_ordering;
         }
 
-        // If years and months are equal, compare days
         self.day.cmp(&other.day)
     }
 }
