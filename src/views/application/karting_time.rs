@@ -10,7 +10,10 @@ impl KartingTime {
             Message::MenuBar => {}
             Message::SelectedTabChanged(tab_identifier) => self.switch_tab(tab_identifier),
             Message::FileNew => self.file_new(),
-            Message::ImportRace => self.import_race(&select_file_to_load()),
+            Message::ImportRace => {
+                self.import_race(&select_file_to_load());
+                self.driver_profile.sort_races();
+            }
             Message::ExportRaces => self.save_races(),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
