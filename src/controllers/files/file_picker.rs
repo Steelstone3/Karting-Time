@@ -39,3 +39,15 @@ pub fn save_file_location() -> String {
         None => "".to_string(),
     }
 }
+
+pub fn save_folder_location() -> String {
+    let file = FileDialog::new().pick_folder();
+
+    match file {
+        Some(path_buf) => match path_buf.into_os_string().into_string() {
+            Ok(file_path) => file_path.to_string(),
+            Err(_) => "".to_string(),
+        },
+        None => "".to_string(),
+    }
+}

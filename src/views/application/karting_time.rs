@@ -1,7 +1,7 @@
 use crate::{
     commands::messages::Message,
     controllers::files::file_picker::{
-        save_file_location, select_file_to_load, select_files_to_load,
+        save_file_location, save_folder_location, select_file_to_load, select_files_to_load,
     },
     models::application::karting_time::KartingTime,
 };
@@ -12,11 +12,11 @@ impl KartingTime {
             Message::MenuBar => {}
             Message::SelectedTabChanged(tab_identifier) => self.switch_tab(tab_identifier),
             Message::FileNew => self.file_new(),
-            Message::ImportRace => {
+            Message::ImportRaces => {
                 self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
             }
-            Message::ExportRaces => self.save_races(),
+            Message::ExportRaces => self.save_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
@@ -56,7 +56,6 @@ impl KartingTime {
                     .is_unique_identifer(&self.driver_profile.races)
                 {
                     self.driver_profile.races.push(self.new_race.clone());
-                    self.application_state.race_editor.clear_text_editor();
                 } else {
                     self.driver_profile.races = self
                         .new_race

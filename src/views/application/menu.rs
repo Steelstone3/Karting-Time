@@ -24,7 +24,7 @@ impl KartingTime {
             )(
                 button("Import Race")
                     .width(Length::Fill)
-                    .on_press(Message::ImportRace)
+                    .on_press(Message::ImportRaces)
             )(
                 button("Export Races")
                     .width(Length::Fill)

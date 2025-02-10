@@ -8,8 +8,8 @@ impl KartingTime {
     }
 
     // TODO Test
-    pub fn save_races(&self) {
-        upsert_races(&self.driver_profile.races);
+    pub fn save_races(&self, file_location: &str) {
+        upsert_races(file_location, &self.driver_profile.races);
     }
 
     // TODO Test

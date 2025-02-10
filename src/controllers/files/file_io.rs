@@ -8,9 +8,13 @@ const CONVERT_ERROR: &str = "failed to convert to toml";
 const WRITE_ERROR: &str = "failed to write to file";
 
 // TODO Test
-pub fn upsert_races(races: &Vec<Race>) {
+pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     for race in races {
-        let file_name = format!("{}.toml", Race::get_unique_race_identifier(race));
+        let file_name = format!(
+            "{}/{}.toml",
+            file_location,
+            Race::get_unique_race_identifier(race)
+        );
 
         let mut file = match File::create(file_name) {
             Ok(file) => file,
