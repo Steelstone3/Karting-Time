@@ -34,7 +34,7 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Year", &self.new_race.date.year.to_string())
+                text_input("Year", &self.new_race.race_information.date.year.to_string())
                     .on_input(Message::YearChanged),
             )
             .spacing(10)
@@ -43,14 +43,14 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Session Number", &self.new_race.session_id.to_string())
+                text_input("Session Number", &self.new_race.race_information.session_id.to_string())
                     .on_input(Message::SessionIdChanged),
             )
             .push(text("Race Position:"))
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Race Position", &self.new_race.race_position.to_string())
+                text_input("Race Position", &self.new_race.race_information.race_position.to_string())
                     .on_input(Message::RacePositionChanged),
             )
             .push(text("Laps"))

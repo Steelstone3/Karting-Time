@@ -125,15 +125,24 @@ mod driver_profile_should {
                     ..Default::default()
                 },
                 Race {
-                    race_position: 5,
+                    race_information: RaceInformation {
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 1,
+                    race_information: RaceInformation {
+                        race_position: 1,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 3,
+                    race_information: RaceInformation {
+                        race_position: 3,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
             ],
@@ -154,19 +163,31 @@ mod driver_profile_should {
         let driver_profile = DriverProfile {
             races: vec![
                 Race {
-                    race_position: 1,
+                    race_information: RaceInformation {
+                        race_position: 1,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 6,
+                    race_information: RaceInformation {
+                        race_position: 6,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 5,
+                    race_information: RaceInformation {
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 3,
+                    race_information: RaceInformation {
+                        race_position: 3,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
             ],
@@ -189,19 +210,31 @@ mod driver_profile_should {
         let driver_profile = DriverProfile {
             races: vec![
                 Race {
-                    track_name: track_1.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_1.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    track_name: track_1.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_1.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    track_name: track_2.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_2.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    track_name: track_2.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_2.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
             ],

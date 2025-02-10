@@ -1,4 +1,5 @@
 use crate::models::application::karting_time::KartingTime;
+use crate::models::driver_results::race_information::RaceInformation;
 use crate::models::driver_results::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -13,7 +14,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         let file_name = format!(
             "{}/{}.toml",
             file_location,
-            Race::get_unique_race_identifier(race)
+            RaceInformation::get_unique_race_identifier(&race.race_information)
         );
 
         let mut file = match File::create(file_name) {
