@@ -1,26 +1,18 @@
-use std::{cmp::Ordering, collections::HashMap, fmt::Display};
-
-use super::lap::Lap;
-use crate::{models::date::Date, views::application::input_parser::parse_input_u32};
+use super::{lap::Lap, race_information::RaceInformation};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
+use std::{cmp::Ordering, collections::HashMap, fmt::Display};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Race {
-    pub track_name: String,
-    pub date: Date,
-    pub session_id: u32,
-    pub race_position: u32,
+    pub race_information: RaceInformation,
     pub laptimes: Vec<Lap>,
 }
 
 impl Default for Race {
     fn default() -> Self {
         Self {
-            session_id: 1,
-            race_position: 1,
-            track_name: Default::default(),
-            date: Default::default(),
+            race_information: Default::default(),
             laptimes: Default::default(),
         }
     }
@@ -51,29 +43,16 @@ impl Display for Race {
 
 impl Race {
     // TODO Test
-    pub fn get_unique_race_identifier(race: &Race) -> String {
-        format!("{}_{}_{}", race.session_id, race.track_name, race.date)
-    }
-
-    // TODO Test
     pub fn is_unique_identifer(&self, races: &Vec<Race>) -> bool {
         for race in races {
-            if Race::get_unique_race_identifier(self) == Race::get_unique_race_identifier(race) {
+            if RaceInformation::get_unique_race_identifier(&self.race_information)
+                == RaceInformation::get_unique_race_identifier(&race.race_information)
+            {
                 return false;
             }
         }
 
         true
-    }
-
-    // TODO Test
-    pub fn update_session_id(&mut self, session_id: String) {
-        self.session_id = parse_input_u32(session_id, 1, u32::MAX);
-    }
-
-    // TODO Test
-    pub fn update_race_position(&mut self, race_position: String) {
-        self.race_position = parse_input_u32(race_position, 1, u32::MAX);
     }
 
     // TODO Test
@@ -97,8 +76,8 @@ impl Race {
         let mut updated_races = races.to_owned();
 
         for i in 0..updated_races.len() {
-            if Race::get_unique_race_identifier(self)
-                == Race::get_unique_race_identifier(&updated_races[i])
+            if RaceInformation::get_unique_race_identifier(&self.race_information)
+                == RaceInformation::get_unique_race_identifier(&updated_races[i].race_information)
             {
                 updated_races[i] = self.clone();
                 return updated_races;
@@ -242,7 +221,10 @@ impl Race {
 
 #[cfg(test)]
 mod race_result_should {
-    use crate::models::{date::Date, driver_results::lap::Lap};
+    use crate::models::{
+        date::Date,
+        driver_results::{lap::Lap, race_information::RaceInformation},
+    };
 
     use super::Race;
 
@@ -253,14 +235,16 @@ mod race_result_should {
             "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.2     |\n| 2   | 12.4     |"
                 .to_string();
         let race_result = Race {
-            track_name: "Brands Hatch".to_string(),
-            date: Date {
-                day: 12,
-                month: 12,
-                year: 2025,
+            race_information: RaceInformation {
+                track_name: "Brands Hatch".to_string(),
+                date: Date {
+                    day: 12,
+                    month: 12,
+                    year: 2025,
+                },
+                session_id: 1,
+                race_position: 1,
             },
-            session_id: 1,
-            race_position: 1,
             laptimes: vec![
                 Lap {
                     lap_number: 1,

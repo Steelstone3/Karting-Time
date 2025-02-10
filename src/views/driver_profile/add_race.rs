@@ -9,14 +9,14 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Track Name", &self.new_race.track_name)
+                text_input("Track Name", &self.new_race.race_information.track_name)
                     .on_input(Message::TrackNameChanged),
             )
             .push(text("Day (dd):"))
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Day of the Month", &self.new_race.date.day.to_string())
+                text_input("Day of the Month", &self.new_race.race_information.date.day.to_string())
                     .on_input(Message::DayChanged),
             )
             .spacing(10)
@@ -25,7 +25,7 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Month of the Year", &self.new_race.date.month.to_string())
+                text_input("Month of the Year", &self.new_race.race_information.date.month.to_string())
                     .on_input(Message::MonthChanged),
             )
             .spacing(10)
