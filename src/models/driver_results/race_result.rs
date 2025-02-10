@@ -51,6 +51,7 @@ impl Display for Race {
 }
 
 impl Race {
+    // TODO Test
     pub fn get_unique_race_identifier(race: &Race) -> String {
         format!("{}_{}_{}", race.session_id, race.track_name, race.date)
     }
@@ -210,5 +211,16 @@ impl Race {
             .lines()
             .filter_map(|s| s.trim().parse::<f32>().ok())
             .collect()
+    }
+
+    //TODO Test
+    pub fn convert_laps_to_string(&self) -> String {
+        let mut laps = "".to_string();
+
+        for laptime in &self.laptimes {
+            laps += &format!("{}\n", laptime.time);
+        }
+
+        laps
     }
 }

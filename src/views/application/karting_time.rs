@@ -57,7 +57,9 @@ impl KartingTime {
             Message::ReplacePressed(index) => {
                 // TODO Overwrite existing new race in add race section
                 if let Some(race) = self.driver_profile.races.get(index) {
-                    self.new_race = race.clone()
+                    self.new_race = race.clone();
+                    self.application_state.race_editor.clear_text_editor();
+                    self.application_state.race_editor.paste_laptimes(race);
                 }
             }
         }
