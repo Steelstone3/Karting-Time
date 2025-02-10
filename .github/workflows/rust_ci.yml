@@ -30,6 +30,10 @@ jobs:
     - uses: Swatinem/rust-cache@v2
     - name: Lint
       run: cargo clippy -- -D warnings
+      run: cargo clippy -- -D clippy::unwrap_used
+      run: cargo clippy -- -D clippy::expect_used
+      run: cargo clippy -- -D clippy::panic
+      run: cargo clippy -- -D unused_must_use
 
   test:
     runs-on: ubuntu-latest
