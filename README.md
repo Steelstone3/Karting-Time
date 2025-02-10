@@ -25,76 +25,103 @@ To import races use the following formats
 ##### Race
 
 ```toml
-track_name = "Brands Hatch"
-session_id = 1
-race_position = 1
+laptimes = [
+    53.59,
+    35.68,
+    35.34,
+    34.63,
+    34.65,
+]
 
-[date]
-day = 1
+[race_information]
+track_name = "Trafford Park"
+session_id = 3
+race_position = 6
+
+[race_information.date]
+day = 27
 month = 1
-year = 2000
-
-[[laptimes]]
-lap_number = 1
-time = 50.59
-
-[[laptimes]]
-lap_number = 2
-time = 50.20
-
-[[laptimes]]
-lap_number = 3
-time = 40.20
-
-[[laptimes]]
-lap_number = 4
-time = 40.40
-
-[[laptimes]]
-lap_number = 5
-time = 40.5
-
-[[laptimes]]
-lap_number = 6
-time = 50.20
+year = 2025
 ```
 
 ##### Driver Profile
 
 ```toml
 [driver_profile]
-driver_id = 12
 name = "Jack Jackson"
 
 [[driver_profile.races]]
+laptimes = [
+    "85.984",
+    "53.024",
+    "54.996",
+    "52.514",
+    "51.889",
+    "52.492",
+    "51.887",
+    "53.747",
+    "53.628",
+    "52.208",
+    "51.984",
+    "52.011",
+    "52.179",
+    "52.115",
+    "51.995",
+    "52.456",
+    "56.41",
+    "52.672",
+    "52.32",
+    "52.784",
+    "52.555",
+    "58.763",
+]
+
+[driver_profile.races.race_information]
 track_name = "Three Sisters"
-date = "31/12/2025"
 session_id = 1
-position = 1
+race_position = 7
 
-[[driver_profile.races.laptimes]]
-lap_number = 1
-time = 50.4
-
-[[driver_profile.races.laptimes]]
-lap_number = 2
-time = 55.5
-
-
+[driver_profile.races.race_information.date]
+day = 24
+month = 3
+year = 2025
 
 [[driver_profile.races]]
-track_name = "Llandow"
-date = "01/01/2025"
-session_id = 1
-position = 1
+laptimes = [
+    "75.821",
+    "53.664",
+    "53.965",
+    "53.838",
+    "52.649",
+    "52.463",
+    "51.665",
+    "51.775",
+    "52.162",
+    "56.097",
+    "51.735",
+    "52.64",
+    "51.847",
+    "52.84",
+    "51.479",
+    "51.477",
+    "51.448",
+    "51.817",
+    "51.863",
+    "52.123",
+    "53.488",
+    "52.455",
+    "52.261",
+]
 
-[[driver_profile.races.laptimes]]
-lap_number = 1
-time = 50.4
+[driver_profile.races.race_information]
+track_name = "Three Sisters"
+session_id = 2
+race_position = 6
 
-[[driver_profile.races.laptimes]]
-lap_number = 2
-time = 55.5
+[driver_profile.races.race_information.date]
+day = 24
+month = 3
+year = 2025
 ```
 
 ### Dependencies

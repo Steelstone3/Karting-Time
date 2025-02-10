@@ -3,6 +3,7 @@ use models::application::karting_time::KartingTime;
 
 mod commands;
 mod controllers;
+mod data_models;
 mod models;
 mod views;
 

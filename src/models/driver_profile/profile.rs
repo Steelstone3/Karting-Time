@@ -1,8 +1,8 @@
-use std::collections::HashSet;
-
+use crate::{
+    data_models::profile_file::DriverProfileFile, models::driver_results::race_result::Race,
+};
 use serde::{Deserialize, Serialize};
-
-use crate::models::driver_results::race_result::Race;
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct DriverProfile {
@@ -12,19 +12,35 @@ pub struct DriverProfile {
 
 impl DriverProfile {
     // TODO Test
+    pub fn convert_to_driver_profile_file(&self) -> DriverProfileFile {
+        let mut race_files = vec![];
+
+        for race in &self.races {
+            race_files.push(race.convert_to_race_file())
+        }
+
+        DriverProfileFile {
+            name: self.name.to_string(),
+            races: race_files,
+        }
+    }
+
+    // TODO Test
     pub fn sort_races(&mut self) {
         self.races.sort_by(|a, b| {
-            let track_name_ordering = a.track_name.cmp(&b.track_name);
-            if track_name_ordering != std::cmp::Ordering::Equal {
-                return track_name_ordering;
-            }
-
-            let session_id_ordering = a.session_id.cmp(&b.session_id);
-            if session_id_ordering != std::cmp::Ordering::Equal {
-                return session_id_ordering;
-            }
-
-            b.date.cmp(&a.date)
+            b.race_information
+                .date
+                .cmp(&a.race_information.date)
+                .then_with(|| {
+                    a.race_information
+                        .track_name
+                        .cmp(&b.race_information.track_name)
+                })
+                .then_with(|| {
+                    a.race_information
+                        .session_id
+                        .cmp(&b.race_information.session_id)
+                })
         });
     }
 
@@ -35,21 +51,21 @@ impl DriverProfile {
     pub fn get_number_of_wins(&self) -> u32 {
         self.races
             .iter()
-            .filter(|race| race.race_position == 1)
+            .filter(|race| race.race_information.race_position == 1)
             .count() as u32
     }
 
     pub fn get_number_of_podiums(&self) -> u32 {
         self.races
             .iter()
-            .filter(|race| race.race_position <= 3)
+            .filter(|race| race.race_information.race_position <= 3)
             .count() as u32
     }
 
     pub fn get_number_of_top_fives(&self) -> u32 {
         self.races
             .iter()
-            .filter(|race| race.race_position <= 5)
+            .filter(|race| race.race_information.race_position <= 5)
             .count() as u32
     }
 
@@ -57,7 +73,13 @@ impl DriverProfile {
         let unique_tracks: HashSet<String> = self
             .races
             .iter()
-            .map(|race| race.track_name.trim().to_lowercase().clone())
+            .map(|race| {
+                race.race_information
+                    .track_name
+                    .trim()
+                    .to_lowercase()
+                    .clone()
+            })
             .collect();
 
         unique_tracks.len() as u32
@@ -66,7 +88,7 @@ impl DriverProfile {
 
 #[cfg(test)]
 mod driver_profile_should {
-    use crate::models::driver_results::race_result::Race;
+    use crate::models::driver_results::{race_information::RaceInformation, race_result::Race};
 
     use super::DriverProfile;
 
@@ -106,19 +128,31 @@ mod driver_profile_should {
         let driver_profile = DriverProfile {
             races: vec![
                 Race {
-                    race_position: 2,
+                    race_information: RaceInformation {
+                        race_position: 2,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 5,
+                    race_information: RaceInformation {
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 1,
+                    race_information: RaceInformation {
+                        race_position: 1,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 3,
+                    race_information: RaceInformation {
+                        race_position: 3,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
             ],
@@ -139,19 +173,31 @@ mod driver_profile_should {
         let driver_profile = DriverProfile {
             races: vec![
                 Race {
-                    race_position: 1,
+                    race_information: RaceInformation {
+                        race_position: 1,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 6,
+                    race_information: RaceInformation {
+                        race_position: 6,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 5,
+                    race_information: RaceInformation {
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    race_position: 3,
+                    race_information: RaceInformation {
+                        race_position: 3,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
             ],
@@ -174,19 +220,31 @@ mod driver_profile_should {
         let driver_profile = DriverProfile {
             races: vec![
                 Race {
-                    track_name: track_1.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_1.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    track_name: track_1.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_1.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    track_name: track_2.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_2.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
                 Race {
-                    track_name: track_2.clone(),
+                    race_information: RaceInformation {
+                        track_name: track_2.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
             ],

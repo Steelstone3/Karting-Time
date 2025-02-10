@@ -24,21 +24,25 @@ impl KartingTime {
             }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
-            Message::TrackNameChanged(track_name) => self.new_race.track_name = track_name,
+            Message::TrackNameChanged(track_name) => {
+                self.new_race.race_information.track_name = track_name
+            }
             Message::DayChanged(day) => {
-                self.new_race.date.set_day(day);
+                self.new_race.race_information.date.set_day(day);
             }
             Message::MonthChanged(month) => {
-                self.new_race.date.set_month(month);
+                self.new_race.race_information.date.set_month(month);
             }
             Message::YearChanged(year) => {
-                self.new_race.date.set_year(year);
+                self.new_race.race_information.date.set_year(year);
             }
             Message::SessionIdChanged(session_id) => {
-                self.new_race.update_session_id(session_id);
+                self.new_race.race_information.update_session_id(session_id);
             }
             Message::RacePositionChanged(race_position) => {
-                self.new_race.update_race_position(race_position);
+                self.new_race
+                    .race_information
+                    .update_race_position(race_position);
             }
             Message::LaptimeEditor(action) => self
                 .application_state
@@ -63,6 +67,9 @@ impl KartingTime {
                 }
 
                 self.driver_profile.sort_races()
+            }
+            Message::ClearRaceEditorPressed => {
+                self.application_state.race_editor.clear_text_editor();
             }
             Message::ReplacePressed(index) => {
                 if let Some(race) = self.driver_profile.races.get(index) {
