@@ -19,6 +19,6 @@ pub enum Message {
     SessionIdChanged(String),
     RacePositionChanged(String),
     LaptimeEditor(text_editor::Action),
-    ReplacePressed,
+    ReplacePressed(usize),
     AddRacePressed,
 }

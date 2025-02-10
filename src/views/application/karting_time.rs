@@ -50,10 +50,10 @@ impl KartingTime {
                     self.driver_profile.races.push(self.new_race.clone());
                     self.application_state.race_editor.clear_text_editor();
                 } else {
-                    // TODO toast "Save Failed: Race requires unique indentifier"
+                    // TODO cofirmation box "Overwrite existing race"
                 }
             }
-            Message::ReplacePressed => {}
+            Message::ReplacePressed(index) => {}
         }
     }
 }
