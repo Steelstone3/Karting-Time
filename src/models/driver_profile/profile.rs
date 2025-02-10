@@ -6,7 +6,6 @@ use crate::models::driver_results::race_result::Race;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct DriverProfile {
-    pub driver_id: u32,
     pub name: String,
     pub races: Vec<Race>,
 }
@@ -14,7 +13,7 @@ pub struct DriverProfile {
 impl DriverProfile {
     // TODO Test
     pub fn create_file_path(&self) -> String {
-        format!("{} {}.toml", self.driver_id, self.name)
+        format!("{}.toml", self.name)
     }
 
     // TODO Test

@@ -51,7 +51,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: DriverProfile {
-                driver_id: 12,
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
                     track_name: "Three Sisters".to_string(),
@@ -92,7 +91,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: DriverProfile {
-                driver_id: 12,
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
                     track_name: "Three Sisters".to_string(),
@@ -122,7 +120,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: DriverProfile {
-                driver_id: 12,
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
                     track_name: "Three Sisters".to_string(),
