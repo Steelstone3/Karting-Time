@@ -52,12 +52,13 @@ impl KartingTime {
                 } else {
                     // TODO Overwrite existing race in "races" vector
                     // TODO confirmation box "Overwrite existing race"
-
                 }
             }
             Message::ReplacePressed(index) => {
                 // TODO Overwrite existing new race in add race section
-                
+                if let Some(race) = self.driver_profile.races.get(index) {
+                    self.new_race = race.clone()
+                }
             }
         }
     }
