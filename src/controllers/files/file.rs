@@ -16,7 +16,9 @@ impl KartingTime {
     pub fn import_race(&mut self, file_name: &str) {
         let race = read_race(file_name);
 
-        self.driver_profile.races.push(race);
+        if race.is_unique_identifer(&self.driver_profile.races) {
+            self.driver_profile.races.push(race);
+        }
     }
 
     pub fn save_application(&self, file_name: &str) {
