@@ -32,10 +32,17 @@ impl KartingTime {
             Message::RacePositionChanged(race_position) => {
                 self.new_race.update_race_position(race_position);
             }
-            Message::LaptimeEditor(action) => self.application_state.race_editor.text_editor.perform(action),
+            Message::LaptimeEditor(action) => self
+                .application_state
+                .race_editor
+                .text_editor
+                .perform(action),
             Message::AddRacePressed => {
-                self.new_race
-                    .convert_to_laps(self.application_state.race_editor.get_text_from_text_editor());
+                self.new_race.convert_to_laps(
+                    self.application_state
+                        .race_editor
+                        .get_text_from_text_editor(),
+                );
                 if self
                     .new_race
                     .check_unique_identifer(&self.driver_profile.races)
@@ -46,12 +53,7 @@ impl KartingTime {
                     // TODO toast "Save Failed: Race requires unique indentifier"
                 }
             }
-            Message::EditRacesPressed => {
-                self.application_state.is_editing_races = true;
-            }
-            Message::Replace => {
-                self.application_state.is_editing_races = false;
-            }
+            Message::ReplacePressed => {}
         }
     }
 }

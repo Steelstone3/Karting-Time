@@ -21,7 +21,8 @@ impl Default for Race {
             race_position: 1,
             track_name: Default::default(),
             date: Default::default(),
-            laptimes: Default::default(),        }
+            laptimes: Default::default(),
+        }
     }
 }
 

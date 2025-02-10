@@ -30,15 +30,9 @@ impl KartingTime {
             TabIdentifier::Results => {
                 let tab_bar = selected_tab_bar(&TabIdentifier::Results);
 
-                if self.application_state.is_editing_races {
-                    let contents = Scrollable::new(column!().push(self.race_editing_view()));
+                let contents = Scrollable::new(column!().push(self.race_results_view()));
 
-                    column!(self.menu_view(), tab_bar, contents)
-                } else {
-                    let contents = Scrollable::new(column!().push(self.race_results_view()));
-
-                    column!(self.menu_view(), tab_bar, contents)
-                }
+                column!(self.menu_view(), tab_bar, contents)
             }
             TabIdentifier::Comparison => {
                 let tab_bar = selected_tab_bar(&TabIdentifier::Comparison);

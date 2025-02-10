@@ -1,6 +1,6 @@
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
 use iced::{
-    widget::{button, column, text},
+    widget::{column, text},
     Renderer, Theme,
 };
 use iced_aw::widgets::Card;
@@ -11,11 +11,6 @@ impl KartingTime {
             column!()
         } else {
             let mut column = column!()
-                .push(button("Edit").on_press(Message::EditRacesPressed))
-                .padding(10)
-                .spacing(10);
-
-            column = column
                 .push(text("Results").size(24))
                 .padding(10)
                 .spacing(10);
