@@ -62,14 +62,34 @@ impl KartingTime {
                     .on_action(Message::LaptimeEditor),
             )
             .spacing(10)
-            .padding(10)
-            .push(button("Add Race").on_press(Message::AddRacePressed))
-            .spacing(10)
             .padding(10);
 
+        let body = column!()
+            .push(add_race_contents)
+            .push(self.determine_add_race_button());
+
         column!()
-            .push(Card::new("Add Race", add_race_contents))
+            .push(Card::new("Add Race", body))
             .spacing(10)
             .padding(10)
+    }
+
+    fn determine_add_race_button(&self) -> Column<'_, Message> {
+        let add_race_button = column!();
+
+        if self
+            .new_race
+            .is_unique_identifer(&self.driver_profile.races)
+        {
+            return add_race_button
+                .push(button("Add Race").on_press(Message::AddRacePressed))
+                .spacing(10)
+                .padding(10);
+        } else {
+            return add_race_button
+                .push(button("Update Race").on_press(Message::AddRacePressed))
+                .spacing(10)
+                .padding(10);
+        }
     }
 }

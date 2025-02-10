@@ -52,7 +52,9 @@ impl KartingTime {
                 } else {
                     // TODO Overwrite existing race in "races" vector
                     // TODO confirmation box "Overwrite existing race"
-                    self.driver_profile.races = self.new_race.new_race_replaces_existing_race(&self.driver_profile.races);
+                    self.driver_profile.races = self
+                        .new_race
+                        .new_race_replaces_existing_race(&self.driver_profile.races);
                 }
             }
             Message::ReplacePressed(index) => {
