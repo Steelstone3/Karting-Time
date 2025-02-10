@@ -1,6 +1,6 @@
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
 use iced::{
-    widget::{column, text},
+    widget::{button, column, text},
     Renderer, Theme,
 };
 use iced_aw::widgets::Card;
@@ -32,7 +32,7 @@ impl KartingTime {
                 race.track_name, race.session_id, race.date
             );
 
-            let footer = format!(
+            let race_summary = format!(
                 "Number of laps: {}\nFastest lap: {:.2}\nAverage lap (105%): {:.2}\n\nRace Pace:\n{}\n{}",
                 race.get_number_of_laps(),
                 race.get_fastest_lap(),
@@ -42,7 +42,13 @@ impl KartingTime {
             )
             .to_string();
 
-            result_cards.push(Card::new(text(header), text(race.to_string())).foot(text(footer)));
+            let footer = column!()
+                .push(text(race_summary))
+                .spacing(10)
+                .padding(10)
+                .push(button("Replace").on_press(Message::ReplacePressed));
+
+            result_cards.push(Card::new(text(header), text(race.to_string())).foot(footer));
         }
 
         result_cards

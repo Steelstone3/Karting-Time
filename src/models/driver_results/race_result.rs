@@ -51,6 +51,10 @@ impl Display for Race {
 }
 
 impl Race {
+    pub fn get_unique_race_identifier(race: &Race) -> String {
+        format!("{}_{}_{}", race.session_id, race.track_name, race.date)
+    }
+
     // TODO Test
     pub fn update_session_id(&mut self, session_id: String) {
         self.session_id = parse_input_u32(session_id, 1, u32::MAX);
@@ -79,12 +83,8 @@ impl Race {
 
     // TODO Test
     pub fn check_unique_identifer(&self, races: &Vec<Race>) -> bool {
-        let new_race_identifier = format!("{}_{}_{}", self.session_id, self.track_name, self.date);
-
         for race in races {
-            let race_identifier = format!("{}_{}_{}", race.session_id, race.track_name, race.date);
-
-            if new_race_identifier == race_identifier {
+            if Race::get_unique_race_identifier(&self) == Race::get_unique_race_identifier(race) {
                 return false;
             }
         }
