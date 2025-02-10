@@ -1,4 +1,5 @@
 use crate::models::application::karting_time::KartingTime;
+use crate::models::driver_results::race_file::RaceFile;
 use crate::models::driver_results::race_information::RaceInformation;
 use crate::models::driver_results::race_result::Race;
 use std::fs::File;
@@ -11,10 +12,12 @@ const WRITE_ERROR: &str = "failed to write to file";
 // TODO Test
 pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     for race in races {
+        let race_file = race.convert_to_race_file();
+
         let file_name = format!(
             "{}/{}.toml",
             file_location,
-            RaceInformation::get_unique_race_identifier(&race.race_information)
+            RaceInformation::get_unique_race_identifier(&race_file.race_information)
         );
 
         let mut file = match File::create(file_name) {
@@ -25,7 +28,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
             }
         };
 
-        let toml = match toml::to_string_pretty(race) {
+        let toml = match toml::to_string_pretty(&race_file) {
             Ok(toml) => toml,
             Err(_) => {
                 println!("{}", CONVERT_ERROR);
@@ -44,7 +47,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
 }
 
 // TODO Test
-pub fn read_race(file_name: &str) -> Race {
+pub fn read_race_file(file_name: &str) -> RaceFile {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {

@@ -1,6 +1,6 @@
 use crate::models::application::karting_time::KartingTime;
 
-use super::file_io::{read_application_state, read_race, upsert_application_state, upsert_races};
+use super::file_io::{read_application_state, read_race_file, upsert_application_state, upsert_races};
 
 impl KartingTime {
     pub fn file_new(&mut self) {
@@ -15,7 +15,9 @@ impl KartingTime {
     // TODO Test
     pub fn import_race(&mut self, file_names: Vec<String>) {
         for file_name in file_names {
-            let race = read_race(&file_name);
+            let race_file = read_race_file(&file_name);
+
+            let race = race_file.convert_to_race();
 
             if race.is_unique_identifer(&self.driver_profile.races) {
                 self.driver_profile.races.push(race);
