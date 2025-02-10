@@ -13,7 +13,10 @@ impl KartingTime {
             Message::ImportDriverProfile => self.import_driver_profile(&select_file_to_load()),
             Message::SaveDriverProfile => self.save_driver_profile(),
             Message::SaveApplication => self.save_application(&save_file_location()),
-            Message::LoadApplication => self.load_application(&select_file_to_load()),
+            Message::LoadApplication => {
+                self.load_application(&select_file_to_load());
+                self.driver_profile.sort_races();
+            }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
             Message::TrackNameChanged(track_name) => self.new_race.track_name = track_name,
@@ -37,7 +40,7 @@ impl KartingTime {
                 .race_editor
                 .text_editor
                 .perform(action),
-            Message::AddRacePressed => {
+            Message::UpdateRacesPressed => {
                 self.new_race.convert_to_laps(
                     self.application_state
                         .race_editor
@@ -56,6 +59,8 @@ impl KartingTime {
                         .new_race
                         .new_race_replaces_existing_race(&self.driver_profile.races);
                 }
+
+                self.driver_profile.sort_races()
             }
             Message::ReplacePressed(index) => {
                 // TODO Overwrite existing new race in add race section

@@ -12,8 +12,29 @@ pub struct DriverProfile {
 }
 
 impl DriverProfile {
+    // TODO Test
     pub fn create_file_path(&self) -> String {
         format!("{} {}.toml", self.driver_id, self.name)
+    }
+
+    // TODO Test
+    pub fn sort_races(&mut self) {
+        self.races.sort_by(|a, b| {
+            // First, compare by track_name in ascending order
+            let track_name_ordering = a.track_name.cmp(&b.track_name);
+            if track_name_ordering != std::cmp::Ordering::Equal {
+                return track_name_ordering;
+            }
+    
+            // If track_names are equal, compare by session_id in ascending order
+            let session_id_ordering = a.session_id.cmp(&b.session_id);
+            if session_id_ordering != std::cmp::Ordering::Equal {
+                return session_id_ordering;
+            }
+    
+            // If both track_name and session_id are equal, compare by date in *descending* order
+            b.date.cmp(&a.date) // Note the reversed order for descending sort
+        });
     }
 
     pub fn get_number_of_races(&self) -> u32 {
