@@ -1,6 +1,8 @@
 use iced::widget::text_editor::{self, Action, Edit};
 use serde::{Deserialize, Serialize};
 
+use super::race_result::Race;
+
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct RaceEditor {
     #[serde(skip)]
@@ -31,5 +33,11 @@ impl RaceEditor {
 
         self.text_editor
             .perform(Action::Edit(Edit::Paste("".to_string().into())));
+    }
+
+    pub fn paste_laptimes(&mut self, race: &Race) {
+        self.text_editor.perform(Action::Edit(Edit::Paste(
+            race.convert_laps_to_string().into(),
+        )));
     }
 }

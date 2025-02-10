@@ -21,7 +21,8 @@ impl Default for Race {
             race_position: 1,
             track_name: Default::default(),
             date: Default::default(),
-            laptimes: Default::default(),        }
+            laptimes: Default::default(),
+        }
     }
 }
 
@@ -51,6 +52,11 @@ impl Display for Race {
 
 impl Race {
     // TODO Test
+    pub fn get_unique_race_identifier(race: &Race) -> String {
+        format!("{}_{}_{}", race.session_id, race.track_name, race.date)
+    }
+
+    // TODO Test
     pub fn update_session_id(&mut self, session_id: String) {
         self.session_id = parse_input_u32(session_id, 1, u32::MAX);
     }
@@ -77,18 +83,30 @@ impl Race {
     }
 
     // TODO Test
-    pub fn check_unique_identifer(&self, races: &Vec<Race>) -> bool {
-        let new_race_identifier = format!("{}_{}_{}", self.session_id, self.track_name, self.date);
-
+    pub fn is_unique_identifer(&self, races: &Vec<Race>) -> bool {
         for race in races {
-            let race_identifier = format!("{}_{}_{}", race.session_id, race.track_name, race.date);
-
-            if new_race_identifier == race_identifier {
+            if Race::get_unique_race_identifier(self) == Race::get_unique_race_identifier(race) {
                 return false;
             }
         }
 
         true
+    }
+
+    // TODO Test
+    pub fn new_race_replaces_existing_race(&self, races: &[Race]) -> Vec<Race> {
+        let mut updated_races = races.to_owned();
+
+        for i in 0..updated_races.len() {
+            if Race::get_unique_race_identifier(self)
+                == Race::get_unique_race_identifier(&updated_races[i])
+            {
+                updated_races[i] = self.clone();
+                return updated_races;
+            }
+        }
+
+        updated_races
     }
 
     // TODO Test
@@ -209,5 +227,16 @@ impl Race {
             .lines()
             .filter_map(|s| s.trim().parse::<f32>().ok())
             .collect()
+    }
+
+    //TODO Test
+    pub fn convert_laps_to_string(&self) -> String {
+        let mut laps = "".to_string();
+
+        for laptime in &self.laptimes {
+            laps += &format!("{}\n", laptime.time);
+        }
+
+        laps
     }
 }

@@ -32,25 +32,38 @@ impl KartingTime {
             Message::RacePositionChanged(race_position) => {
                 self.new_race.update_race_position(race_position);
             }
-            Message::LaptimeEditor(action) => self.application_state.race_editor.text_editor.perform(action),
+            Message::LaptimeEditor(action) => self
+                .application_state
+                .race_editor
+                .text_editor
+                .perform(action),
             Message::AddRacePressed => {
-                self.new_race
-                    .convert_to_laps(self.application_state.race_editor.get_text_from_text_editor());
+                self.new_race.convert_to_laps(
+                    self.application_state
+                        .race_editor
+                        .get_text_from_text_editor(),
+                );
                 if self
                     .new_race
-                    .check_unique_identifer(&self.driver_profile.races)
+                    .is_unique_identifer(&self.driver_profile.races)
                 {
                     self.driver_profile.races.push(self.new_race.clone());
                     self.application_state.race_editor.clear_text_editor();
                 } else {
-                    // TODO toast "Save Failed: Race requires unique indentifier"
+                    // TODO Overwrite existing race in "races" vector
+                    // TODO confirmation box "Overwrite existing race"
+                    self.driver_profile.races = self
+                        .new_race
+                        .new_race_replaces_existing_race(&self.driver_profile.races);
                 }
             }
-            Message::EditRacesPressed => {
-                self.application_state.is_editing_races = true;
-            }
-            Message::ReadOnlyPressed => {
-                self.application_state.is_editing_races = false;
+            Message::ReplacePressed(index) => {
+                // TODO Overwrite existing new race in add race section
+                if let Some(race) = self.driver_profile.races.get(index) {
+                    self.new_race = race.clone();
+                    self.application_state.race_editor.clear_text_editor();
+                    self.application_state.race_editor.paste_laptimes(race);
+                }
             }
         }
     }
