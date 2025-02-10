@@ -16,7 +16,7 @@ pub fn upsert_races(races: &Vec<Race>) {
             Ok(file) => file,
             Err(_) => {
                 println!("{}", FILE_ERROR);
-                return
+                return;
             }
         };
 
@@ -24,7 +24,7 @@ pub fn upsert_races(races: &Vec<Race>) {
             Ok(toml) => toml,
             Err(_) => {
                 println!("{}", CONVERT_ERROR);
-                return
+                return;
             }
         };
 
@@ -32,7 +32,7 @@ pub fn upsert_races(races: &Vec<Race>) {
             Ok(_) => (),
             Err(_) => {
                 println!("{}", WRITE_ERROR);
-                return
+                return;
             }
         }
     }
@@ -48,7 +48,6 @@ pub fn read_race(file_name: &str) -> Race {
 
     toml::from_str(&contents).unwrap_or_default()
 }
-
 
 pub fn upsert_application_state(file_name: &str, karting_time: &KartingTime) {
     let mut file = match File::create(file_name) {
