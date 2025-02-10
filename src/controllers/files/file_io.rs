@@ -39,7 +39,11 @@ pub fn read_race(file_name: &str) -> Race {
 }
 
 pub fn upsert_application_state(file_name: &str, karting_time: &KartingTime) {
-    let mut file = File::create(file_name).expect("Can't create file.");
+    let mut file = match File::create(file_name) {
+        Ok(file) => file,
+        Err(_) => return,
+    };
+
     let toml = match toml::to_string_pretty(&karting_time) {
         Ok(toml) => toml,
         Err(_) => "".to_string(),
