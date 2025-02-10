@@ -3,7 +3,9 @@ use crate::models::driver_results::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
 
-// TODO improve the safety of loading and saving here
+const FILE_ERROR: &str = "failed to create file";
+const CONVERT_ERROR: &str = "failed to convert to toml";
+const WRITE_ERROR: &str = "failed to write to file";
 
 // TODO Test
 pub fn upsert_races(races: &Vec<Race>) {
@@ -13,24 +15,24 @@ pub fn upsert_races(races: &Vec<Race>) {
         let mut file = match File::create(file_name) {
             Ok(file) => file,
             Err(_) => {
-                println!("failed to create file");
-                return;
+                println!("{}", FILE_ERROR);
+                return
             }
         };
 
         let toml = match toml::to_string_pretty(race) {
             Ok(toml) => toml,
             Err(_) => {
-                println!("failed to convert to toml");
-                return;
+                println!("{}", CONVERT_ERROR);
+                return
             }
         };
 
         match write!(file, "{}", toml) {
             Ok(_) => (),
             Err(_) => {
-                println!("failed to write file");
-                return;
+                println!("{}", WRITE_ERROR);
+                return
             }
         }
     }
@@ -47,18 +49,30 @@ pub fn read_race(file_name: &str) -> Race {
     toml::from_str(&contents).unwrap_or_default()
 }
 
+
 pub fn upsert_application_state(file_name: &str, karting_time: &KartingTime) {
     let mut file = match File::create(file_name) {
         Ok(file) => file,
-        Err(_) => return,
+        Err(_) => {
+            println!("{}", FILE_ERROR);
+            return;
+        }
     };
 
     let toml = match toml::to_string_pretty(&karting_time) {
         Ok(toml) => toml,
-        Err(_) => "".to_string(),
+        Err(_) => {
+            println!("{}", CONVERT_ERROR);
+            "".to_string()
+        }
     };
 
-    write!(file, "{}", toml).unwrap_or_default();
+    match write!(file, "{}", toml) {
+        Ok(file) => file,
+        Err(_) => {
+            println!("{}", WRITE_ERROR);
+        }
+    }
 }
 
 pub fn read_application_state(file_name: &str) -> KartingTime {
