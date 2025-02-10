@@ -1,4 +1,4 @@
-use super::{lap::Lap, race_information::RaceInformation};
+use super::{lap::Lap, race_file::RaceFile, race_information::RaceInformation};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, collections::HashMap, fmt::Display};
@@ -42,6 +42,14 @@ impl Display for Race {
 }
 
 impl Race {
+    // TODO Test
+    pub fn convert_to_race_file(&self) -> RaceFile {
+        RaceFile {
+            race_information: self.race_information.clone(),
+            laptimes: self.convert_laps_to_laptimes(),
+        }
+    }
+
     // TODO Test
     pub fn is_unique_identifer(&self, races: &Vec<Race>) -> bool {
         for race in races {
@@ -209,6 +217,16 @@ impl Race {
         }
 
         average_times
+    }
+
+    fn convert_laps_to_laptimes(&self) -> Vec<f32> {
+        let mut laps: Vec<f32> = vec![];
+
+        for laptime in &self.laptimes {
+            laps.push(laptime.time);
+        }
+
+        laps
     }
 
     fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
