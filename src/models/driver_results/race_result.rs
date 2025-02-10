@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{cmp::Ordering, collections::HashMap, fmt::Display};
 
 use super::lap::Lap;
 use crate::{models::date::Date, views::application::input_parser::parse_input_u32};
@@ -116,11 +116,14 @@ impl Race {
 
     // TODO Test
     pub fn get_fastest_lap(&self) -> f32 {
-        let lap = self
+        let lap = match self
             .laptimes
             .iter()
-            .min_by(|a, b| a.time.partial_cmp(&b.time).unwrap())
-            .unwrap();
+            .min_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(Ordering::Greater))
+        {
+            Some(lap) => lap,
+            None => return 0.0,
+        };
 
         lap.time
     }
@@ -145,7 +148,7 @@ impl Race {
     // TODO Test
     pub fn order_by_fastest_lap(&self) -> Vec<Lap> {
         let mut sorted_laps = self.laptimes.clone();
-        sorted_laps.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap());
+        sorted_laps.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(Ordering::Greater));
         sorted_laps
     }
 
