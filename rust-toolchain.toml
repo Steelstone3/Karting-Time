@@ -1,5 +1,5 @@
 [toolchain]
-channel = "stable"
+channel = "nightly"
 components = ["default"]
 targets = [
     "x86_64-unknown-linux-gnu",
