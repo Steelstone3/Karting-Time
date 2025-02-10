@@ -9,10 +9,21 @@ use std::io::{Read, Write};
 pub fn upsert_races(driver_profile: &Vec<Race>) {
     for race in driver_profile {
         let file_name = format!("{}.toml", Race::get_unique_race_identifier(race));
-        let mut file = File::create(file_name).expect("Can't create file.");
-        let toml = toml::to_string_pretty(&driver_profile)
-            .expect("Can't parse application data to string");
-        write!(file, "{}", toml).expect("Can't update file with application data");
+
+        let mut file = match File::create(file_name) {
+            Ok(file) => file,
+            Err(_) => return,
+        };
+
+        let toml = match toml::to_string_pretty(&driver_profile) {
+            Ok(toml) => toml,
+            Err(_) => return,
+        };
+
+        match write!(file, "{}", toml) {
+            Ok(_) => (),
+            Err(_) => return,
+        }
     }
 }
 
