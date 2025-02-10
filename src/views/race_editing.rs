@@ -8,7 +8,7 @@ use iced_aw::Card;
 impl KartingTime {
     pub fn race_editing_view(&self) -> iced::widget::Column<Message> {
         let mut column = column!()
-            .push(button("Read Only").on_press(Message::ReadOnlyPressed))
+            .push(button("Read Only").on_press(Message::Replace))
             .padding(10)
             .spacing(10);
 

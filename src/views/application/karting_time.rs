@@ -49,7 +49,7 @@ impl KartingTime {
             Message::EditRacesPressed => {
                 self.application_state.is_editing_races = true;
             }
-            Message::ReadOnlyPressed => {
+            Message::Replace => {
                 self.application_state.is_editing_races = false;
             }
         }
