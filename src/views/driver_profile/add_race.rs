@@ -81,15 +81,15 @@ impl KartingTime {
             .new_race
             .is_unique_identifer(&self.driver_profile.races)
         {
-            return add_race_button
+            add_race_button
                 .push(button("Add Race").on_press(Message::AddRacePressed))
                 .spacing(10)
-                .padding(10);
+                .padding(10)
         } else {
-            return add_race_button
+            add_race_button
                 .push(button("Update Race").on_press(Message::AddRacePressed))
                 .spacing(10)
-                .padding(10);
+                .padding(10)
         }
     }
 }
