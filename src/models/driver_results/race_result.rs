@@ -83,7 +83,7 @@ impl Race {
     }
 
     // TODO Test
-    pub fn check_unique_identifer(&self, races: &Vec<Race>) -> bool {
+    pub fn is_unique_identifer(&self, races: &Vec<Race>) -> bool {
         for race in races {
             if Race::get_unique_race_identifier(&self) == Race::get_unique_race_identifier(race) {
                 return false;
@@ -91,6 +91,22 @@ impl Race {
         }
 
         true
+    }
+
+    // TODO Test
+    pub fn new_race_replaces_existing_race(&self, races: &Vec<Race>) -> Vec<Race> {
+        let mut updated_races = races.clone();
+
+        for i in 0..updated_races.len() {
+            if Race::get_unique_race_identifier(&self)
+                == Race::get_unique_race_identifier(&updated_races[i])
+            {
+                updated_races[i] = self.clone();
+                return updated_races;
+            }
+        }
+
+        updated_races
     }
 
     // TODO Test

@@ -45,13 +45,14 @@ impl KartingTime {
                 );
                 if self
                     .new_race
-                    .check_unique_identifer(&self.driver_profile.races)
+                    .is_unique_identifer(&self.driver_profile.races)
                 {
                     self.driver_profile.races.push(self.new_race.clone());
                     self.application_state.race_editor.clear_text_editor();
                 } else {
                     // TODO Overwrite existing race in "races" vector
                     // TODO confirmation box "Overwrite existing race"
+                    self.driver_profile.races = self.new_race.new_race_replaces_existing_race(&self.driver_profile.races);
                 }
             }
             Message::ReplacePressed(index) => {
