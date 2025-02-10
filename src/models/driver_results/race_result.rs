@@ -26,7 +26,6 @@ impl Default for Race {
     }
 }
 
-// TODO Test
 impl Display for Race {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut table = Table::new();
@@ -57,6 +56,17 @@ impl Race {
     }
 
     // TODO Test
+    pub fn is_unique_identifer(&self, races: &Vec<Race>) -> bool {
+        for race in races {
+            if Race::get_unique_race_identifier(self) == Race::get_unique_race_identifier(race) {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    // TODO Test
     pub fn update_session_id(&mut self, session_id: String) {
         self.session_id = parse_input_u32(session_id, 1, u32::MAX);
     }
@@ -83,18 +93,7 @@ impl Race {
     }
 
     // TODO Test
-    pub fn is_unique_identifer(&self, races: &Vec<Race>) -> bool {
-        for race in races {
-            if Race::get_unique_race_identifier(self) == Race::get_unique_race_identifier(race) {
-                return false;
-            }
-        }
-
-        true
-    }
-
-    // TODO Test
-    pub fn new_race_replaces_existing_race(&self, races: &[Race]) -> Vec<Race> {
+    pub fn replace_existing_race(&self, races: &[Race]) -> Vec<Race> {
         let mut updated_races = races.to_owned();
 
         for i in 0..updated_races.len() {
@@ -187,7 +186,17 @@ impl Race {
         total_times_string
     }
 
-    // TODO Test
+    //TODO Test
+    pub fn convert_laps_to_string(&self) -> String {
+        let mut laps = "".to_string();
+
+        for laptime in &self.laptimes {
+            laps += &format!("{}\n", laptime.time);
+        }
+
+        laps
+    }
+
     fn calculate_total_times(&self) -> HashMap<usize, f32> {
         let mut total_times = HashMap::new();
         let mut current_sum = 0.0;
@@ -205,7 +214,6 @@ impl Race {
         total_times
     }
 
-    // TODO Test
     fn calculate_average_total_times(
         &self,
         total_times: &HashMap<usize, f32>,
@@ -224,22 +232,103 @@ impl Race {
         average_times
     }
 
-    // TODO Test
     fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
         laptime_editor_string
             .lines()
             .filter_map(|s| s.trim().parse::<f32>().ok())
             .collect()
     }
+}
 
-    //TODO Test
-    pub fn convert_laps_to_string(&self) -> String {
-        let mut laps = "".to_string();
+#[cfg(test)]
+mod race_result_should {
+    use crate::models::{date::Date, driver_results::lap::Lap};
 
-        for laptime in &self.laptimes {
-            laps += &format!("{}\n", laptime.time);
-        }
+    use super::Race;
 
-        laps
+    #[test]
+    fn display() {
+        // Given
+        let expected_display =
+            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.2     |\n| 2   | 12.4     |"
+                .to_string();
+        let race_result = Race {
+            track_name: "Brands Hatch".to_string(),
+            date: Date {
+                day: 12,
+                month: 12,
+                year: 2025,
+            },
+            session_id: 1,
+            race_position: 1,
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 12.2,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 12.4,
+                },
+            ],
+        };
+
+        // When
+        let display = race_result.to_string();
+
+        // Then
+        assert_eq!(expected_display, display);
     }
+
+    #[test]
+    #[ignore = "reason"]
+    fn get_a_unique_race_identifier() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn is_unique_identifer() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn update_session_id() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn update_race_position() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn convert_to_laps() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn replace_existing_race() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn get_number_of_laps() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn get_fastest_lap() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn get_average_lap() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn order_by_fastest_lap() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn convert_total_times_to_string() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn convert_average_total_times_to_string() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn convert_laps_to_string() {}
 }

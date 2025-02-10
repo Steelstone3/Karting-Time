@@ -1,6 +1,8 @@
 use crate::{
     commands::messages::Message,
-    controllers::files::file_picker::{save_file_location, select_file_to_load},
+    controllers::files::file_picker::{
+        save_file_location, select_file_to_load, select_files_to_load,
+    },
     models::application::karting_time::KartingTime,
 };
 
@@ -11,7 +13,7 @@ impl KartingTime {
             Message::SelectedTabChanged(tab_identifier) => self.switch_tab(tab_identifier),
             Message::FileNew => self.file_new(),
             Message::ImportRace => {
-                self.import_race(&select_file_to_load());
+                self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
             }
             Message::ExportRaces => self.save_races(),
@@ -56,17 +58,14 @@ impl KartingTime {
                     self.driver_profile.races.push(self.new_race.clone());
                     self.application_state.race_editor.clear_text_editor();
                 } else {
-                    // TODO Overwrite existing race in "races" vector
-                    // TODO confirmation box "Overwrite existing race"
                     self.driver_profile.races = self
                         .new_race
-                        .new_race_replaces_existing_race(&self.driver_profile.races);
+                        .replace_existing_race(&self.driver_profile.races);
                 }
 
                 self.driver_profile.sort_races()
             }
             Message::ReplacePressed(index) => {
-                // TODO Overwrite existing new race in add race section
                 if let Some(race) = self.driver_profile.races.get(index) {
                     self.new_race = race.clone();
                     self.application_state.race_editor.clear_text_editor();

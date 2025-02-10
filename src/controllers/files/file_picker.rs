@@ -12,8 +12,6 @@ pub fn select_file_to_load() -> String {
     }
 }
 
-// TODO use to load races, use to load profiles
-#[allow(dead_code)]
 pub fn select_files_to_load() -> Vec<String> {
     let mut valid_file_paths: Vec<String> = vec![];
 

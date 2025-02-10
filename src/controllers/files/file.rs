@@ -13,11 +13,13 @@ impl KartingTime {
     }
 
     // TODO Test
-    pub fn import_race(&mut self, file_name: &str) {
-        let race = read_race(file_name);
+    pub fn import_race(&mut self, file_names: Vec<String>) {
+        for file_name in file_names {
+            let race = read_race(&file_name);
 
-        if race.is_unique_identifer(&self.driver_profile.races) {
-            self.driver_profile.races.push(race);
+            if race.is_unique_identifer(&self.driver_profile.races) {
+                self.driver_profile.races.push(race);
+            }
         }
     }
 

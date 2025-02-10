@@ -26,12 +26,6 @@ impl KartingTime {
     fn read_only_result_cards(&self) -> Vec<Card<Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
-        // TODO sort by track name ascending, session ID ascending then date descending
-        // i.e 2025-02-10 will be higher in the order than 2004-03-15
-        // i.e Brands Hatch will be higher in the order than Oulton Park
-        // i.e Brands Hatch Session 1 will be higher in the order than Brands Hatch Session 2
-        // i.e Brands Hatch Session 1 and 2 2025-02-10 will be higher in the order than Donnington Park Session 1 2024-02-10
-
         for (index, race) in self.driver_profile.races.iter().enumerate() {
             let header = format!(
                 "{} Session: {} Date: {}",
