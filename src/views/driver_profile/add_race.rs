@@ -16,8 +16,11 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Day of the Month", &self.new_race.race_information.date.day.to_string())
-                    .on_input(Message::DayChanged),
+                text_input(
+                    "Day of the Month",
+                    &self.new_race.race_information.date.day.to_string(),
+                )
+                .on_input(Message::DayChanged),
             )
             .spacing(10)
             .padding(10)
@@ -25,8 +28,11 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Month of the Year", &self.new_race.race_information.date.month.to_string())
-                    .on_input(Message::MonthChanged),
+                text_input(
+                    "Month of the Year",
+                    &self.new_race.race_information.date.month.to_string(),
+                )
+                .on_input(Message::MonthChanged),
             )
             .spacing(10)
             .padding(10)
@@ -34,8 +40,11 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Year", &self.new_race.race_information.date.year.to_string())
-                    .on_input(Message::YearChanged),
+                text_input(
+                    "Year",
+                    &self.new_race.race_information.date.year.to_string(),
+                )
+                .on_input(Message::YearChanged),
             )
             .spacing(10)
             .padding(10)
@@ -43,15 +52,21 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Session Number", &self.new_race.race_information.session_id.to_string())
-                    .on_input(Message::SessionIdChanged),
+                text_input(
+                    "Session Number",
+                    &self.new_race.race_information.session_id.to_string(),
+                )
+                .on_input(Message::SessionIdChanged),
             )
             .push(text("Race Position:"))
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Race Position", &self.new_race.race_information.race_position.to_string())
-                    .on_input(Message::RacePositionChanged),
+                text_input(
+                    "Race Position",
+                    &self.new_race.race_information.race_position.to_string(),
+                )
+                .on_input(Message::RacePositionChanged),
             )
             .push(text("Laps"))
             .spacing(10)

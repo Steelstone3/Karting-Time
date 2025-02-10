@@ -1,6 +1,8 @@
 use crate::models::application::karting_time::KartingTime;
 
-use super::file_io::{read_application_state, read_race_file, upsert_application_state, upsert_races};
+use super::file_io::{
+    read_application_state, read_race_file, upsert_application_state, upsert_races,
+};
 
 impl KartingTime {
     pub fn file_new(&mut self) {

@@ -3,19 +3,10 @@ use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, collections::HashMap, fmt::Display};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Race {
     pub race_information: RaceInformation,
     pub laptimes: Vec<Lap>,
-}
-
-impl Default for Race {
-    fn default() -> Self {
-        Self {
-            race_information: Default::default(),
-            laptimes: Default::default(),
-        }
-    }
 }
 
 impl Display for Race {

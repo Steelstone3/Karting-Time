@@ -24,7 +24,9 @@ impl KartingTime {
             }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
-            Message::TrackNameChanged(track_name) => self.new_race.race_information.track_name = track_name,
+            Message::TrackNameChanged(track_name) => {
+                self.new_race.race_information.track_name = track_name
+            }
             Message::DayChanged(day) => {
                 self.new_race.race_information.date.set_day(day);
             }
@@ -38,7 +40,9 @@ impl KartingTime {
                 self.new_race.race_information.update_session_id(session_id);
             }
             Message::RacePositionChanged(race_position) => {
-                self.new_race.race_information.update_race_position(race_position);
+                self.new_race
+                    .race_information
+                    .update_race_position(race_position);
             }
             Message::LaptimeEditor(action) => self
                 .application_state

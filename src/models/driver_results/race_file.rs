@@ -1,19 +1,10 @@
 use super::{lap::Lap, race_information::RaceInformation, race_result::Race};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RaceFile {
     pub race_information: RaceInformation,
     pub laptimes: Vec<f32>,
-}
-
-impl Default for RaceFile {
-    fn default() -> Self {
-        Self {
-            race_information: Default::default(),
-            laptimes: Default::default(),
-        }
-    }
 }
 
 impl RaceFile {
