@@ -25,13 +25,13 @@ impl DriverProfile {
             if track_name_ordering != std::cmp::Ordering::Equal {
                 return track_name_ordering;
             }
-    
+
             // If track_names are equal, compare by session_id in ascending order
             let session_id_ordering = a.session_id.cmp(&b.session_id);
             if session_id_ordering != std::cmp::Ordering::Equal {
                 return session_id_ordering;
             }
-    
+
             // If both track_name and session_id are equal, compare by date in *descending* order
             b.date.cmp(&a.date) // Note the reversed order for descending sort
         });
