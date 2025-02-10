@@ -50,10 +50,15 @@ impl KartingTime {
                     self.driver_profile.races.push(self.new_race.clone());
                     self.application_state.race_editor.clear_text_editor();
                 } else {
-                    // TODO cofirmation box "Overwrite existing race"
+                    // TODO Overwrite existing race in "races" vector
+                    // TODO confirmation box "Overwrite existing race"
+
                 }
             }
-            Message::ReplacePressed(index) => {}
+            Message::ReplacePressed(index) => {
+                // TODO Overwrite existing new race in add race section
+                
+            }
         }
     }
 }
