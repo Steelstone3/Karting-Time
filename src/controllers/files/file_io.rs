@@ -6,23 +6,32 @@ use std::io::{Read, Write};
 // TODO improve the safety of loading and saving here
 
 // TODO Test
-pub fn upsert_races(driver_profile: &Vec<Race>) {
-    for race in driver_profile {
+pub fn upsert_races(races: &Vec<Race>) {
+    for race in races {
         let file_name = format!("{}.toml", Race::get_unique_race_identifier(race));
 
         let mut file = match File::create(file_name) {
             Ok(file) => file,
-            Err(_) => return,
+            Err(_) => {
+                println!("failed to create file");
+                return;
+            }
         };
 
-        let toml = match toml::to_string_pretty(&driver_profile) {
+        let toml = match toml::to_string_pretty(race) {
             Ok(toml) => toml,
-            Err(_) => return,
+            Err(_) => {
+                println!("failed to convert to toml");
+                return;
+            }
         };
 
         match write!(file, "{}", toml) {
             Ok(_) => (),
-            Err(_) => return,
+            Err(_) => {
+                println!("failed to write file");
+                return;
+            }
         }
     }
 }
