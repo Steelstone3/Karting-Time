@@ -32,9 +32,7 @@ impl KartingTime {
         // i.e Brands Hatch Session 1 will be higher in the order than Brands Hatch Session 2
         // i.e Brands Hatch Session 1 and 2 2025-02-10 will be higher in the order than Donnington Park Session 1 2024-02-10
 
-        let mut index = 0;
-
-        for race in &self.driver_profile.races {
+        for (index, race) in self.driver_profile.races.iter().enumerate() {
             let header = format!(
                 "{} Session: {} Date: {}",
                 race.track_name, race.session_id, race.date
@@ -57,8 +55,6 @@ impl KartingTime {
                 .push(button("Replace").on_press(Message::ReplacePressed(index)));
 
             result_cards.push(Card::new(text(header), text(race.to_string())).foot(footer));
-
-            index += 1;
         }
 
         result_cards
