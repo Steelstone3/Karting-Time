@@ -12,11 +12,6 @@ pub struct DriverProfile {
 
 impl DriverProfile {
     // TODO Test
-    pub fn create_file_path(&self) -> String {
-        format!("{}.toml", self.name)
-    }
-
-    // TODO Test
     pub fn sort_races(&mut self) {
         self.races.sort_by(|a, b| {
             // First, compare by track_name in ascending order

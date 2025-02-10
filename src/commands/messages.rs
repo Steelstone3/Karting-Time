@@ -5,8 +5,8 @@ use iced::widget::text_editor;
 pub enum Message {
     MenuBar,
     FileNew,
-    ImportDriverProfile,
-    SaveDriverProfile,
+    ImportRace,
+    ExportRaces,
     SaveApplication,
     LoadApplication,
     ViewToggleTheme,

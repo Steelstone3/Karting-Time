@@ -1,21 +1,23 @@
+use crate::models::application::karting_time::KartingTime;
+use crate::models::driver_results::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
-
-use crate::models::application::karting_time::KartingTime;
-use crate::models::driver_profile::profile::DriverProfile;
 
 // TODO improve the safety of loading and saving here
 
 // TODO Test
-pub fn upsert_driver_profile(driver_profile: &DriverProfile) {
-    let mut file = File::create(driver_profile.create_file_path()).expect("Can't create file.");
-    let toml =
-        toml::to_string_pretty(&driver_profile).expect("Can't parse application data to string");
-    write!(file, "{}", toml).expect("Can't update file with application data");
+pub fn upsert_races(driver_profile: &Vec<Race>) {
+    for race in driver_profile {
+        let file_name = format!("{}.toml", Race::get_unique_race_identifier(race));
+        let mut file = File::create(file_name).expect("Can't create file.");
+        let toml = toml::to_string_pretty(&driver_profile)
+            .expect("Can't parse application data to string");
+        write!(file, "{}", toml).expect("Can't update file with application data");
+    }
 }
 
 // TODO Test
-pub fn read_driver_profile(file_name: &str) -> DriverProfile {
+pub fn read_race(file_name: &str) -> Race {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
