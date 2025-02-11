@@ -95,11 +95,17 @@ impl KartingTime {
         if self
             .new_race
             .is_unique_identifer(&self.driver_profile.races)
+            && !self.new_race.race_information.track_name.is_empty()
         {
             add_race_button
                 .push(button("Add Race").on_press(Message::UpdateRacesPressed))
                 .spacing(10)
                 .padding(10)
+                .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
+                .spacing(10)
+                .padding(10)
+        } else if self.new_race.race_information.track_name.is_empty() {
+            add_race_button
                 .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
                 .spacing(10)
                 .padding(10)

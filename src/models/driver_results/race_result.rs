@@ -46,6 +46,7 @@ impl Race {
         for race in races {
             if RaceInformation::get_unique_race_identifier(&self.race_information)
                 == RaceInformation::get_unique_race_identifier(&race.race_information)
+                || self.race_information.track_name.is_empty()
             {
                 return false;
             }
