@@ -15,7 +15,7 @@ impl KartingTime {
                 let contents = Scrollable::new(
                     column!()
                         .push(self.edit_driver_profile_view())
-                        .push(self.add_race_view()),
+                        .push(self.update_races_view()),
                 );
 
                 column!(self.menu_view(), tab_bar, contents)

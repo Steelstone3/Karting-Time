@@ -3,21 +3,24 @@ use iced::widget::{button, column, text, text_editor, text_input, Column};
 use iced_aw::Card;
 
 impl KartingTime {
-    pub fn add_race_view(&self) -> Column<Message> {
+    pub fn update_races_view(&self) -> Column<Message> {
         let add_race_contents = column!()
             .push(text("Track Name"))
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Track Name", &self.new_race.track_name)
+                text_input("Track Name", &self.new_race.race_information.track_name)
                     .on_input(Message::TrackNameChanged),
             )
             .push(text("Day (dd):"))
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Day of the Month", &self.new_race.date.day.to_string())
-                    .on_input(Message::DayChanged),
+                text_input(
+                    "Day of the Month",
+                    &self.new_race.race_information.date.day.to_string(),
+                )
+                .on_input(Message::DayChanged),
             )
             .spacing(10)
             .padding(10)
@@ -25,8 +28,11 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Month of the Year", &self.new_race.date.month.to_string())
-                    .on_input(Message::MonthChanged),
+                text_input(
+                    "Month of the Year",
+                    &self.new_race.race_information.date.month.to_string(),
+                )
+                .on_input(Message::MonthChanged),
             )
             .spacing(10)
             .padding(10)
@@ -34,8 +40,11 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Year", &self.new_race.date.year.to_string())
-                    .on_input(Message::YearChanged),
+                text_input(
+                    "Year",
+                    &self.new_race.race_information.date.year.to_string(),
+                )
+                .on_input(Message::YearChanged),
             )
             .spacing(10)
             .padding(10)
@@ -43,15 +52,21 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Session Number", &self.new_race.session_id.to_string())
-                    .on_input(Message::SessionIdChanged),
+                text_input(
+                    "Session Number",
+                    &self.new_race.race_information.session_id.to_string(),
+                )
+                .on_input(Message::SessionIdChanged),
             )
             .push(text("Race Position:"))
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Race Position", &self.new_race.race_position.to_string())
-                    .on_input(Message::RacePositionChanged),
+                text_input(
+                    "Race Position",
+                    &self.new_race.race_information.race_position.to_string(),
+                )
+                .on_input(Message::RacePositionChanged),
             )
             .push(text("Laps"))
             .spacing(10)
@@ -80,9 +95,18 @@ impl KartingTime {
         if self
             .new_race
             .is_unique_identifer(&self.driver_profile.races)
+            && !self.new_race.race_information.track_name.is_empty()
         {
             add_race_button
                 .push(button("Add Race").on_press(Message::UpdateRacesPressed))
+                .spacing(10)
+                .padding(10)
+                .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
+                .spacing(10)
+                .padding(10)
+        } else if self.new_race.race_information.track_name.is_empty() {
+            add_race_button
+                .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
                 .spacing(10)
                 .padding(10)
         } else {

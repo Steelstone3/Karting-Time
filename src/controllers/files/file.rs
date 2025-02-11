@@ -1,6 +1,8 @@
 use crate::models::application::karting_time::KartingTime;
 
-use super::file_io::{read_application_state, read_race, upsert_application_state, upsert_races};
+use super::file_io::{
+    read_application_state, read_race_file, upsert_application_state, upsert_races,
+};
 
 impl KartingTime {
     pub fn file_new(&mut self) {
@@ -15,7 +17,9 @@ impl KartingTime {
     // TODO Test
     pub fn import_race(&mut self, file_names: Vec<String>) {
         for file_name in file_names {
-            let race = read_race(&file_name);
+            let race_file = read_race_file(&file_name);
+
+            let race = race_file.convert_to_race();
 
             if race.is_unique_identifer(&self.driver_profile.races) {
                 self.driver_profile.races.push(race);
@@ -38,7 +42,7 @@ mod file_should {
         application::{application_state::ApplicationState, karting_time::KartingTime},
         date::Date,
         driver_profile::profile::DriverProfile,
-        driver_results::{lap::Lap, race_result::Race},
+        driver_results::{lap::Lap, race_information::RaceInformation, race_result::Race},
     };
     use std::fs;
 
@@ -55,14 +59,16 @@ mod file_should {
             driver_profile: DriverProfile {
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
-                    track_name: "Three Sisters".to_string(),
-                    date: Date {
-                        day: 12,
-                        month: 12,
-                        year: 2025,
+                    race_information: RaceInformation {
+                        track_name: "Three Sisters".to_string(),
+                        date: Date {
+                            day: 12,
+                            month: 12,
+                            year: 2025,
+                        },
+                        session_id: 1,
+                        race_position: 1,
                     },
-                    session_id: 1,
-                    race_position: 1,
                     laptimes: vec![
                         Lap {
                             lap_number: 1,
@@ -95,14 +101,16 @@ mod file_should {
             driver_profile: DriverProfile {
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
-                    track_name: "Three Sisters".to_string(),
-                    date: Date {
-                        day: 12,
-                        month: 12,
-                        year: 2025,
+                    race_information: RaceInformation {
+                        track_name: "Three Sisters".to_string(),
+                        date: Date {
+                            day: 12,
+                            month: 12,
+                            year: 2025,
+                        },
+                        session_id: 1,
+                        race_position: 1,
                     },
-                    session_id: 1,
-                    race_position: 1,
                     laptimes: vec![
                         Lap {
                             lap_number: 1,
@@ -124,14 +132,16 @@ mod file_should {
             driver_profile: DriverProfile {
                 name: "Jack Jackson".to_string(),
                 races: vec![Race {
-                    track_name: "Three Sisters".to_string(),
-                    date: Date {
-                        day: 12,
-                        month: 12,
-                        year: 2025,
+                    race_information: RaceInformation {
+                        track_name: "Three Sisters".to_string(),
+                        date: Date {
+                            day: 12,
+                            month: 12,
+                            year: 2025,
+                        },
+                        session_id: 1,
+                        race_position: 1,
                     },
-                    session_id: 1,
-                    race_position: 1,
                     laptimes: vec![
                         Lap {
                             lap_number: 1,

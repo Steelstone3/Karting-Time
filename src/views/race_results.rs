@@ -29,7 +29,9 @@ impl KartingTime {
         for (index, race) in self.driver_profile.races.iter().enumerate() {
             let header = format!(
                 "{} Session: {} Date: {}",
-                race.track_name, race.session_id, race.date
+                race.race_information.track_name,
+                race.race_information.session_id,
+                race.race_information.date
             );
 
             let race_summary = format!(
