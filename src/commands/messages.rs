@@ -21,4 +21,5 @@ pub enum Message {
     LaptimeEditor(text_editor::Action),
     ReplacePressed(usize),
     UpdateRacesPressed,
+    ClearRaceEditorPressed,
 }

@@ -68,6 +68,9 @@ impl KartingTime {
 
                 self.driver_profile.sort_races()
             }
+            Message::ClearRaceEditorPressed => {
+                self.application_state.race_editor.clear_text_editor();
+            }
             Message::ReplacePressed(index) => {
                 if let Some(race) = self.driver_profile.races.get(index) {
                     self.new_race = race.clone();

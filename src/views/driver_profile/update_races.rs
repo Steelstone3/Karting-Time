@@ -3,7 +3,7 @@ use iced::widget::{button, column, text, text_editor, text_input, Column};
 use iced_aw::Card;
 
 impl KartingTime {
-    pub fn add_race_view(&self) -> Column<Message> {
+    pub fn update_races_view(&self) -> Column<Message> {
         let add_race_contents = column!()
             .push(text("Track Name"))
             .spacing(10)
@@ -98,6 +98,9 @@ impl KartingTime {
         {
             add_race_button
                 .push(button("Add Race").on_press(Message::UpdateRacesPressed))
+                .spacing(10)
+                .padding(10)
+                .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
                 .spacing(10)
                 .padding(10)
         } else {
