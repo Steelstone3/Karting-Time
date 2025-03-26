@@ -40,3 +40,18 @@ impl RaceInformation {
         self.race_position = parse_input_u32(race_position, 1, u32::MAX);
     }
 }
+
+#[cfg(test)]
+mod race_information_should {
+    #[test]
+    #[ignore = "reason"]
+    fn get_unique_race_identifier() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn update_session_id() {}
+
+    #[test]
+    #[ignore = "reason"]
+    pub fn update_race_position() {}
+}

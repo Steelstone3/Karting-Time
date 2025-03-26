@@ -36,3 +36,10 @@ impl RaceFile {
         laps
     }
 }
+
+#[cfg(test)]
+mod race_file_should {
+    #[test]
+    #[ignore = "reason"]
+    fn convert_to_race() {}
+}

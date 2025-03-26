@@ -20,3 +20,10 @@ impl KartingTimeFile {
         }
     }
 }
+
+#[cfg(test)]
+mod karting_time_file_should {
+    #[test]
+    #[ignore = "reason"]
+    fn convert_to_karting_time() {}
+}

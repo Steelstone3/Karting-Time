@@ -22,3 +22,10 @@ impl DriverProfileFile {
         }
     }
 }
+
+#[cfg(test)]
+mod profile_file_should {
+    #[test]
+    #[ignore = "reason"]
+    fn convert_to_driver_profile() {}
+}

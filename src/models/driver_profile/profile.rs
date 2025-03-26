@@ -11,7 +11,6 @@ pub struct DriverProfile {
 }
 
 impl DriverProfile {
-    // TODO Test
     pub fn convert_to_driver_profile_file(&self) -> DriverProfileFile {
         let mut race_files = vec![];
 
@@ -25,7 +24,6 @@ impl DriverProfile {
         }
     }
 
-    // TODO Test
     pub fn sort_races(&mut self) {
         self.races.sort_by(|a, b| {
             b.race_information
@@ -88,9 +86,51 @@ impl DriverProfile {
 
 #[cfg(test)]
 mod driver_profile_should {
+    use super::DriverProfile;
     use crate::models::driver_results::{race_information::RaceInformation, race_result::Race};
 
-    use super::DriverProfile;
+    #[test]
+    #[ignore = "reason"]
+    fn convert_to_driver_profile_file() {
+
+        //  // TODO Test
+        //  pub fn convert_to_driver_profile_file(&self) -> DriverProfileFile {
+        //     let mut race_files = vec![];
+
+        //     for race in &self.races {
+        //         race_files.push(race.convert_to_race_file())
+        //     }
+
+        //     DriverProfileFile {
+        //         name: self.name.to_string(),
+        //         races: race_files,
+        //     }
+        // }
+    }
+
+    #[test]
+    #[ignore = "reason"]
+    fn sort_races() {
+
+        // // TODO Test
+        // pub fn sort_races(&mut self) {
+        //     self.races.sort_by(|a, b| {
+        //         b.race_information
+        //             .date
+        //             .cmp(&a.race_information.date)
+        //             .then_with(|| {
+        //                 a.race_information
+        //                     .track_name
+        //                     .cmp(&b.race_information.track_name)
+        //             })
+        //             .then_with(|| {
+        //                 a.race_information
+        //                     .session_id
+        //                     .cmp(&b.race_information.session_id)
+        //             })
+        //     });
+        // }
+    }
 
     #[test]
     fn get_number_of_races() {

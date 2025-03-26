@@ -34,22 +34,35 @@ impl PartialOrd for Date {
     }
 }
 
+impl Default for Date {
+    fn default() -> Self {
+        Self {
+            day: 1,
+            month: 1,
+            year: 2000,
+        }
+    }
+}
+
+impl Display for Date {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}-{}-{}", self.year, self.month, self.day)
+    }
+}
+
 impl Date {
-    // TODO Test
     pub fn set_day(&mut self, day: String) {
         let day = parse_input_u32(day, u32::MIN, u32::MAX);
 
         self.set_date(day, self.month, self.year);
     }
 
-    // TODO Test
     pub fn set_month(&mut self, month: String) {
         let month = parse_input_u32(month, u32::MIN, u32::MAX);
 
         self.set_date(self.day, month, self.year);
     }
 
-    // TODO Test
     pub fn set_year(&mut self, year: String) {
         let year = parse_input_u32(year, u32::MIN, u32::MAX);
 
@@ -65,20 +78,71 @@ impl Date {
     }
 }
 
-// TODO Test
-impl Default for Date {
-    fn default() -> Self {
-        Self {
+#[cfg(test)]
+mod date_should {
+    use super::Date;
+
+    #[test]
+    fn display() {
+        // Given
+        let date = Date {
+            day: 15,
+            month: 12,
+            year: 2000,
+        };
+
+        // When
+        let date_string = date.to_string();
+
+        // Then
+        assert_eq!("2000-12-15", date_string)
+    }
+
+    #[test]
+    fn set_day() {
+        // Given
+        let mut date = Date {
             day: 1,
             month: 1,
             year: 2000,
-        }
-    }
-}
+        };
 
-// TODO Test
-impl Display for Date {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}-{}-{}", self.year, self.month, self.day)
+        // When
+        date.set_day("15".to_string());
+
+        // Then
+        assert_eq!(15, date.day)
+    }
+
+    #[test]
+    fn set_month() {
+        // Given
+        let mut date = Date {
+            day: 1,
+            month: 1,
+            year: 2000,
+        };
+
+        // When
+        date.set_month("11".to_string());
+
+        // Then
+        assert_eq!(11, date.month)
+    }
+
+    #[test]
+    fn set_year() {
+        // Given
+        let mut date = Date {
+            day: 1,
+            month: 1,
+            year: 2000,
+        };
+
+        // When
+        date.set_year("2020".to_string());
+
+        // Then
+        assert_eq!(2020, date.year)
     }
 }

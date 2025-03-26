@@ -70,7 +70,7 @@ mod file_should {
         // Then
         assert_eq!(expected, karting_time);
     }
-    
+
     #[test]
     fn acceptance_test_application_saves_then_loads() {
         // Given
