@@ -1,6 +1,4 @@
-use crate::models::driver_results::{
-    lap::Lap, race_information::RaceInformation, race_result::Race,
-};
+use crate::models::driver::{lap::Lap, race_information::RaceInformation, race_result::Race};
 use serde::{Deserialize, Serialize};
 use std::f32;
 
@@ -11,7 +9,6 @@ pub struct RaceFile {
 }
 
 impl RaceFile {
-    // TODO Test
     pub fn convert_to_race(&self) -> Race {
         Race {
             race_information: self.race_information.clone(),
@@ -39,7 +36,53 @@ impl RaceFile {
 
 #[cfg(test)]
 mod race_file_should {
+    use super::*;
+    use crate::{data_models::race_file::RaceFile, models::date::Date};
+
     #[test]
-    #[ignore = "reason"]
-    fn convert_to_race() {}
+    fn convert_to_race() {
+        // Given
+        let expected_race = Race {
+            race_information: RaceInformation {
+                track_name: "Three Ponies".to_string(),
+                date: Date {
+                    day: 15,
+                    month: 10,
+                    year: 2024,
+                },
+                session_id: 1,
+                race_position: 2,
+            },
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 50.662,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 51.877,
+                },
+            ],
+        };
+
+        let race_file = RaceFile {
+            race_information: RaceInformation {
+                track_name: "Three Ponies".to_string(),
+                date: Date {
+                    day: 15,
+                    month: 10,
+                    year: 2024,
+                },
+                session_id: 1,
+                race_position: 2,
+            },
+            laptimes: vec!["50.662".to_string(), "51.877".to_string()],
+        };
+
+        // When
+        let race = race_file.convert_to_race();
+
+        // Then
+        assert_eq!(expected_race, race)
+    }
 }

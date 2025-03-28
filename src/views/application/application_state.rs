@@ -1,5 +1,5 @@
 use crate::{
-    commands::{messages::Message, tab_identifier::TabIdentifier},
+    commands::{messages::Message, tab_identifiers::TabIdentifier},
     models::application::karting_time::KartingTime,
 };
 use iced::{Element, Theme};
@@ -14,8 +14,11 @@ impl KartingTime {
             TabIdentifier::Race => {
                 self.application_state.tab_identifier = TabIdentifier::Race;
             }
-            TabIdentifier::Overview => {
-                self.application_state.tab_identifier = TabIdentifier::Overview;
+            TabIdentifier::ProfileOverview => {
+                self.application_state.tab_identifier = TabIdentifier::ProfileOverview;
+            }
+            TabIdentifier::ResultsOverview => {
+                self.application_state.tab_identifier = TabIdentifier::ResultsOverview
             }
             TabIdentifier::Results => {
                 self.application_state.tab_identifier = TabIdentifier::Results;
