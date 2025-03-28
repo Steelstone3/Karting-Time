@@ -1,7 +1,7 @@
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
-use crate::models::driver_results::race_information::RaceInformation;
-use crate::models::driver_results::race_result::Race;
+use crate::models::driver::race_information::RaceInformation;
+use crate::models::driver::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
 
@@ -9,7 +9,6 @@ const FILE_ERROR: &str = "failed to create file";
 const CONVERT_ERROR: &str = "failed to convert to toml";
 const WRITE_ERROR: &str = "failed to write to file";
 
-// TODO Test
 pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     for race in races {
         let race_file = race.convert_to_race_file();
@@ -46,7 +45,6 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     }
 }
 
-// TODO Test
 pub fn read_race_file(file_name: &str) -> RaceFile {
     let contents = get_file_contents(file_name);
 
@@ -105,7 +103,91 @@ fn get_file_contents(file_name: &str) -> String {
 #[cfg(test)]
 mod file_integration_should {
     use super::*;
+    use crate::models::date::Date;
     use std::fs;
+
+    #[test]
+    fn upsert_races_test() {
+        // Given
+        let file_location = ".";
+        let races = vec![Race {
+            race_information: RaceInformation {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 1,
+                    month: 1,
+                    year: 2025,
+                },
+                session_id: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        }];
+
+        // When
+        upsert_races(file_location, &races);
+
+        // Then
+        let file_name = "./".to_string()
+            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + ".toml";
+        assert!(fs::metadata(&file_name).is_ok());
+        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+    }
+
+    #[test]
+    fn read_non_existant_race_file_test() {
+        // Given
+        let expected_race_file = RaceFile::default();
+
+        // When
+        let race_file = read_race_file("");
+
+        // Then
+        assert_eq!(expected_race_file, race_file);
+    }
+
+    #[test]
+    fn read_race_file_test() {
+        // Given
+        let file_location = "./";
+        let races = vec![Race {
+            race_information: RaceInformation {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 17,
+                    month: 5,
+                    year: 2026,
+                },
+                session_id: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        }];
+        let expected_race_file = RaceFile {
+            race_information: RaceInformation {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 17,
+                    month: 5,
+                    year: 2026,
+                },
+                session_id: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        // When
+        upsert_races(file_location, &races);
+        let file_name = "./".to_string()
+            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + ".toml";
+        let race_file = read_race_file(&file_name);
+
+        // Then
+        assert_eq!(expected_race_file, race_file);
+    }
 
     #[test]
     fn read_application_state_empty() {
@@ -123,7 +205,7 @@ mod file_integration_should {
     #[test]
     fn upsert_application_state_to_file() {
         // Given
-        let karting_time_state_file_name = "test_file_1.toml";
+        let karting_time_state_file_name = "karting_time_test_file_1.toml";
         let karting_time_file = KartingTimeFile::default();
 
         // When
@@ -137,7 +219,7 @@ mod file_integration_should {
     #[test]
     fn acceptance_test_read_application_state_from_file() {
         // Given
-        let file_name = "test_file_2.toml";
+        let file_name = "karting_time_test_file_2.toml";
         let expected_karting_time = KartingTimeFile::default();
 
         // When

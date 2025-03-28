@@ -117,12 +117,6 @@ impl Race {
         }
     }
 
-    pub fn order_by_fastest_lap(&self) -> Vec<Lap> {
-        let mut sorted_laps = self.laptimes.clone();
-        sorted_laps.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(Ordering::Greater));
-        sorted_laps
-    }
-
     pub fn convert_total_times_to_string(&self) -> String {
         let total_times = self.calculate_total_times();
 
@@ -166,7 +160,8 @@ impl Race {
         laps
     }
 
-    fn calculate_total_times(&self) -> HashMap<usize, f32> {
+    // TODO Test
+    pub fn calculate_total_times(&self) -> HashMap<usize, f32> {
         let mut total_times = HashMap::new();
         let mut current_sum = 0.0;
         let mut current_lap = 0;
@@ -183,7 +178,8 @@ impl Race {
         total_times
     }
 
-    fn calculate_average_total_times(
+    // TODO Test
+    pub fn calculate_average_total_times(
         &self,
         total_times: &HashMap<usize, f32>,
     ) -> HashMap<usize, f32> {
@@ -199,6 +195,12 @@ impl Race {
         }
 
         average_times
+    }
+
+    fn order_by_fastest_lap(&self) -> Vec<Lap> {
+        let mut sorted_laps = self.laptimes.clone();
+        sorted_laps.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(Ordering::Greater));
+        sorted_laps
     }
 
     fn convert_laps_to_laptimes(&self) -> Vec<String> {
@@ -223,17 +225,9 @@ impl Race {
 
 #[cfg(test)]
 mod race_result_should {
+    use super::*;
+    use crate::models::date::Date;
     use rstest::rstest;
-
-    use crate::{
-        data_models::race_file::RaceFile,
-        models::{
-            date::Date,
-            driver_results::{lap::Lap, race_information::RaceInformation},
-        },
-    };
-
-    use super::Race;
 
     #[test]
     fn display() {
@@ -578,47 +572,6 @@ mod race_result_should {
     }
 
     #[test]
-    fn order_by_fastest_lap() {
-        // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 21.67,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 22.56,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 20.34,
-                },
-            ],
-            ..Default::default()
-        };
-
-        // Then
-        assert_eq!(
-            vec![
-                Lap {
-                    lap_number: 1,
-                    time: 20.34,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 21.67,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 22.56,
-                },
-            ],
-            race.order_by_fastest_lap()
-        )
-    }
-
-    #[test]
     fn convert_total_times_to_string() {
         // Given
         let expected_total_times = "\nTotal Time 5: 124.27\nTotal Time 10: 254.42".to_string();
@@ -789,5 +742,46 @@ mod race_result_should {
 
         // Then
         assert_eq!(expected_laps, laps)
+    }
+
+    #[test]
+    fn order_by_fastest_lap() {
+        // Given
+        let race = Race {
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 21.67,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 22.56,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 20.34,
+                },
+            ],
+            ..Default::default()
+        };
+
+        // Then
+        assert_eq!(
+            vec![
+                Lap {
+                    lap_number: 1,
+                    time: 20.34,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 21.67,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 22.56,
+                },
+            ],
+            race.order_by_fastest_lap()
+        )
     }
 }

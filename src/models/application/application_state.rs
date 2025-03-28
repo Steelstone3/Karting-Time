@@ -1,6 +1,5 @@
-use crate::{
-    commands::tab_identifier::TabIdentifier, models::driver_results::race_editor::RaceEditor,
-};
+use super::race_editor::RaceEditor;
+use crate::commands::tab_identifiers::TabIdentifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, PartialEq, Serialize, Deserialize, Debug)]

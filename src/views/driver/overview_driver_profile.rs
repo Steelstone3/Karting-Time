@@ -3,11 +3,7 @@ use iced::widget::{column, row, text, Column};
 use iced_aw::Card;
 
 impl KartingTime {
-    pub fn overview_view(&self) -> Column<Message> {
-        if self.driver_profile.name.is_empty() {
-            return column!();
-        }
-
+    pub fn overview_driver_profile_view(&self) -> Column<Message> {
         let content = column!()
             .push(text(self.driver_profile.name.to_string()).size(24))
             .padding(10)
@@ -35,6 +31,12 @@ impl KartingTime {
                     .push(text("Top Fives:"))
                     .spacing(10)
                     .push(text(self.driver_profile.get_number_of_top_fives())),
+            )
+            .push(
+                row!()
+                    .push(text("Top Tens:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_top_tens())),
             )
             .push(
                 row!()

@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub enum TabIdentifier {
     Race,
     #[default]
-    Overview,
+    ProfileOverview,
+    ResultsOverview,
     Results,
 }
