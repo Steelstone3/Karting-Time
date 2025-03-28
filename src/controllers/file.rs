@@ -9,12 +9,10 @@ impl KartingTime {
         *self = KartingTime::default();
     }
 
-    // TODO Test
-    pub fn save_races(&self, file_location: &str) {
+    pub fn export_races(&self, file_location: &str) {
         upsert_races(file_location, &self.driver_profile.races);
     }
 
-    // TODO Test
     pub fn import_race(&mut self, file_names: Vec<String>) {
         for file_name in file_names {
             let race_file = read_race_file(&file_name);
@@ -42,15 +40,81 @@ impl KartingTime {
 
 #[cfg(test)]
 mod file_should {
+    use super::*;
     use crate::models::{
-        application::{application_state::ApplicationState, karting_time::KartingTime},
+        application::application_state::ApplicationState,
         date::Date,
-        driver_profile::profile::DriverProfile,
-        driver_results::{lap::Lap, race_information::RaceInformation, race_result::Race},
+        driver::{
+            driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
+            race_result::Race,
+        },
     };
     use std::fs;
 
-    const APPLICATION_STATE_FILE_NAME_TOML: &str = "karting_time_state.toml";
+    #[test]
+    fn export_race_test() {
+        // Given
+        let file_location = ".";
+        let karting_time = KartingTime {
+            driver_profile: driver_profile_test_fixture(),
+            ..Default::default()
+        };
+
+        // When
+        karting_time.export_races(file_location);
+
+        // Then
+        let file_name = "./".to_string()
+            + &RaceInformation::get_unique_race_identifier(
+                &karting_time.driver_profile.races[0].race_information,
+            )
+            + ".toml";
+        assert!(fs::metadata(&file_name).is_ok());
+        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+    }
+
+    #[test]
+    fn import_non_existant_race_test() {
+        // Given
+        let expected_race = Race::default();
+        let mut karting_time = KartingTime::default();
+
+        // When
+        karting_time.import_race(vec!["".to_string()]);
+
+        // Then
+        assert_eq!(expected_race, karting_time.driver_profile.races[0]);
+    }
+
+    #[test]
+    fn import_races_test() {
+        // Given
+        let mut karting_time = KartingTime::default();
+        let file_location = "./";
+        let races = vec![Race {
+            race_information: RaceInformation {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 17,
+                    month: 10,
+                    year: 2027,
+                },
+                session_id: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        }];
+
+        // When
+        upsert_races(file_location, &races);
+        let file_name = "./".to_string()
+            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + ".toml";
+        karting_time.import_race(vec![file_name]);
+
+        // Then
+        assert_eq!(races[0], karting_time.driver_profile.races[0]);
+    }
 
     #[test]
     fn new_karting_time_default_state() {
@@ -74,6 +138,7 @@ mod file_should {
     #[test]
     fn acceptance_test_application_saves_then_loads() {
         // Given
+        let application_state_file_name_toml = "./karting_time_state.toml";
         let expected = KartingTime {
             application_state: ApplicationState {
                 ..Default::default()
@@ -90,13 +155,13 @@ mod file_should {
         };
 
         // When
-        karting_time.save_application(APPLICATION_STATE_FILE_NAME_TOML);
-        karting_time.load_application(APPLICATION_STATE_FILE_NAME_TOML);
+        karting_time.save_application(application_state_file_name_toml);
+        karting_time.load_application(application_state_file_name_toml);
 
         // Then
-        assert!(fs::metadata(APPLICATION_STATE_FILE_NAME_TOML).is_ok());
+        assert!(fs::metadata(application_state_file_name_toml).is_ok());
         assert!(
-            fs::metadata(APPLICATION_STATE_FILE_NAME_TOML)
+            fs::metadata(application_state_file_name_toml)
                 .unwrap()
                 .len()
                 != 0

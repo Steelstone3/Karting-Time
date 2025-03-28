@@ -1,6 +1,6 @@
 use crate::{
     commands::messages::Message,
-    controllers::files::file_picker::{
+    controllers::file_picker::{
         save_file_location, save_folder_location, select_file_to_load, select_files_to_load,
     },
     models::application::karting_time::KartingTime,
@@ -16,7 +16,7 @@ impl KartingTime {
                 self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
             }
-            Message::ExportRaces => self.save_races(&save_folder_location()),
+            Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
@@ -37,12 +37,12 @@ impl KartingTime {
                 self.new_race.race_information.date.set_year(year);
             }
             Message::SessionIdChanged(session_id) => {
-                self.new_race.race_information.update_session_id(session_id);
+                self.new_race.race_information.set_session_id(session_id);
             }
             Message::RacePositionChanged(race_position) => {
                 self.new_race
                     .race_information
-                    .update_race_position(race_position);
+                    .set_race_position(race_position);
             }
             Message::LaptimeEditor(action) => self
                 .application_state
