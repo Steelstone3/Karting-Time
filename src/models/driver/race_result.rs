@@ -223,17 +223,9 @@ impl Race {
 
 #[cfg(test)]
 mod race_result_should {
+    use super::*;
+    use crate::models::date::Date;
     use rstest::rstest;
-
-    use crate::{
-        data_models::race_file::RaceFile,
-        models::{
-            date::Date,
-            driver_results::{lap::Lap, race_information::RaceInformation},
-        },
-    };
-
-    use super::Race;
 
     #[test]
     fn display() {

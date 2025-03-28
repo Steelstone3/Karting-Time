@@ -1,8 +1,8 @@
-use crate::{
-    data_models::profile_file::DriverProfileFile, models::driver_results::race_result::Race,
-};
+use crate::data_models::driver_profile_file::DriverProfileFile;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+
+use super::race_result::Race;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct DriverProfile {
@@ -86,50 +86,152 @@ impl DriverProfile {
 
 #[cfg(test)]
 mod driver_profile_should {
-    use super::DriverProfile;
-    use crate::models::driver_results::{race_information::RaceInformation, race_result::Race};
+    use super::*;
+    use crate::{
+        data_models::race_file::RaceFile,
+        models::{
+            date::Date,
+            driver::{lap::Lap, race_information::RaceInformation},
+        },
+    };
 
     #[test]
-    #[ignore = "reason"]
     fn convert_to_driver_profile_file() {
+        // Given
+        let expected_driver_profile_file = DriverProfileFile {
+            name: "Karl Chadwick".to_string(),
+            races: vec![RaceFile {
+                race_information: RaceInformation {
+                    track_name: "Three Ponies".to_string(),
+                    date: Date {
+                        day: 15,
+                        month: 10,
+                        year: 2024,
+                    },
+                    session_id: 1,
+                    race_position: 2,
+                },
+                laptimes: vec!["50.662".to_string(), "51.877".to_string()],
+            }],
+        };
 
-        //  // TODO Test
-        //  pub fn convert_to_driver_profile_file(&self) -> DriverProfileFile {
-        //     let mut race_files = vec![];
+        let driver_profile = DriverProfile {
+            name: "Karl Chadwick".to_string(),
+            races: vec![Race {
+                race_information: RaceInformation {
+                    track_name: "Three Ponies".to_string(),
+                    date: Date {
+                        day: 15,
+                        month: 10,
+                        year: 2024,
+                    },
+                    session_id: 1,
+                    race_position: 2,
+                },
+                laptimes: vec![
+                    Lap {
+                        lap_number: 1,
+                        time: 50.662,
+                    },
+                    Lap {
+                        lap_number: 2,
+                        time: 51.877,
+                    },
+                ],
+            }],
+        };
 
-        //     for race in &self.races {
-        //         race_files.push(race.convert_to_race_file())
-        //     }
+        // When
+        let driver_profile_file = driver_profile.convert_to_driver_profile_file();
 
-        //     DriverProfileFile {
-        //         name: self.name.to_string(),
-        //         races: race_files,
-        //     }
-        // }
+        // Then
+        assert_eq!(expected_driver_profile_file, driver_profile_file)
     }
 
     #[test]
-    #[ignore = "reason"]
     fn sort_races() {
+        // Given
+        let race_1 = Race {
+            race_information: RaceInformation {
+                track_name: "Three Ponies".to_string(),
+                date: Date {
+                    day: 15,
+                    month: 10,
+                    year: 2024,
+                },
+                session_id: 1,
+                race_position: 2,
+            },
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 50.662,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 51.877,
+                },
+            ],
+        };
 
-        // // TODO Test
-        // pub fn sort_races(&mut self) {
-        //     self.races.sort_by(|a, b| {
-        //         b.race_information
-        //             .date
-        //             .cmp(&a.race_information.date)
-        //             .then_with(|| {
-        //                 a.race_information
-        //                     .track_name
-        //                     .cmp(&b.race_information.track_name)
-        //             })
-        //             .then_with(|| {
-        //                 a.race_information
-        //                     .session_id
-        //                     .cmp(&b.race_information.session_id)
-        //             })
-        //     });
-        // }
+        let race_2 = Race {
+            race_information: RaceInformation {
+                track_name: "Three Ponies".to_string(),
+                date: Date {
+                    day: 15,
+                    month: 10,
+                    year: 2024,
+                },
+                session_id: 2,
+                race_position: 1,
+            },
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 50.723,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 51.956,
+                },
+            ],
+        };
+
+        let race_3 = Race {
+            race_information: RaceInformation {
+                track_name: "Trafford Stadium".to_string(),
+                date: Date {
+                    day: 17,
+                    month: 10,
+                    year: 2024,
+                },
+                session_id: 1,
+                race_position: 1,
+            },
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 30.723,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 31.956,
+                },
+            ],
+        };
+
+        let mut driver_profile = DriverProfile {
+            name: "Karl Chadwick".to_string(),
+            races: vec![race_1.clone(), race_2.clone(), race_3.clone()],
+        };
+
+        // When
+        driver_profile.sort_races();
+
+        // Then
+        assert_eq!(race_3.clone(), driver_profile.races[0]);
+        assert_eq!(race_1.clone(), driver_profile.races[1]);
+        assert_eq!(race_2.clone(), driver_profile.races[2]);
     }
 
     #[test]
@@ -159,6 +261,51 @@ mod driver_profile_should {
 
         // Then
         assert_eq!(expected_number_of_races, number_of_races)
+    }
+
+    #[test]
+    fn get_number_of_wins() {
+        // Given
+        let expected_number_of_wins = 2;
+        let driver_profile = DriverProfile {
+            races: vec![
+                Race {
+                    race_information: RaceInformation {
+                        race_position: 1,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                Race {
+                    race_information: RaceInformation {
+                        race_position: 5,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                Race {
+                    race_information: RaceInformation {
+                        race_position: 1,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                Race {
+                    race_information: RaceInformation {
+                        race_position: 3,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+            ],
+            ..Default::default()
+        };
+
+        // When
+        let number_of_wins = driver_profile.get_number_of_wins();
+
+        // Then
+        assert_eq!(expected_number_of_wins, number_of_wins)
     }
 
     #[test]

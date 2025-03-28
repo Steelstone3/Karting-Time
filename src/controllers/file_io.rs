@@ -1,7 +1,7 @@
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
-use crate::models::driver_results::race_information::RaceInformation;
-use crate::models::driver_results::race_result::Race;
+use crate::models::driver::race_information::RaceInformation;
+use crate::models::driver::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
 

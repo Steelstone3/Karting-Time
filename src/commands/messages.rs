@@ -1,4 +1,4 @@
-use super::tab_identifier::TabIdentifier;
+use super::tab_identifiers::TabIdentifier;
 use iced::widget::text_editor;
 
 #[derive(Debug, Clone, PartialEq)]

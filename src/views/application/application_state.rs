@@ -1,5 +1,5 @@
 use crate::{
-    commands::{messages::Message, tab_identifier::TabIdentifier},
+    commands::{messages::Message, tab_identifiers::TabIdentifier},
     models::application::karting_time::KartingTime,
 };
 use iced::{Element, Theme};

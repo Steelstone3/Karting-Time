@@ -10,7 +10,7 @@ impl KartingTime {
     }
 
     // TODO Test
-    pub fn save_races(&self, file_location: &str) {
+    pub fn export_races(&self, file_location: &str) {
         upsert_races(file_location, &self.driver_profile.races);
     }
 
@@ -43,11 +43,15 @@ impl KartingTime {
 #[cfg(test)]
 mod file_should {
     use crate::models::{
-        application::{application_state::ApplicationState, karting_time::KartingTime},
+        application::application_state::ApplicationState,
         date::Date,
-        driver_profile::profile::DriverProfile,
-        driver_results::{lap::Lap, race_information::RaceInformation, race_result::Race},
+        driver::{
+            driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
+            race_result::Race,
+        },
     };
+
+    use super::*;
     use std::fs;
 
     const APPLICATION_STATE_FILE_NAME_TOML: &str = "karting_time_state.toml";
