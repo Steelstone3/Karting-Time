@@ -9,12 +9,10 @@ impl KartingTime {
         *self = KartingTime::default();
     }
 
-    // TODO Test
     pub fn export_races(&self, file_location: &str) {
         upsert_races(file_location, &self.driver_profile.races);
     }
 
-    // TODO Test
     pub fn import_race(&mut self, file_names: Vec<String>) {
         for file_name in file_names {
             let race_file = read_race_file(&file_name);

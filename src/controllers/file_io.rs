@@ -9,7 +9,6 @@ const FILE_ERROR: &str = "failed to create file";
 const CONVERT_ERROR: &str = "failed to convert to toml";
 const WRITE_ERROR: &str = "failed to write to file";
 
-// TODO Test
 pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     for race in races {
         let race_file = race.convert_to_race_file();
@@ -46,7 +45,6 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     }
 }
 
-// TODO Test
 pub fn read_race_file(file_name: &str) -> RaceFile {
     let contents = get_file_contents(file_name);
 
