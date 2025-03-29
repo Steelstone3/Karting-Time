@@ -42,6 +42,7 @@ impl KartingTime {
 
 #[cfg(test)]
 mod file_should {
+    use super::*;
     use crate::models::{
         application::application_state::ApplicationState,
         date::Date,
@@ -50,11 +51,16 @@ mod file_should {
             race_result::Race,
         },
     };
-
-    use super::*;
     use std::fs;
-
     const APPLICATION_STATE_FILE_NAME_TOML: &str = "karting_time_state.toml";
+
+    #[test]
+    #[ignore = "reason"]
+    fn export_races() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn import_races() {}
 
     #[test]
     fn new_karting_time_default_state() {

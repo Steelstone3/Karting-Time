@@ -108,6 +108,14 @@ mod file_integration_should {
     use std::fs;
 
     #[test]
+    #[ignore = "reason"]
+    fn upsert_races() {}
+
+    #[test]
+    #[ignore = "reason"]
+    fn read_race_file() {}
+
+    #[test]
     fn read_application_state_empty() {
         // Given
         let file_name = "non_existant_file.toml";
