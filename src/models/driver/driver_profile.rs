@@ -92,12 +92,6 @@ impl Display for DriverProfile {
                 total_time_15_cell,
             ]);
         }
-        // for laptime in &self.laptimes {
-        //     table.add_row(vec![
-        //         Cell::new(laptime.lap_number.to_string()),
-        //         Cell::new(laptime.time.to_string()),
-        //     ]);
-        // }
 
         write!(f, "{}", table)
     }
