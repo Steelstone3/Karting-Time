@@ -9,5 +9,5 @@ pub struct ApplicationState {
     #[serde(skip)]
     pub race_editor: RaceEditor,
     #[serde(skip)]
-    pub search_query: String
+    pub search_query: String,
 }
