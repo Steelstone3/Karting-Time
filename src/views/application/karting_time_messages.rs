@@ -15,32 +15,50 @@ impl KartingTime {
             Message::ImportRaces => {
                 self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
+                self.filter_race_results();
             }
             Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
                 self.driver_profile.sort_races();
+                self.filter_race_results();
             }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
             Message::TrackNameChanged(track_name) => {
-                self.new_race.race_information.track_name = track_name
+                self.application_state.new_race.race_information.track_name = track_name
             }
             Message::DayChanged(day) => {
-                self.new_race.race_information.date.set_day(day);
+                self.application_state
+                    .new_race
+                    .race_information
+                    .date
+                    .set_day(day);
             }
             Message::MonthChanged(month) => {
-                self.new_race.race_information.date.set_month(month);
+                self.application_state
+                    .new_race
+                    .race_information
+                    .date
+                    .set_month(month);
             }
             Message::YearChanged(year) => {
-                self.new_race.race_information.date.set_year(year);
+                self.application_state
+                    .new_race
+                    .race_information
+                    .date
+                    .set_year(year);
             }
             Message::SessionIdChanged(session_id) => {
-                self.new_race.race_information.set_session_id(session_id);
+                self.application_state
+                    .new_race
+                    .race_information
+                    .set_session_id(session_id);
             }
             Message::RacePositionChanged(race_position) => {
-                self.new_race
+                self.application_state
+                    .new_race
                     .race_information
                     .set_race_position(race_position);
             }
@@ -49,19 +67,28 @@ impl KartingTime {
                 .race_editor
                 .text_editor
                 .perform(action),
+            Message::SearchChanged(search_query) => {
+                self.application_state.search_query = search_query;
+
+                self.filter_race_results();
+            }
             Message::UpdateRacesPressed => {
-                self.new_race.convert_to_laps(
+                self.application_state.new_race.convert_to_laps(
                     self.application_state
                         .race_editor
                         .get_text_from_text_editor(),
                 );
                 if self
+                    .application_state
                     .new_race
                     .is_unique_identifer(&self.driver_profile.races)
                 {
-                    self.driver_profile.races.push(self.new_race.clone());
+                    self.driver_profile
+                        .races
+                        .push(self.application_state.new_race.clone());
                 } else {
                     self.driver_profile.races = self
+                        .application_state
                         .new_race
                         .replace_existing_race(&self.driver_profile.races);
                 }
@@ -73,7 +100,7 @@ impl KartingTime {
             }
             Message::ReplacePressed(index) => {
                 if let Some(race) = self.driver_profile.races.get(index) {
-                    self.new_race = race.clone();
+                    self.application_state.new_race = race.clone();
                     self.application_state.race_editor.clear_text_editor();
                     self.application_state.race_editor.paste_laptimes(race);
                 }
