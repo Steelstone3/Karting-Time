@@ -9,7 +9,12 @@ impl KartingTime {
     fn apply_track_filter(&mut self) {
         match self.application_state.track_query.is_empty() {
             // track query is empty apply no filter
-            true => self.application_state.filtered_races = self.driver_profile.races.clone(),
+            true => match self.application_state.date_query.is_empty() {
+                // date query is empty apply no filter
+                true => self.application_state.filtered_races = self.driver_profile.races.clone(),
+                // keep date filter
+                false => {}
+            },
             // apply track filter
             false => {
                 let query = self.application_state.track_query.to_lowercase();
@@ -36,12 +41,12 @@ impl KartingTime {
             true => match self.application_state.track_query.is_empty() {
                 // track query is empty apply no filter
                 true => self.application_state.filtered_races = self.driver_profile.races.clone(),
-                // apply track filter
+                // keep track filter
                 false => {}
             },
             // apply date filter
             false => {
-                let query = self.application_state.track_query.to_lowercase();
+                let query = self.application_state.date_query.to_lowercase();
                 self.application_state.filtered_races = self
                     .driver_profile
                     .races
