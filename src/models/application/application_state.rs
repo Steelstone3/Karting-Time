@@ -1,5 +1,5 @@
 use super::race_editor::RaceEditor;
-use crate::commands::tab_identifiers::TabIdentifier;
+use crate::{commands::tab_identifiers::TabIdentifier, models::driver::race_result::Race};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, PartialEq, Serialize, Deserialize, Debug)]
@@ -9,5 +9,9 @@ pub struct ApplicationState {
     #[serde(skip)]
     pub race_editor: RaceEditor,
     #[serde(skip)]
+    pub new_race: Race,
+    #[serde(skip)]
     pub search_query: String,
+    #[serde(skip)]
+    pub filtered_race_results: Vec<Race>,
 }

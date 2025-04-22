@@ -9,7 +9,7 @@ impl KartingTime {
             .spacing(10)
             .padding(10)
             .push(
-                text_input("Track Name", &self.new_race.race_information.track_name)
+                text_input("Track Name", &self.application_state.new_race.race_information.track_name)
                     .on_input(Message::TrackNameChanged),
             )
             .push(text("Day (dd):"))
@@ -18,7 +18,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Day of the Month",
-                    &self.new_race.race_information.date.day.to_string(),
+                    &self.application_state.new_race.race_information.date.day.to_string(),
                 )
                 .on_input(Message::DayChanged),
             )
@@ -30,7 +30,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Month of the Year",
-                    &self.new_race.race_information.date.month.to_string(),
+                    &self.application_state.new_race.race_information.date.month.to_string(),
                 )
                 .on_input(Message::MonthChanged),
             )
@@ -42,7 +42,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Year",
-                    &self.new_race.race_information.date.year.to_string(),
+                    &self.application_state.new_race.race_information.date.year.to_string(),
                 )
                 .on_input(Message::YearChanged),
             )
@@ -54,7 +54,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Session Number",
-                    &self.new_race.race_information.session_id.to_string(),
+                    &self.application_state.new_race.race_information.session_id.to_string(),
                 )
                 .on_input(Message::SessionIdChanged),
             )
@@ -64,7 +64,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Race Position",
-                    &self.new_race.race_information.race_position.to_string(),
+                    &self.application_state.new_race.race_information.race_position.to_string(),
                 )
                 .on_input(Message::RacePositionChanged),
             )
@@ -93,9 +93,9 @@ impl KartingTime {
         let add_race_button = column!();
 
         if self
-            .new_race
+        .application_state.new_race
             .is_unique_identifer(&self.driver_profile.races)
-            && !self.new_race.race_information.track_name.is_empty()
+            && !self.application_state.new_race.race_information.track_name.is_empty()
         {
             add_race_button
                 .push(button("Add Race").on_press(Message::UpdateRacesPressed))
@@ -104,7 +104,7 @@ impl KartingTime {
                 .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
                 .spacing(10)
                 .padding(10)
-        } else if self.new_race.race_information.track_name.is_empty() {
+        } else if self.application_state.new_race.race_information.track_name.is_empty() {
             add_race_button
                 .push(button("Clear Laps").on_press(Message::ClearRaceEditorPressed))
                 .spacing(10)

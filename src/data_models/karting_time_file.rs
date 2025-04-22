@@ -1,8 +1,5 @@
 use super::driver_profile_file::DriverProfileFile;
-use crate::models::{
-    application::{application_state::ApplicationState, karting_time::KartingTime},
-    driver::race_result::Race,
-};
+use crate::models::application::{application_state::ApplicationState, karting_time::KartingTime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
@@ -15,7 +12,6 @@ impl KartingTimeFile {
         KartingTime {
             driver_profile: self.driver_profile.convert_to_driver_profile(),
             application_state: ApplicationState::default(),
-            new_race: Race::default(),
         }
     }
 }
@@ -27,7 +23,10 @@ mod karting_time_file_should {
         data_models::race_file::RaceFile,
         models::{
             date::Date,
-            driver::{driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation},
+            driver::{
+                driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
+                race_result::Race,
+            },
         },
     };
 
@@ -61,7 +60,6 @@ mod karting_time_file_should {
                 }],
             },
             application_state: Default::default(),
-            new_race: Default::default(),
         };
         let karting_time_file = KartingTimeFile {
             driver_profile: DriverProfileFile {
