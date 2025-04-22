@@ -15,12 +15,14 @@ impl KartingTime {
             Message::ImportRaces => {
                 self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
+                self.filter_race_results();
             }
             Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
                 self.driver_profile.sort_races();
+                self.filter_race_results();
             }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
