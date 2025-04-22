@@ -67,13 +67,13 @@ impl KartingTime {
                 .race_editor
                 .text_editor
                 .perform(action),
-            Message::TrackFilterChanged(search_query) => {
-                self.application_state.track_query = search_query;
+            Message::TrackFilterChanged(track_query) => {
+                self.application_state.track_query = track_query;
 
                 self.filter_race_results();
             }
-            Message::DateFilterChanged(search_query) => {
-                self.application_state.track_query = search_query;
+            Message::DateFilterChanged(date_query) => {
+                self.application_state.date_query = date_query;
 
                 self.filter_race_results();
             }

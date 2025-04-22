@@ -14,8 +14,7 @@ impl KartingTime {
                     .iter()
                     .filter(|race| {
                         // track matches
-                        race
-                            .race_information
+                        race.race_information
                             .track_name
                             .to_lowercase()
                             .contains(&query)
@@ -42,8 +41,7 @@ impl KartingTime {
                     .iter()
                     .filter(|race| {
                         // date matches
-                        race
-                            .race_information
+                        race.race_information
                             .date
                             .to_string()
                             .to_lowercase()
