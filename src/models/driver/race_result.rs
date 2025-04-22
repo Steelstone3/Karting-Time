@@ -314,56 +314,17 @@ mod race_result_should {
     }
 
     #[rstest]
-    #[case("Three Sisters", "Three Sisters", "Three Sisters", 1, 2, 3,  Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 },true)]
-    #[case("Three Sisters", "Trafford Park", "Brands Hatch", 1, 1, 1, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, true)]
-    #[case("Three Sisters", "Three Sisters", "Three Sisters", 1, 1, 1, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 16, month: 11, year: 2025 }, Date{ day: 17, month: 11, year: 2025 }, true)]
-    #[case("Three Sisters", "Three Sisters", "Three Sisters", 1, 1, 1, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 12, year: 2025 }, Date{ day: 15, month: 10, year: 2025 }, true)]
-    #[case("Three Sisters", "Three Sisters", "Three Sisters", 1, 1, 1, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2024 }, Date{ day: 15, month: 11, year: 2023 }, true)]
-    #[case("Three Sisters", "Three Sisters", "Three Sisters", 1, 1, 1, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, false)]
-    #[case("", "Three Sisters", "Three Sisters", 1, 2, 3, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, Date{ day: 15, month: 11, year: 2025 }, false )]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() }, false)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 16, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 17, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 2, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 3, race_position: 1 }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Four Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Five Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() }, true)]
     fn is_unique_identifer(
-        #[case] track_name_1: &str,
-        #[case] track_name_2: &str,
-        #[case] track_name_3: &str,
-        #[case] session_id_1: u32,
-        #[case] session_id_2: u32,
-        #[case] session_id_3: u32,
-        #[case] date_1: Date,
-        #[case] date_2: Date,
-        #[case] date_3: Date,
+        #[case] race_1: Race,
+        #[case] race_2: Race,
+        #[case] race_3: Race,
         #[case] expected_is_unique: bool,
     ) {
         // Given
-        let race_1 = Race {
-            race_information: RaceInformation {
-                track_name: track_name_1.to_string(),
-                date: date_1,
-                session_id: session_id_1,
-                race_position: 2,
-            },
-            laptimes: vec![],
-        };
-
-        let race_2 = Race {
-            race_information: RaceInformation {
-                track_name: track_name_2.to_string(),
-                date: date_2,
-                session_id: session_id_2,
-                race_position: 2,
-            },
-            laptimes: vec![],
-        };
-
-        let race_3 = Race {
-            race_information: RaceInformation {
-                track_name: track_name_3.to_string(),
-                date: date_3,
-                session_id: session_id_3,
-                race_position: 2,
-            },
-            laptimes: vec![],
-        };
-
         let races = vec![race_2, race_3];
 
         // When

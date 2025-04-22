@@ -125,7 +125,6 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: driver_profile_test_fixture(),
-            ..Default::default()
         };
 
         // When
@@ -144,14 +143,12 @@ mod file_should {
                 ..Default::default()
             },
             driver_profile: driver_profile_test_fixture(),
-            ..Default::default()
         };
         let mut karting_time = KartingTime {
             application_state: ApplicationState {
                 ..Default::default()
             },
             driver_profile: driver_profile_test_fixture(),
-            ..Default::default()
         };
 
         // When

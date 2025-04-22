@@ -1,6 +1,5 @@
 use crate::{
-    data_models::karting_time_file::KartingTimeFile,
-    models::driver::{driver_profile::DriverProfile, race_result::Race},
+    data_models::karting_time_file::KartingTimeFile, models::driver::driver_profile::DriverProfile,
 };
 
 use super::application_state::ApplicationState;
@@ -11,8 +10,6 @@ pub struct KartingTime {
     #[serde(skip)]
     pub application_state: ApplicationState,
     pub driver_profile: DriverProfile,
-    #[serde(skip)]
-    pub new_race: Race,
 }
 
 impl KartingTime {
@@ -29,7 +26,7 @@ mod karting_time_should {
         data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
         models::{
             date::Date,
-            driver::{lap::Lap, race_information::RaceInformation},
+            driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
         },
     };
 
@@ -84,7 +81,6 @@ mod karting_time_should {
                 }],
             },
             application_state: Default::default(),
-            new_race: Default::default(),
         };
 
         // When
