@@ -26,7 +26,7 @@ impl KartingTime {
     fn read_only_result_cards(&self) -> Vec<Card<Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
-        for (index, race) in self.driver_profile.races.iter().enumerate() {
+        for (index, race) in self.application_state.filtered_races.iter().enumerate() {
             let header = format!(
                 "{} Session: {} Date: {}",
                 race.race_information.track_name,

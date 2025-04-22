@@ -68,7 +68,7 @@ impl KartingTime {
             Message::SearchChanged(search_query) => {
                 self.application_state.search_query = search_query;
 
-                self.application_state.filtered_race_results = self.filter_race_results();
+                self.filter_race_results();
             }
             Message::UpdateRacesPressed => {
                 self.application_state.new_race.convert_to_laps(

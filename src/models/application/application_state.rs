@@ -13,5 +13,5 @@ pub struct ApplicationState {
     #[serde(skip)]
     pub search_query: String,
     #[serde(skip)]
-    pub filtered_race_results: Vec<Race>,
+    pub filtered_races: Vec<Race>,
 }
