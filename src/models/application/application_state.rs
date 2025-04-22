@@ -8,4 +8,6 @@ pub struct ApplicationState {
     pub is_light_theme: bool,
     #[serde(skip)]
     pub race_editor: RaceEditor,
+    #[serde(skip)]
+    pub search_query: String
 }
