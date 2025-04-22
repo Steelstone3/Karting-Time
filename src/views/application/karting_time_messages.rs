@@ -50,7 +50,9 @@ impl KartingTime {
                 .text_editor
                 .perform(action),
             Message::SearchChanged(search_query) => {
-                self.application_state.search_query = search_query
+                self.application_state.search_query = search_query;
+
+                self.filter_race_results();
             }
             Message::UpdateRacesPressed => {
                 self.new_race.convert_to_laps(
