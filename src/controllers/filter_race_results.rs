@@ -1,7 +1,12 @@
 use crate::models::application::karting_time::KartingTime;
 
 impl KartingTime {
-    pub fn filter_race_results(&mut self) {
+    pub fn apply_filters(&mut self) {
+        self.apply_track_filter();
+        self.apply_date_filter();
+    }
+
+    fn apply_track_filter(&mut self) {
         match self.application_state.track_query.is_empty() {
             // track query is empty apply no filter
             true => self.application_state.filtered_races = self.driver_profile.races.clone(),
@@ -23,7 +28,9 @@ impl KartingTime {
                     .collect();
             }
         }
+    }
 
+    fn apply_date_filter(&mut self) {
         match self.application_state.date_query.is_empty() {
             // date query is empty apply no filter
             true => match self.application_state.track_query.is_empty() {
