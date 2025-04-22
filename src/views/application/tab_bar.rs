@@ -37,9 +37,11 @@ impl KartingTime {
             TabIdentifier::Results => {
                 let tab_bar = selected_tab_bar(&TabIdentifier::Results);
 
+                let search_bar: iced::widget::Column<Message> = self.search_bar_view();
+
                 let contents = Scrollable::new(column!().push(self.race_results_view()));
 
-                column!(self.menu_bar_view(), tab_bar, contents)
+                column!(self.menu_bar_view(), tab_bar, search_bar, contents)
             }
         }
     }
