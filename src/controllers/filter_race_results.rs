@@ -36,7 +36,7 @@ impl KartingTime {
                 }
                 // both filters
                 false => {
-                    self.filter_both();
+                    self.apply_both_filters();
                 }
             },
         }
@@ -73,13 +73,13 @@ impl KartingTime {
                 }
                 // both filters
                 false => {
-                    self.filter_both();
+                    self.apply_both_filters();
                 }
             },
         }
     }
 
-    fn filter_both(&mut self) {
+    fn apply_both_filters(&mut self) {
         let track_query = self.application_state.track_query.to_lowercase();
         let date_query = self.application_state.date_query.to_lowercase();
         self.application_state.filtered_races = self
