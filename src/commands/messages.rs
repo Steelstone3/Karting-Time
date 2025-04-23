@@ -10,6 +10,7 @@ pub enum Message {
     SaveApplication,
     LoadApplication,
     ViewToggleTheme,
+    ViewToggleFilter,
     SelectedTabChanged(TabIdentifier),
     DriverNameChanged(String),
     TrackNameChanged(String),

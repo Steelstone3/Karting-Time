@@ -25,6 +25,10 @@ impl KartingTime {
                 self.apply_filters();
             }
             Message::ViewToggleTheme => self.switch_theme(),
+            Message::ViewToggleFilter => {
+                self.toggle_filter();
+                self.apply_filters();
+            }
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
             Message::TrackNameChanged(track_name) => {
                 self.application_state.new_race.race_information.track_name = track_name
@@ -77,7 +81,6 @@ impl KartingTime {
 
                 self.apply_filters();
             }
-
             Message::UpdateRacesPressed => {
                 self.application_state.new_race.convert_to_laps(
                     self.application_state
@@ -99,7 +102,8 @@ impl KartingTime {
                         .replace_existing_race(&self.driver_profile.races);
                 }
 
-                self.driver_profile.sort_races()
+                self.driver_profile.sort_races();
+                self.apply_filters();
             }
             Message::ClearRaceEditorPressed => {
                 self.application_state.race_editor.clear_text_editor();
@@ -109,6 +113,7 @@ impl KartingTime {
                     self.application_state.new_race = race.clone();
                     self.application_state.race_editor.clear_text_editor();
                     self.application_state.race_editor.paste_laptimes(race);
+                    self.apply_filters();
                 }
             }
         }

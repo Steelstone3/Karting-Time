@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct ApplicationState {
     pub tab_identifier: TabIdentifier,
     pub is_light_theme: bool,
+    pub is_filter_visible: bool,
     #[serde(skip)]
     pub race_editor: RaceEditor,
     #[serde(skip)]
