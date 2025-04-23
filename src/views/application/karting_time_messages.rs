@@ -15,14 +15,14 @@ impl KartingTime {
             Message::ImportRaces => {
                 self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
-                self.filter_race_results();
+                self.apply_filters();
             }
             Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
                 self.driver_profile.sort_races();
-                self.filter_race_results();
+                self.apply_filters();
             }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
@@ -67,11 +67,19 @@ impl KartingTime {
                 .race_editor
                 .text_editor
                 .perform(action),
-            Message::SearchChanged(search_query) => {
-                self.application_state.search_query = search_query;
+            Message::TrackFilterChanged(track_query) => {
+                self.application_state.track_query = track_query;
 
-                self.filter_race_results();
+                self.apply_track_filter();
+                self.apply_date_filter();
             }
+            Message::DateFilterChanged(date_query) => {
+                self.application_state.date_query = date_query;
+
+                self.apply_date_filter();
+                self.apply_track_filter();
+            }
+
             Message::UpdateRacesPressed => {
                 self.application_state.new_race.convert_to_laps(
                     self.application_state

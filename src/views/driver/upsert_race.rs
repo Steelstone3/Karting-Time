@@ -5,7 +5,7 @@ use iced_aw::Card;
 impl KartingTime {
     pub fn upsert_race_view(&self) -> Column<Message> {
         let add_race_contents = column!()
-            .push(text("Track Name"))
+            .push(text("Track Name:"))
             .spacing(10)
             .padding(10)
             .push(
@@ -99,7 +99,7 @@ impl KartingTime {
                 )
                 .on_input(Message::RacePositionChanged),
             )
-            .push(text("Laps"))
+            .push(text("Laps:"))
             .spacing(10)
             .padding(10)
             .push(
