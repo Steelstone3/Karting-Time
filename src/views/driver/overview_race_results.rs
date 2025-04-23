@@ -1,4 +1,7 @@
-use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
+use crate::{
+    commands::messages::Message,
+    models::{application::karting_time::KartingTime, driver::race_result::Race},
+};
 use iced::widget::{column, text};
 use iced_aw::widgets::Card;
 
@@ -15,7 +18,9 @@ impl KartingTime {
             column = column
                 .push(Card::new(
                     text("Results Overview"),
-                    text(self.driver_profile.to_string()),
+                    text(Race::display_race_results_overview(
+                        &self.application_state.filtered_races,
+                    )),
                 ))
                 .padding(10)
                 .spacing(10);

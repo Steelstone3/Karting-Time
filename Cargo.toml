@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "0.10.2"
+version = "0.10.3"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2021"
 homepage = "https://github.com/Steelstone3/Karting-Time"
