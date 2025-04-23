@@ -1,7 +1,6 @@
 use crate::data_models::driver_profile_file::DriverProfileFile;
-use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashSet, fmt::Display};
+use std::collections::HashSet;
 
 use super::race_result::Race;
 
@@ -18,82 +17,6 @@ impl Default for DriverProfile {
             name: "Racer".to_string(),
             races: Default::default(),
         }
-    }
-}
-
-// TODO Test
-impl Display for DriverProfile {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut table = Table::new();
-
-        table
-            // .load_preset(UTF8_FULL) // Use UTF8_FULL preset for solid lines
-            .load_preset(ASCII_MARKDOWN)
-            .set_header(vec![
-                Cell::new("Track Name"),
-                Cell::new("Date"),
-                Cell::new("Session"),
-                Cell::new("Race Position"),
-                Cell::new("Fastest Lap"),
-                Cell::new("Average Lap 5"),
-                Cell::new("Average Lap 10"),
-                Cell::new("Average Lap 15"),
-                Cell::new("Total Lap 5"),
-                Cell::new("Total Lap 10"),
-                Cell::new("Total Lap 15"),
-            ]);
-
-        for race in &self.races {
-            let total_times = race.calculate_total_times();
-            let average_times = race.calculate_average_total_times(&total_times);
-            let not_applicable_cell = Cell::new("N/A".to_string());
-
-            let total_time_5_cell = match total_times.get(&5) {
-                Some(total_time_5) => Cell::new(format!("{:.2}", total_time_5)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let total_time_10_cell = match total_times.get(&10) {
-                Some(total_time_10) => Cell::new(format!("{:.2}", total_time_10)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let total_time_15_cell = match total_times.get(&15) {
-                Some(total_time_15) => Cell::new(format!("{:.2}", total_time_15)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let average_time_5_cell = match average_times.get(&5) {
-                Some(average_time_5) => Cell::new(format!("{:.2}", average_time_5)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let average_time_10_cell = match average_times.get(&10) {
-                Some(average_time_10) => Cell::new(format!("{:.2}", average_time_10)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let average_time_15_cell = match average_times.get(&15) {
-                Some(average_time_15) => Cell::new(format!("{:.2}", average_time_15)),
-                None => not_applicable_cell.clone(),
-            };
-
-            table.add_row(vec![
-                Cell::new(race.race_information.track_name.to_string()),
-                Cell::new(race.race_information.date.to_string()),
-                Cell::new(race.race_information.session_id.to_string()),
-                Cell::new(race.race_information.race_position.to_string()),
-                Cell::new(format!("{:.2}", race.get_fastest_lap())),
-                average_time_5_cell,
-                average_time_10_cell,
-                average_time_15_cell,
-                total_time_5_cell,
-                total_time_10_cell,
-                total_time_15_cell,
-            ]);
-        }
-
-        write!(f, "{}", table)
     }
 }
 

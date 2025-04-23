@@ -2,7 +2,7 @@ use crate::{commands::messages::Message, models::application::karting_time::Kart
 use iced::widget::{column, text, text_input};
 
 impl KartingTime {
-    pub fn search_bar_view(&self) -> iced::widget::Column<Message> {
+    pub fn filter_results_view(&self) -> iced::widget::Column<Message> {
         column!()
             .push(text("Filter").size(24))
             .padding(10)
