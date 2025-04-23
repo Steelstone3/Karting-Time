@@ -36,20 +36,7 @@ impl KartingTime {
                 }
                 // both filters
                 false => {
-                    let query = self.application_state.track_query.to_lowercase();
-                    self.application_state.filtered_races = self
-                        .application_state
-                        .filtered_races
-                        .iter()
-                        .filter(|race| {
-                            // track matches
-                            race.race_information
-                                .track_name
-                                .to_lowercase()
-                                .contains(&query)
-                        })
-                        .cloned()
-                        .collect();
+                    self.filter_both();
                 }
             },
         }
@@ -86,23 +73,37 @@ impl KartingTime {
                 }
                 // both filters
                 false => {
-                    let query = self.application_state.date_query.to_lowercase();
-                    self.application_state.filtered_races = self
-                        .application_state
-                        .filtered_races
-                        .iter()
-                        .filter(|race| {
-                            // date matches
-                            race.race_information
-                                .date
-                                .to_string()
-                                .to_lowercase()
-                                .contains(&query)
-                        })
-                        .cloned()
-                        .collect();
+                    self.filter_both();
                 }
             },
         }
+    }
+
+    fn filter_both(&mut self) {
+        let track_query = self.application_state.track_query.to_lowercase();
+        let date_query = self.application_state.date_query.to_lowercase();
+        self.application_state.filtered_races = self
+            .driver_profile
+            .races
+            .iter()
+            .filter(|race| {
+                // track matches
+                let is_track_filtered = race
+                    .race_information
+                    .track_name
+                    .to_lowercase()
+                    .contains(&track_query);
+                // date matches
+                let is_date_filtered = race
+                    .race_information
+                    .date
+                    .to_string()
+                    .to_lowercase()
+                    .contains(&date_query);
+
+                is_track_filtered && is_date_filtered
+            })
+            .cloned()
+            .collect();
     }
 }
