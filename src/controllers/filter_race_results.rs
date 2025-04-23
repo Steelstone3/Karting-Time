@@ -2,8 +2,13 @@ use crate::models::application::karting_time::KartingTime;
 
 impl KartingTime {
     pub fn apply_filters(&mut self) {
-        self.apply_track_filter();
-        self.apply_date_filter();
+        match self.application_state.is_filter_visible {
+            true => {
+                self.apply_track_filter();
+                self.apply_date_filter();
+            }
+            false => self.application_state.filtered_races = self.driver_profile.races.clone(),
+        }
     }
 
     fn apply_track_filter(&mut self) {

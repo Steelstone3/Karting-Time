@@ -14,11 +14,11 @@ impl KartingTime {
             menu_template(menu_items!((button("New")
                 .width(Length::Fill)
                 .on_press(Message::FileNew))(
-                button("Save Application")
+                button("Save Driver Profile")
                     .width(Length::Fill)
                     .on_press(Message::SaveApplication)
             )(
-                button("Load Application")
+                button("Load Driver Profile")
                     .width(Length::Fill)
                     .on_press(Message::LoadApplication)
             )(
@@ -32,11 +32,13 @@ impl KartingTime {
             )))
         )(
             button("View").on_press(Message::MenuBar),
-            menu_template(menu_items!(
-                (button("Toggle Theme")
+            menu_template(menu_items!((button("Toggle Theme")
+                .width(Length::Fill)
+                .on_press(Message::ViewToggleTheme))(
+                button("Toggle Filter")
                     .width(Length::Fill)
-                    .on_press(Message::ViewToggleTheme))
-            ))
+                    .on_press(Message::ViewToggleFilter)
+            )))
         ));
 
         column!().push(menu_bar)

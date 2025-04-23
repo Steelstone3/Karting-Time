@@ -40,4 +40,11 @@ impl KartingTime {
             false => self.application_state.is_light_theme = true,
         }
     }
+
+    pub fn toggle_filter(&mut self) {
+        match self.application_state.is_filter_visible {
+            true => self.application_state.is_filter_visible = false,
+            false => self.application_state.is_filter_visible = true,
+        }
+    }
 }
