@@ -1,31 +1,109 @@
 use crate::models::application::karting_time::KartingTime;
 
 impl KartingTime {
-    pub fn filter_race_results(&mut self) {
-        if self.application_state.search_query.is_empty() {
-            self.application_state.filtered_races = self.driver_profile.races.clone()
-        } else {
-            let query = self.application_state.search_query.to_lowercase();
-            self.application_state.filtered_races = self
-                .driver_profile
-                .races
-                .iter()
-                .filter(|race| {
-                    let track_name_matches = race
-                        .race_information
-                        .track_name
-                        .to_lowercase()
-                        .contains(&query);
-                    let date_matches = race
-                        .race_information
-                        .date
-                        .to_string()
-                        .to_lowercase()
-                        .contains(&query);
-                    track_name_matches || date_matches
-                })
-                .cloned()
-                .collect();
+    pub fn apply_filters(&mut self) {
+        self.apply_track_filter();
+        self.apply_date_filter();
+    }
+
+    pub fn apply_track_filter(&mut self) {
+        match self.application_state.track_query.is_empty() {
+            // track query is empty apply no filter
+            true => match self.application_state.date_query.is_empty() {
+                // date query is empty apply no filter
+                true => self.application_state.filtered_races = self.driver_profile.races.clone(),
+                // keep date filter
+                false => {}
+            },
+            // apply track filter
+            false => match self.application_state.date_query.is_empty() {
+                // only track filter
+                true => {
+                    let query = self.application_state.track_query.to_lowercase();
+                    self.application_state.filtered_races = self
+                        .driver_profile
+                        .races
+                        .iter()
+                        .filter(|race| {
+                            // track matches
+                            race.race_information
+                                .track_name
+                                .to_lowercase()
+                                .contains(&query)
+                        })
+                        .cloned()
+                        .collect();
+                }
+                // both filters
+                false => {
+                    self.apply_both_filters();
+                }
+            },
         }
+    }
+
+    pub fn apply_date_filter(&mut self) {
+        match self.application_state.date_query.is_empty() {
+            // date query is empty apply no filter
+            true => match self.application_state.track_query.is_empty() {
+                // track query is empty apply no filter
+                true => self.application_state.filtered_races = self.driver_profile.races.clone(),
+                // keep track filter
+                false => {}
+            },
+            // apply date filter
+            false => match self.application_state.track_query.is_empty() {
+                // only date filter
+                true => {
+                    let query = self.application_state.date_query.to_lowercase();
+                    self.application_state.filtered_races = self
+                        .driver_profile
+                        .races
+                        .iter()
+                        .filter(|race| {
+                            // date matches
+                            race.race_information
+                                .date
+                                .to_string()
+                                .to_lowercase()
+                                .contains(&query)
+                        })
+                        .cloned()
+                        .collect();
+                }
+                // both filters
+                false => {
+                    self.apply_both_filters();
+                }
+            },
+        }
+    }
+
+    fn apply_both_filters(&mut self) {
+        let track_query = self.application_state.track_query.to_lowercase();
+        let date_query = self.application_state.date_query.to_lowercase();
+        self.application_state.filtered_races = self
+            .driver_profile
+            .races
+            .iter()
+            .filter(|race| {
+                // track matches
+                let is_track_filtered = race
+                    .race_information
+                    .track_name
+                    .to_lowercase()
+                    .contains(&track_query);
+                // date matches
+                let is_date_filtered = race
+                    .race_information
+                    .date
+                    .to_string()
+                    .to_lowercase()
+                    .contains(&date_query);
+
+                is_track_filtered && is_date_filtered
+            })
+            .cloned()
+            .collect();
     }
 }
