@@ -70,12 +70,14 @@ impl KartingTime {
             Message::TrackFilterChanged(track_query) => {
                 self.application_state.track_query = track_query;
 
-                self.apply_filters();
+                self.apply_track_filter();
+                self.apply_date_filter();
             }
             Message::DateFilterChanged(date_query) => {
                 self.application_state.date_query = date_query;
 
-                self.apply_filters();
+                self.apply_date_filter();
+                self.apply_track_filter();
             }
 
             Message::UpdateRacesPressed => {
