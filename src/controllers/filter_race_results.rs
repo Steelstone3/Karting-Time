@@ -16,22 +16,42 @@ impl KartingTime {
                 false => {}
             },
             // apply track filter
-            false => {
-                let query = self.application_state.track_query.to_lowercase();
-                self.application_state.filtered_races = self
-                    .driver_profile
-                    .races
-                    .iter()
-                    .filter(|race| {
-                        // track matches
-                        race.race_information
-                            .track_name
-                            .to_lowercase()
-                            .contains(&query)
-                    })
-                    .cloned()
-                    .collect();
-            }
+            false => match self.application_state.date_query.is_empty() {
+                // only track filter
+                true => {
+                    let query = self.application_state.track_query.to_lowercase();
+                    self.application_state.filtered_races = self
+                        .driver_profile
+                        .races
+                        .iter()
+                        .filter(|race| {
+                            // track matches
+                            race.race_information
+                                .track_name
+                                .to_lowercase()
+                                .contains(&query)
+                        })
+                        .cloned()
+                        .collect();
+                }
+                // both filters
+                false => {
+                    let query = self.application_state.track_query.to_lowercase();
+                    self.application_state.filtered_races = self
+                        .application_state
+                        .filtered_races
+                        .iter()
+                        .filter(|race| {
+                            // track matches
+                            race.race_information
+                                .track_name
+                                .to_lowercase()
+                                .contains(&query)
+                        })
+                        .cloned()
+                        .collect();
+                }
+            },
         }
     }
 
@@ -45,23 +65,44 @@ impl KartingTime {
                 false => {}
             },
             // apply date filter
-            false => {
-                let query = self.application_state.date_query.to_lowercase();
-                self.application_state.filtered_races = self
-                    .driver_profile
-                    .races
-                    .iter()
-                    .filter(|race| {
-                        // date matches
-                        race.race_information
-                            .date
-                            .to_string()
-                            .to_lowercase()
-                            .contains(&query)
-                    })
-                    .cloned()
-                    .collect();
-            }
+            false => match self.application_state.track_query.is_empty() {
+                // only date filter
+                true => {
+                    let query = self.application_state.date_query.to_lowercase();
+                    self.application_state.filtered_races = self
+                        .driver_profile
+                        .races
+                        .iter()
+                        .filter(|race| {
+                            // date matches
+                            race.race_information
+                                .date
+                                .to_string()
+                                .to_lowercase()
+                                .contains(&query)
+                        })
+                        .cloned()
+                        .collect();
+                }
+                // both filters
+                false => {
+                    let query = self.application_state.date_query.to_lowercase();
+                    self.application_state.filtered_races = self
+                        .application_state
+                        .filtered_races
+                        .iter()
+                        .filter(|race| {
+                            // date matches
+                            race.race_information
+                                .date
+                                .to_string()
+                                .to_lowercase()
+                                .contains(&query)
+                        })
+                        .cloned()
+                        .collect();
+                }
+            },
         }
     }
 }
