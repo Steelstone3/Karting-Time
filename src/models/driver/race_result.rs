@@ -305,14 +305,14 @@ impl Race {
                             let seconds = parts[1].parse::<f32>();
 
                             match seconds {
-                                Ok(seconds) => return Some(minutes as f32 * 60.0 + seconds),
+                                Ok(seconds) => Some(minutes as f32 * 60.0 + seconds),
                                 Err(_) => None,
                             }
                         }
                         Err(_) => None,
                     }
                 } else {
-                    return lap.trim().parse::<f32>().ok();
+                    lap.trim().parse::<f32>().ok()
                 }
             })
             .collect()
@@ -441,7 +441,7 @@ mod race_result_should {
         let expected_laps = vec![
             Lap {
                 lap_number: 1,
-                time:165.6,
+                time: 165.6,
             },
             Lap {
                 lap_number: 2,
