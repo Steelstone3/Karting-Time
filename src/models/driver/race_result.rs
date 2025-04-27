@@ -61,32 +61,32 @@ impl Race {
             let not_applicable_cell = Cell::new("N/A".to_string());
 
             let total_time_5_cell = match total_times.get(&5) {
-                Some(total_time_5) => Cell::new(format!("{}", format_laptime(*total_time_5))),
+                Some(total_time_5) => Cell::new(format_laptime(*total_time_5)),
                 None => not_applicable_cell.clone(),
             };
 
             let total_time_10_cell = match total_times.get(&10) {
-                Some(total_time_10) => Cell::new(format!("{}", format_laptime(*total_time_10))),
+                Some(total_time_10) => Cell::new(format_laptime(*total_time_10)),
                 None => not_applicable_cell.clone(),
             };
 
             let total_time_15_cell = match total_times.get(&15) {
-                Some(total_time_15) => Cell::new(format!("{}", format_laptime(*total_time_15))),
+                Some(total_time_15) => Cell::new(format_laptime(*total_time_15)),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_5_cell = match average_times.get(&5) {
-                Some(average_time_5) => Cell::new(format!("{}", format_laptime(*average_time_5))),
+                Some(average_time_5) => Cell::new(format_laptime(*average_time_5)),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_10_cell = match average_times.get(&10) {
-                Some(average_time_10) => Cell::new(format!("{}", format_laptime(*average_time_10))),
+                Some(average_time_10) => Cell::new(format_laptime(*average_time_10)),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_15_cell = match average_times.get(&15) {
-                Some(average_time_15) => Cell::new(format!("{}", format_laptime(*average_time_15))),
+                Some(average_time_15) => Cell::new(format_laptime(*average_time_15)),
                 None => not_applicable_cell.clone(),
             };
 
@@ -95,7 +95,7 @@ impl Race {
                 Cell::new(race.race_information.date.to_string()),
                 Cell::new(race.race_information.session_id.to_string()),
                 Cell::new(race.race_information.race_position.to_string()),
-                Cell::new(format!("{}", format_laptime(race.get_fastest_lap()))),
+                Cell::new(format_laptime(race.get_fastest_lap())),
                 average_time_5_cell,
                 average_time_10_cell,
                 average_time_15_cell,
