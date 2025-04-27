@@ -1,5 +1,5 @@
 use super::{lap::Lap, race_information::RaceInformation};
-use crate::data_models::race_file::RaceFile;
+use crate::{controllers::time_parser::format_time, data_models::race_file::RaceFile};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, collections::HashMap, fmt::Display};
@@ -203,7 +203,7 @@ impl Race {
         sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
 
         for (lap_number, total_time) in sorted_total_times {
-            total_times_string += &format!("\nTotal Time {}: {:.2}", lap_number, total_time);
+            total_times_string += &format!("\nTotal Time {}: {}", lap_number, format_time(*total_time));
         }
 
         total_times_string
@@ -220,7 +220,7 @@ impl Race {
         sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
 
         for (lap_number, average_time) in sorted_average_times {
-            total_times_string += &format!("\nAverage Time {}: {:.2}", lap_number, average_time);
+            total_times_string += &format!("\nAverage Time {}: {}", lap_number, format_time(*average_time));
         }
 
         total_times_string
@@ -641,7 +641,7 @@ mod race_result_should {
     #[test]
     fn convert_total_times_to_string() {
         // Given
-        let expected_total_times = "\nTotal Time 5: 124.27\nTotal Time 10: 254.42".to_string();
+        let expected_total_times = "\nTotal Time 5: 2:04.27\nTotal Time 10: 4:14.42".to_string();
         let race = Race {
             laptimes: vec![
                 Lap {
