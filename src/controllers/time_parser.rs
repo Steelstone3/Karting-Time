@@ -8,6 +8,7 @@ pub fn format_time(time_in_seconds: f32) -> String {
     let minutes = (time_in_seconds as u32 / 60).floor();
     let seconds = time_in_seconds - (minutes * 60) as f32;
 
+    // add leading zero
     if seconds < 10.0 {
         let mut formatted_seconds = format!("{:02.2}", seconds);
         formatted_seconds.insert(0, '0');
