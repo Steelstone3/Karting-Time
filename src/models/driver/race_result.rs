@@ -185,11 +185,12 @@ impl Race {
             .filter(|lap| lap.time <= fastest_lap_time * 1.05)
             .collect();
 
-        if valid_average_laps.is_empty() {
-            0.0 // Handle the case where no laps meet the criteria
-        } else {
-            valid_average_laps.iter().map(|lap| lap.time).sum::<f32>()
-                / valid_average_laps.len() as f32
+        match valid_average_laps.is_empty() {
+            true => 0.0,
+            false => {
+                valid_average_laps.iter().map(|lap| lap.time).sum::<f32>()
+                    / valid_average_laps.len() as f32
+            }
         }
     }
 
@@ -200,7 +201,9 @@ impl Race {
 
         // Sort the HashMap by key (lap number)
         let mut sorted_total_times: Vec<(&usize, &f32)> = total_times.iter().collect();
-        sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
+
+        // Sort by key (lap number)
+        sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b));
 
         for (lap_number, total_time) in sorted_total_times {
             total_times_string +=
@@ -218,7 +221,9 @@ impl Race {
 
         // Sort the HashMap by key (lap number)
         let mut sorted_average_times: Vec<(&usize, &f32)> = average_times.iter().collect();
-        sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
+
+        // Sort by key (lap number)
+        sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b));
 
         for (lap_number, average_time) in sorted_average_times {
             total_times_string += &format!(
