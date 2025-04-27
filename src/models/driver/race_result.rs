@@ -1,5 +1,5 @@
 use super::{lap::Lap, race_information::RaceInformation};
-use crate::data_models::race_file::RaceFile;
+use crate::{controllers::time_parser::format_laptime, data_models::race_file::RaceFile};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, collections::HashMap, fmt::Display};
@@ -25,7 +25,7 @@ impl Display for Race {
         for laptime in &self.laptimes {
             table.add_row(vec![
                 Cell::new(laptime.lap_number.to_string()),
-                Cell::new(laptime.time.to_string()),
+                Cell::new(format_laptime(laptime.time)),
             ]);
         }
 
@@ -61,32 +61,32 @@ impl Race {
             let not_applicable_cell = Cell::new("N/A".to_string());
 
             let total_time_5_cell = match total_times.get(&5) {
-                Some(total_time_5) => Cell::new(format!("{:.2}", total_time_5)),
+                Some(total_time_5) => Cell::new(format_laptime(*total_time_5)),
                 None => not_applicable_cell.clone(),
             };
 
             let total_time_10_cell = match total_times.get(&10) {
-                Some(total_time_10) => Cell::new(format!("{:.2}", total_time_10)),
+                Some(total_time_10) => Cell::new(format_laptime(*total_time_10)),
                 None => not_applicable_cell.clone(),
             };
 
             let total_time_15_cell = match total_times.get(&15) {
-                Some(total_time_15) => Cell::new(format!("{:.2}", total_time_15)),
+                Some(total_time_15) => Cell::new(format_laptime(*total_time_15)),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_5_cell = match average_times.get(&5) {
-                Some(average_time_5) => Cell::new(format!("{:.2}", average_time_5)),
+                Some(average_time_5) => Cell::new(format_laptime(*average_time_5)),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_10_cell = match average_times.get(&10) {
-                Some(average_time_10) => Cell::new(format!("{:.2}", average_time_10)),
+                Some(average_time_10) => Cell::new(format_laptime(*average_time_10)),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_15_cell = match average_times.get(&15) {
-                Some(average_time_15) => Cell::new(format!("{:.2}", average_time_15)),
+                Some(average_time_15) => Cell::new(format_laptime(*average_time_15)),
                 None => not_applicable_cell.clone(),
             };
 
@@ -95,7 +95,7 @@ impl Race {
                 Cell::new(race.race_information.date.to_string()),
                 Cell::new(race.race_information.session_id.to_string()),
                 Cell::new(race.race_information.race_position.to_string()),
-                Cell::new(format!("{:.2}", race.get_fastest_lap())),
+                Cell::new(format_laptime(race.get_fastest_lap())),
                 average_time_5_cell,
                 average_time_10_cell,
                 average_time_15_cell,
@@ -183,11 +183,12 @@ impl Race {
             .filter(|lap| lap.time <= fastest_lap_time * 1.05)
             .collect();
 
-        if valid_average_laps.is_empty() {
-            0.0 // Handle the case where no laps meet the criteria
-        } else {
-            valid_average_laps.iter().map(|lap| lap.time).sum::<f32>()
-                / valid_average_laps.len() as f32
+        match valid_average_laps.is_empty() {
+            true => 0.0,
+            false => {
+                valid_average_laps.iter().map(|lap| lap.time).sum::<f32>()
+                    / valid_average_laps.len() as f32
+            }
         }
     }
 
@@ -198,10 +199,16 @@ impl Race {
 
         // Sort the HashMap by key (lap number)
         let mut sorted_total_times: Vec<(&usize, &f32)> = total_times.iter().collect();
-        sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
+
+        // Sort by key (lap number)
+        sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b));
 
         for (lap_number, total_time) in sorted_total_times {
-            total_times_string += &format!("\nTotal Time {}: {:.2}", lap_number, total_time);
+            total_times_string += &format!(
+                "\nTotal Time {}: {}",
+                lap_number,
+                format_laptime(*total_time)
+            );
         }
 
         total_times_string
@@ -215,10 +222,16 @@ impl Race {
 
         // Sort the HashMap by key (lap number)
         let mut sorted_average_times: Vec<(&usize, &f32)> = average_times.iter().collect();
-        sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
+
+        // Sort by key (lap number)
+        sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b));
 
         for (lap_number, average_time) in sorted_average_times {
-            total_times_string += &format!("\nAverage Time {}: {:.2}", lap_number, average_time);
+            total_times_string += &format!(
+                "\nAverage Time {}: {}",
+                lap_number,
+                format_laptime(*average_time)
+            );
         }
 
         total_times_string
@@ -292,7 +305,29 @@ impl Race {
     fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
         laptime_editor_string
             .lines()
-            .filter_map(|s| s.trim().parse::<f32>().ok())
+            .filter_map(|lap| {
+                let trimmed_lap = lap.trim();
+
+                if trimmed_lap.contains(':') {
+                    let parts: Vec<&str> = trimmed_lap.split(':').collect();
+
+                    let minutes = parts[0].parse::<u32>();
+
+                    match minutes {
+                        Ok(minutes) => {
+                            let seconds = parts[1].parse::<f32>();
+
+                            match seconds {
+                                Ok(seconds) => Some(minutes as f32 * 60.0 + seconds),
+                                Err(_) => None,
+                            }
+                        }
+                        Err(_) => None,
+                    }
+                } else {
+                    lap.trim().parse::<f32>().ok()
+                }
+            })
             .collect()
     }
 }
@@ -307,7 +342,7 @@ mod race_result_should {
     fn display() {
         // Given
         let expected_display =
-            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.2     |\n| 2   | 12.4     |"
+            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.20    |\n| 2   | 12.40    |"
                 .to_string();
         let race_result = Race {
             race_information: RaceInformation {
@@ -411,7 +446,7 @@ mod race_result_should {
     #[test]
     fn convert_to_laps() {
         // Given
-        let race_editor = "53.2\n52.9\nboop";
+        let race_editor = "2:45.6\n53.2\n52.9\n54\n:45.6\nboop";
         let mut race = Race {
             laptimes: vec![],
             ..Default::default()
@@ -419,11 +454,19 @@ mod race_result_should {
         let expected_laps = vec![
             Lap {
                 lap_number: 1,
-                time: 53.2,
+                time: 165.6,
             },
             Lap {
                 lap_number: 2,
+                time: 53.2,
+            },
+            Lap {
+                lap_number: 3,
                 time: 52.9,
+            },
+            Lap {
+                lap_number: 4,
+                time: 54.0,
             },
         ];
 
@@ -609,7 +652,7 @@ mod race_result_should {
     #[test]
     fn convert_total_times_to_string() {
         // Given
-        let expected_total_times = "\nTotal Time 5: 124.27\nTotal Time 10: 254.42".to_string();
+        let expected_total_times = "\nTotal Time 5: 2:04.27\nTotal Time 10: 4:14.42".to_string();
         let race = Race {
             laptimes: vec![
                 Lap {
