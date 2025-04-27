@@ -1,4 +1,7 @@
-use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
+use crate::{
+    commands::messages::Message, controllers::time_parser::format_laptime,
+    models::application::karting_time::KartingTime,
+};
 use iced::{
     widget::{button, column, text},
     Renderer, Theme,
@@ -35,11 +38,11 @@ impl KartingTime {
             );
 
             let race_summary = format!(
-                "Race position: {}\nNumber of laps: {}\nFastest lap: {:.2}\nAverage lap (105%): {:.2}\n\nRace Pace:\n{}\n{}",
+                "Race position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}",
                 race.race_information.race_position,
                 race.get_number_of_laps(),
-                race.get_fastest_lap(),
-                race.get_average_lap(),
+                format_laptime(race.get_fastest_lap()),
+                format_laptime(race.get_average_lap()),
                 race.convert_total_times_to_string(),
                 race.convert_average_total_times_to_string()
             )
