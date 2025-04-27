@@ -76,23 +76,17 @@ impl Race {
             };
 
             let average_time_5_cell = match average_times.get(&5) {
-                Some(average_time_5) => {
-                    Cell::new(format!("{}", format_laptime(*average_time_5)))
-                }
+                Some(average_time_5) => Cell::new(format!("{}", format_laptime(*average_time_5))),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_10_cell = match average_times.get(&10) {
-                Some(average_time_10) => {
-                    Cell::new(format!("{}", format_laptime(*average_time_10)))
-                }
+                Some(average_time_10) => Cell::new(format!("{}", format_laptime(*average_time_10))),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_15_cell = match average_times.get(&15) {
-                Some(average_time_15) => {
-                    Cell::new(format!("{}", format_laptime(*average_time_15)))
-                }
+                Some(average_time_15) => Cell::new(format!("{}", format_laptime(*average_time_15))),
                 None => not_applicable_cell.clone(),
             };
 
