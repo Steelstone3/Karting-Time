@@ -1,5 +1,5 @@
 use crate::{
-    commands::messages::Message, controllers::time_parser::format_time,
+    commands::messages::Message, controllers::time_parser::format_laptime,
     models::application::karting_time::KartingTime,
 };
 use iced::{
@@ -41,8 +41,8 @@ impl KartingTime {
                 "Race position: {}\nNumber of laps: {}\nFastest lap: {:.2}\nAverage lap (105%): {:.2}\n\nRace Pace:\n{}\n{}",
                 race.race_information.race_position,
                 race.get_number_of_laps(),
-                format_time(race.get_fastest_lap()),
-                format_time(race.get_average_lap()),
+                format_laptime(race.get_fastest_lap()),
+                format_laptime(race.get_average_lap()),
                 race.convert_total_times_to_string(),
                 race.convert_average_total_times_to_string()
             )

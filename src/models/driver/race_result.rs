@@ -1,5 +1,5 @@
 use super::{lap::Lap, race_information::RaceInformation};
-use crate::{controllers::time_parser::format_time, data_models::race_file::RaceFile};
+use crate::{controllers::time_parser::format_laptime, data_models::race_file::RaceFile};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, collections::HashMap, fmt::Display};
@@ -25,7 +25,7 @@ impl Display for Race {
         for laptime in &self.laptimes {
             table.add_row(vec![
                 Cell::new(laptime.lap_number.to_string()),
-                Cell::new(laptime.time.to_string()),
+                Cell::new(format_laptime(laptime.time)),
             ]);
         }
 
@@ -35,7 +35,6 @@ impl Display for Race {
 
 impl Race {
     // TODO Test
-    // TODO Convert display times to 1:50.6 type laps
     pub fn display_race_results_overview(races: &Vec<Race>) -> String {
         let mut table = Table::new();
 
@@ -62,33 +61,38 @@ impl Race {
             let not_applicable_cell = Cell::new("N/A".to_string());
 
             let total_time_5_cell = match total_times.get(&5) {
-                // TODO convert total_time_5 here etc
-                Some(total_time_5) => Cell::new(format!("{:.2}", total_time_5)),
+                Some(total_time_5) => Cell::new(format!("{:.2}", format_laptime(*total_time_5))),
                 None => not_applicable_cell.clone(),
             };
 
             let total_time_10_cell = match total_times.get(&10) {
-                Some(total_time_10) => Cell::new(format!("{:.2}", total_time_10)),
+                Some(total_time_10) => Cell::new(format!("{:.2}", format_laptime(*total_time_10))),
                 None => not_applicable_cell.clone(),
             };
 
             let total_time_15_cell = match total_times.get(&15) {
-                Some(total_time_15) => Cell::new(format!("{:.2}", total_time_15)),
+                Some(total_time_15) => Cell::new(format!("{:.2}", format_laptime(*total_time_15))),
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_5_cell = match average_times.get(&5) {
-                Some(average_time_5) => Cell::new(format!("{:.2}", average_time_5)),
+                Some(average_time_5) => {
+                    Cell::new(format!("{:.2}", format_laptime(*average_time_5)))
+                }
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_10_cell = match average_times.get(&10) {
-                Some(average_time_10) => Cell::new(format!("{:.2}", average_time_10)),
+                Some(average_time_10) => {
+                    Cell::new(format!("{:.2}", format_laptime(*average_time_10)))
+                }
                 None => not_applicable_cell.clone(),
             };
 
             let average_time_15_cell = match average_times.get(&15) {
-                Some(average_time_15) => Cell::new(format!("{:.2}", average_time_15)),
+                Some(average_time_15) => {
+                    Cell::new(format!("{:.2}", format_laptime(*average_time_15)))
+                }
                 None => not_applicable_cell.clone(),
             };
 
@@ -97,7 +101,7 @@ impl Race {
                 Cell::new(race.race_information.date.to_string()),
                 Cell::new(race.race_information.session_id.to_string()),
                 Cell::new(race.race_information.race_position.to_string()),
-                Cell::new(format!("{:.2}", race.get_fastest_lap())),
+                Cell::new(format!("{:.2}", format_laptime(race.get_fastest_lap()))),
                 average_time_5_cell,
                 average_time_10_cell,
                 average_time_15_cell,
@@ -206,8 +210,11 @@ impl Race {
         sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b));
 
         for (lap_number, total_time) in sorted_total_times {
-            total_times_string +=
-                &format!("\nTotal Time {}: {}", lap_number, format_time(*total_time));
+            total_times_string += &format!(
+                "\nTotal Time {}: {}",
+                lap_number,
+                format_laptime(*total_time)
+            );
         }
 
         total_times_string
@@ -229,7 +236,7 @@ impl Race {
             total_times_string += &format!(
                 "\nAverage Time {}: {}",
                 lap_number,
-                format_time(*average_time)
+                format_laptime(*average_time)
             );
         }
 
@@ -341,7 +348,7 @@ mod race_result_should {
     fn display() {
         // Given
         let expected_display =
-            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.2     |\n| 2   | 12.4     |"
+            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.20    |\n| 2   | 12.40    |"
                 .to_string();
         let race_result = Race {
             race_information: RaceInformation {

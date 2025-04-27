@@ -1,6 +1,6 @@
 use iced::widget::canvas::path::lyon_path::geom::euclid::num::Floor;
 
-pub fn format_time(time_in_seconds: f32) -> String {
+pub fn format_laptime(time_in_seconds: f32) -> String {
     if time_in_seconds < 60.0 {
         return format!("{:.2}", time_in_seconds);
     }

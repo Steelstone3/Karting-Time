@@ -1,8 +1,7 @@
+use super::race_result::Race;
 use crate::data_models::driver_profile_file::DriverProfileFile;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
-
-use super::race_result::Race;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DriverProfile {
