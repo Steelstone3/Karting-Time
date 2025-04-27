@@ -35,6 +35,7 @@ impl Display for Race {
 
 impl Race {
     // TODO Test
+    // TODO Convert display times to 1:50.6 type laps
     pub fn display_race_results_overview(races: &Vec<Race>) -> String {
         let mut table = Table::new();
 
@@ -61,6 +62,7 @@ impl Race {
             let not_applicable_cell = Cell::new("N/A".to_string());
 
             let total_time_5_cell = match total_times.get(&5) {
+                // TODO convert total_time_5 here etc
                 Some(total_time_5) => Cell::new(format!("{:.2}", total_time_5)),
                 None => not_applicable_cell.clone(),
             };
