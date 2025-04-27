@@ -10,7 +10,7 @@ pub fn format_time(time_in_seconds: f32) -> String {
 
     if seconds < 10.0 {
         let mut formatted_seconds = format!("{:02.2}", seconds);
-        formatted_seconds.insert_str(0, "0");
+        formatted_seconds.insert(0, '0');
 
         format!("{}:{}", minutes, formatted_seconds)
     } else {

@@ -203,7 +203,8 @@ impl Race {
         sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
 
         for (lap_number, total_time) in sorted_total_times {
-            total_times_string += &format!("\nTotal Time {}: {}", lap_number, format_time(*total_time));
+            total_times_string +=
+                &format!("\nTotal Time {}: {}", lap_number, format_time(*total_time));
         }
 
         total_times_string
@@ -220,7 +221,11 @@ impl Race {
         sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b)); // Sort by key (lap number)
 
         for (lap_number, average_time) in sorted_average_times {
-            total_times_string += &format!("\nAverage Time {}: {}", lap_number, format_time(*average_time));
+            total_times_string += &format!(
+                "\nAverage Time {}: {}",
+                lap_number,
+                format_time(*average_time)
+            );
         }
 
         total_times_string

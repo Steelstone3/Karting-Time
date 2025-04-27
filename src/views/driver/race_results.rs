@@ -1,4 +1,7 @@
-use crate::{commands::messages::Message, controllers::time_parser::format_time, models::application::karting_time::KartingTime};
+use crate::{
+    commands::messages::Message, controllers::time_parser::format_time,
+    models::application::karting_time::KartingTime,
+};
 use iced::{
     widget::{button, column, text},
     Renderer, Theme,
