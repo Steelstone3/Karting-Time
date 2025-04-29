@@ -24,20 +24,7 @@ impl KartingTime {
             false => match self.application_state.date_query.is_empty() {
                 // only track filter
                 true => {
-                    let query = self.application_state.track_query.to_lowercase();
-                    self.application_state.filtered_races = self
-                        .driver_profile
-                        .races
-                        .iter()
-                        .filter(|race| {
-                            // track matches
-                            race.race_information
-                                .track_name
-                                .to_lowercase()
-                                .contains(&query)
-                        })
-                        .cloned()
-                        .collect();
+                    self.apply_track_filter_only();
                 }
                 // both filters
                 false => {
@@ -47,6 +34,23 @@ impl KartingTime {
         }
     }
 
+    fn apply_track_filter_only(&mut self) {
+        let query = self.application_state.track_query.to_lowercase();
+        self.application_state.filtered_races = self
+            .driver_profile
+            .races
+            .iter()
+            .filter(|race| {
+                // track matches
+                race.race_information
+                    .track_name
+                    .to_lowercase()
+                    .contains(&query)
+            })
+            .cloned()
+            .collect();
+    }
+    
     fn apply_date_filter(&mut self) {
         match self.application_state.date_query.is_empty() {
             // date query is empty apply no filter
@@ -60,21 +64,7 @@ impl KartingTime {
             false => match self.application_state.track_query.is_empty() {
                 // only date filter
                 true => {
-                    let query = self.application_state.date_query.to_lowercase();
-                    self.application_state.filtered_races = self
-                        .driver_profile
-                        .races
-                        .iter()
-                        .filter(|race| {
-                            // date matches
-                            race.race_information
-                                .date
-                                .to_string()
-                                .to_lowercase()
-                                .contains(&query)
-                        })
-                        .cloned()
-                        .collect();
+                    self.apply_date_filter_only();
                 }
                 // both filters
                 false => {
@@ -84,6 +74,24 @@ impl KartingTime {
         }
     }
 
+    fn apply_date_filter_only(&mut self) {
+        let query = self.application_state.date_query.to_lowercase();
+        self.application_state.filtered_races = self
+            .driver_profile
+            .races
+            .iter()
+            .filter(|race| {
+                // date matches
+                race.race_information
+                    .date
+                    .to_string()
+                    .to_lowercase()
+                    .contains(&query)
+            })
+            .cloned()
+            .collect();
+    }
+    
     fn apply_both_filters(&mut self) {
         let track_query = self.application_state.track_query.to_lowercase();
         let date_query = self.application_state.date_query.to_lowercase();
