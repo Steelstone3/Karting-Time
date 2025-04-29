@@ -1,6 +1,5 @@
 use crate::{
-    commands::messages::Message, controllers::time_parser::format_laptime,
-    models::application::karting_time::KartingTime,
+    commands::messages::Message, controllers::driver_profile::time_parser::format_laptime, models::application::karting_time::KartingTime
 };
 use iced::{
     widget::{button, column, text},

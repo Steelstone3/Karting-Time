@@ -1,5 +1,5 @@
 use super::{lap::Lap, race_information::RaceInformation};
-use crate::{controllers::time_parser::format_laptime, data_models::race_file::RaceFile};
+use crate::{controllers::driver_profile::time_parser::format_laptime, data_models::race_file::RaceFile};
 use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, collections::HashMap, fmt::Display};

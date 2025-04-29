@@ -8,7 +8,6 @@ pub struct DriverProfile {
     pub races: Vec<Race>,
 }
 
-// TODO Test
 impl Default for DriverProfile {
     fn default() -> Self {
         Self {
