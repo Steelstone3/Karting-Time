@@ -83,6 +83,14 @@ mod date_should {
     use super::Date;
 
     #[test]
+    #[ignore]
+    fn comparison() {}
+
+    #[test]
+    #[ignore]
+    fn partial_comparison() {}
+
+    #[test]
     fn display() {
         // Given
         let date = Date {
