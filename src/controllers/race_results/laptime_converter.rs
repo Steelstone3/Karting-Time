@@ -111,7 +111,7 @@ mod laptime_converter_should {
     #[test]
     fn convert_to_laps() {
         // Given
-        let race_editor = "2:45.6\n53.2\n52.9\n54\n:45.6\nboop";
+        let race_editor = "2:45.6\n3:boop\n53.2\n52.9\n54\n:45.6\nboop";
         let mut race = Race {
             laptimes: vec![],
             ..Default::default()
