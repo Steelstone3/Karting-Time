@@ -53,6 +53,4 @@ pub fn save_folder_location() -> String {
 }
 
 #[cfg(test)]
-mod file_picker_should {
-    
-}
+mod file_picker_should {}
