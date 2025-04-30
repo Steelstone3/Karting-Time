@@ -231,6 +231,19 @@ mod file_integration_should {
     }
 
     #[test]
+    fn upsert_application_state_failed_to_create_file() {
+        // Given
+        let karting_time_state_file_name = "/karting_time_test_file_1.toml";
+        let karting_time_file = KartingTimeFile::default();
+
+        // When
+        upsert_application_state(karting_time_state_file_name, &karting_time_file);
+
+        // Then
+        assert!(!fs::metadata(karting_time_state_file_name).is_ok());
+    }
+
+    #[test]
     fn upsert_application_state_to_file() {
         // Given
         let karting_time_state_file_name = "karting_time_test_file_1.toml";
