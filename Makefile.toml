@@ -3,6 +3,11 @@ args = ["watch", "-c", "-x", "test", "-x", "clippy"]
 command = "cargo"
 install_crate = "cargo-watch"
 
+[tasks.watch_test_coverage]
+args = ["watch", "-x", "tarpaulin --skip-clean --locked"]
+command = "cargo"
+install_crate = "cargo-watch"
+
 [tasks.run]
 args = ["run"]
 command = "cargo"
@@ -24,9 +29,10 @@ args = ["test", "--all-features"]
 command = "cargo"
 
 [tasks.test_coverage]
-args = ["tarpaulin", "--skip-clean"]
+args = ["tarpaulin", "--skip-clean", "--locked"]
 command = "cargo"
 install_crate = "tarpaulin"
+
 
 # workflows
 
@@ -52,3 +58,6 @@ alias = "submit"
 
 [tasks.tc]
 alias = "test_coverage"
+
+[tasks.wtc]
+alias = "watch_test_coverage"
