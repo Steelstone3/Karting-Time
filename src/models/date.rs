@@ -81,14 +81,35 @@ impl Date {
 #[cfg(test)]
 mod date_should {
     use super::Date;
+    use rstest::rstest;
+    use std::cmp::Ordering;
+
+    #[rstest]
+    #[case(Date{ day: 21, month: 11, year: 2025 }, Ordering::Equal)]
+    #[case(Date{ day: 20, month: 11, year: 2025 }, Ordering::Greater)]
+    #[case(Date{ day: 21, month: 10, year: 2025 }, Ordering::Greater)]
+    #[case(Date{ day: 21, month: 11, year: 2024 }, Ordering::Greater)]
+    #[case(Date{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
+    #[case(Date{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
+    #[case(Date{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
+    fn ordering(#[case] comparison_date: Date, #[case] expected_ordering: Ordering) {
+        // Given
+        let date = Date {
+            day: 21,
+            month: 11,
+            year: 2025,
+        };
+
+        // When
+        let ordering = date.cmp(&comparison_date);
+
+        // Then
+        assert_eq!(expected_ordering, ordering)
+    }
 
     #[test]
     #[ignore]
-    fn comparison() {}
-
-    #[test]
-    #[ignore]
-    fn partial_comparison() {}
+    fn partial_ordering() {}
 
     #[test]
     fn display() {
