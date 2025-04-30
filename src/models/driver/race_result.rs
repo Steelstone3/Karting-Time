@@ -1,8 +1,9 @@
 use super::{lap::Lap, race_information::RaceInformation};
-use crate::{controllers::driver_profile::time_parser::format_laptime, data_models::race_file::RaceFile};
-use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
+use crate::{
+    controllers::driver_profile::time_parser::format_laptime, data_models::race_file::RaceFile,
+};
 use serde::{Deserialize, Serialize};
-use std::{cmp::Ordering, collections::HashMap, fmt::Display};
+use std::{cmp::Ordering, collections::HashMap};
 
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Race {
@@ -10,104 +11,7 @@ pub struct Race {
     pub laptimes: Vec<Lap>,
 }
 
-impl Display for Race {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut table = Table::new();
-
-        table
-            // .load_preset(UTF8_FULL) // Use UTF8_FULL preset for solid lines
-            .load_preset(ASCII_MARKDOWN)
-            .set_header(vec![
-                Cell::new("Lap"),      //.with_style(Attr::Bold),
-                Cell::new("Time (s)"), //.with_style(Attr::Bold),
-            ]);
-
-        for laptime in &self.laptimes {
-            table.add_row(vec![
-                Cell::new(laptime.lap_number.to_string()),
-                Cell::new(format_laptime(laptime.time)),
-            ]);
-        }
-
-        write!(f, "{}", table)
-    }
-}
-
 impl Race {
-    // TODO Test
-    pub fn display_race_results_overview(races: &Vec<Race>) -> String {
-        let mut table = Table::new();
-
-        table
-            // .load_preset(UTF8_FULL) // Use UTF8_FULL preset for solid lines
-            .load_preset(ASCII_MARKDOWN)
-            .set_header(vec![
-                Cell::new("Track Name"),
-                Cell::new("Date"),
-                Cell::new("Session"),
-                Cell::new("Race Position"),
-                Cell::new("Fastest Lap"),
-                Cell::new("Average Lap 5"),
-                Cell::new("Average Lap 10"),
-                Cell::new("Average Lap 15"),
-                Cell::new("Total Lap 5"),
-                Cell::new("Total Lap 10"),
-                Cell::new("Total Lap 15"),
-            ]);
-
-        for race in races {
-            let total_times = race.calculate_total_times();
-            let average_times = race.calculate_average_total_times(&total_times);
-            let not_applicable_cell = Cell::new("N/A".to_string());
-
-            let total_time_5_cell = match total_times.get(&5) {
-                Some(total_time_5) => Cell::new(format_laptime(*total_time_5)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let total_time_10_cell = match total_times.get(&10) {
-                Some(total_time_10) => Cell::new(format_laptime(*total_time_10)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let total_time_15_cell = match total_times.get(&15) {
-                Some(total_time_15) => Cell::new(format_laptime(*total_time_15)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let average_time_5_cell = match average_times.get(&5) {
-                Some(average_time_5) => Cell::new(format_laptime(*average_time_5)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let average_time_10_cell = match average_times.get(&10) {
-                Some(average_time_10) => Cell::new(format_laptime(*average_time_10)),
-                None => not_applicable_cell.clone(),
-            };
-
-            let average_time_15_cell = match average_times.get(&15) {
-                Some(average_time_15) => Cell::new(format_laptime(*average_time_15)),
-                None => not_applicable_cell.clone(),
-            };
-
-            table.add_row(vec![
-                Cell::new(race.race_information.track_name.to_string()),
-                Cell::new(race.race_information.date.to_string()),
-                Cell::new(race.race_information.session_id.to_string()),
-                Cell::new(race.race_information.race_position.to_string()),
-                Cell::new(format_laptime(race.get_fastest_lap())),
-                average_time_5_cell,
-                average_time_10_cell,
-                average_time_15_cell,
-                total_time_5_cell,
-                total_time_10_cell,
-                total_time_15_cell,
-            ]);
-        }
-
-        format!("{}", table)
-    }
-
     pub fn convert_to_race_file(&self) -> RaceFile {
         RaceFile {
             race_information: self.race_information.clone(),
