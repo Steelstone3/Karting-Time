@@ -243,42 +243,6 @@ mod race_result_should {
     use rstest::rstest;
 
     #[test]
-    fn display() {
-        // Given
-        let expected_display =
-            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.20    |\n| 2   | 12.40    |"
-                .to_string();
-        let race_result = Race {
-            race_information: RaceInformation {
-                track_name: "Brands Hatch".to_string(),
-                date: Date {
-                    day: 12,
-                    month: 12,
-                    year: 2025,
-                },
-                session_id: 1,
-                race_position: 1,
-            },
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 12.2,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 12.4,
-                },
-            ],
-        };
-
-        // When
-        let display = race_result.to_string();
-
-        // Then
-        assert_eq!(expected_display, display);
-    }
-
-    #[test]
     fn convert_to_race_file() {
         // Given
         let expected_race_file = RaceFile {

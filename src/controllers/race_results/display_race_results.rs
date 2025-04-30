@@ -28,7 +28,6 @@ impl Display for Race {
 }
 
 impl Race {
-    // TODO Test
     pub fn display_race_results_overview(races: &Vec<Race>) -> String {
         let mut table = Race::create_table();
 
@@ -97,4 +96,52 @@ impl Race {
 
         total_time_cell
     }
+}
+
+#[cfg(test)]
+mod display_race_results_should {
+    use crate::models::{
+        date::Date,
+        driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
+    };
+
+    #[test]
+    fn display() {
+        // Given
+        let expected_display =
+            "| Lap | Time (s) |\n|-----|----------|\n| 1   | 12.20    |\n| 2   | 12.40    |"
+                .to_string();
+        let race_result = Race {
+            race_information: RaceInformation {
+                track_name: "Brands Hatch".to_string(),
+                date: Date {
+                    day: 12,
+                    month: 12,
+                    year: 2025,
+                },
+                session_id: 1,
+                race_position: 1,
+            },
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 12.2,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 12.4,
+                },
+            ],
+        };
+
+        // When
+        let display = race_result.to_string();
+
+        // Then
+        assert_eq!(expected_display, display);
+    }
+
+    #[test]
+    #[ignore]
+    fn display_race_results_overview() {}
 }
