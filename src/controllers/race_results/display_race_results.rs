@@ -184,6 +184,5 @@ mod display_race_results_should {
 
         // Then
         assert_eq!(expected_display, display);
-
     }
 }

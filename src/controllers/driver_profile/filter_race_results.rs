@@ -122,4 +122,11 @@ impl KartingTime {
 }
 
 #[cfg(test)]
-mod filter_race_results_should {}
+mod filter_race_results_should {
+    use rstest::rstest;
+
+    #[ignore]
+    #[rstest]
+    #[case()]
+    fn apply_filters() {}
+}
