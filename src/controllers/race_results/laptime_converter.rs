@@ -19,35 +19,6 @@ impl Race {
         self.laptimes = converted_laptimes;
     }
 
-    fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
-        laptime_editor_string
-            .lines()
-            .filter_map(|lap| {
-                let trimmed_lap = lap.trim();
-
-                if trimmed_lap.contains(':') {
-                    let parts: Vec<&str> = trimmed_lap.split(':').collect();
-
-                    let minutes = parts[0].parse::<u32>();
-
-                    match minutes {
-                        Ok(minutes) => {
-                            let seconds = parts[1].parse::<f32>();
-
-                            match seconds {
-                                Ok(seconds) => Some(minutes as f32 * 60.0 + seconds),
-                                Err(_) => None,
-                            }
-                        }
-                        Err(_) => None,
-                    }
-                } else {
-                    lap.trim().parse::<f32>().ok()
-                }
-            })
-            .collect()
-    }
-
     pub fn convert_total_times_to_string(&self) -> String {
         let total_times = self.calculate_total_times();
 
@@ -91,6 +62,35 @@ impl Race {
         }
 
         total_times_string
+    }
+
+    fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
+        laptime_editor_string
+            .lines()
+            .filter_map(|lap| {
+                let trimmed_lap = lap.trim();
+
+                if trimmed_lap.contains(':') {
+                    let parts: Vec<&str> = trimmed_lap.split(':').collect();
+
+                    let minutes = parts[0].parse::<u32>();
+
+                    match minutes {
+                        Ok(minutes) => {
+                            let seconds = parts[1].parse::<f32>();
+
+                            match seconds {
+                                Ok(seconds) => Some(minutes as f32 * 60.0 + seconds),
+                                Err(_) => None,
+                            }
+                        }
+                        Err(_) => None,
+                    }
+                } else {
+                    lap.trim().parse::<f32>().ok()
+                }
+            })
+            .collect()
     }
 }
 
@@ -244,5 +244,64 @@ mod laptime_converter_should {
 
         // Then
         assert_eq!(expected_average_laps, average_laps)
+    }
+
+    #[test]
+    fn convert_laps_to_string() {
+        // Given
+        let expected_laps =
+            "25.555\n26.657\n24.585\n25.475\n24.899\n25.345\n26.123\n24.879\n26.341\n24.563\n"
+                .to_string();
+        let race = Race {
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 25.555,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 26.657,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 24.585,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 25.475,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 24.899,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 25.345,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 26.123,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 24.879,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 26.341,
+                },
+                Lap {
+                    lap_number: 1,
+                    time: 24.563,
+                },
+            ],
+            ..Default::default()
+        };
+
+        // When
+        let laps = race.convert_laps_to_string();
+
+        // Then
+        assert_eq!(expected_laps, laps)
     }
 }
