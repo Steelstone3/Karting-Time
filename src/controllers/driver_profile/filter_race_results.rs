@@ -50,7 +50,7 @@ impl KartingTime {
             .cloned()
             .collect();
     }
-    
+
     fn apply_date_filter(&mut self) {
         match self.application_state.date_query.is_empty() {
             // date query is empty apply no filter
@@ -91,7 +91,7 @@ impl KartingTime {
             .cloned()
             .collect();
     }
-    
+
     fn apply_both_filters(&mut self) {
         let track_query = self.application_state.track_query.to_lowercase();
         let date_query = self.application_state.date_query.to_lowercase();

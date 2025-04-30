@@ -1,7 +1,5 @@
 use super::{lap::Lap, race_information::RaceInformation};
-use crate::{
-    controllers::driver_profile::time_parser::format_laptime, data_models::race_file::RaceFile,
-};
+use crate::data_models::race_file::RaceFile;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
@@ -79,51 +77,6 @@ impl Race {
                     / valid_average_laps.len() as f32
             }
         }
-    }
-
-    pub fn convert_total_times_to_string(&self) -> String {
-        let total_times = self.calculate_total_times();
-
-        let mut total_times_string = String::new();
-
-        // Sort the HashMap by key (lap number)
-        let mut sorted_total_times: Vec<(&usize, &f32)> = total_times.iter().collect();
-
-        // Sort by key (lap number)
-        sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b));
-
-        for (lap_number, total_time) in sorted_total_times {
-            total_times_string += &format!(
-                "\nTotal Time {}: {}",
-                lap_number,
-                format_laptime(*total_time)
-            );
-        }
-
-        total_times_string
-    }
-
-    pub fn convert_average_total_times_to_string(&self) -> String {
-        let total_times = self.calculate_total_times();
-        let average_times = self.calculate_average_total_times(&total_times);
-
-        let mut total_times_string = String::new();
-
-        // Sort the HashMap by key (lap number)
-        let mut sorted_average_times: Vec<(&usize, &f32)> = average_times.iter().collect();
-
-        // Sort by key (lap number)
-        sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b));
-
-        for (lap_number, average_time) in sorted_average_times {
-            total_times_string += &format!(
-                "\nAverage Time {}: {}",
-                lap_number,
-                format_laptime(*average_time)
-            );
-        }
-
-        total_times_string
     }
 
     pub fn convert_laps_to_string(&self) -> String {
@@ -394,120 +347,6 @@ mod race_result_should {
 
         // Then
         assert_eq!(20.34, race.get_average_lap())
-    }
-
-    #[test]
-    fn convert_total_times_to_string() {
-        // Given
-        let expected_total_times = "\nTotal Time 5: 2:04.27\nTotal Time 10: 4:14.42".to_string();
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 25.555,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.657,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.585,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.475,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.899,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.345,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.123,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.879,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.341,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.563,
-                },
-            ],
-            ..Default::default()
-        };
-
-        // When
-        let total_times = race.convert_total_times_to_string();
-
-        // Then
-        assert_eq!(expected_total_times, total_times)
-    }
-
-    #[test]
-    pub fn convert_average_total_times_to_string() {
-        // Given
-        let expected_average_laps = "\nAverage Time 5: 24.85\nAverage Time 10: 25.44".to_string();
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 25.555,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.657,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.585,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.475,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.899,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.345,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.123,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.879,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.341,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.563,
-                },
-            ],
-            ..Default::default()
-        };
-
-        // When
-        let average_laps = race.convert_average_total_times_to_string();
-
-        // Then
-        assert_eq!(expected_average_laps, average_laps)
     }
 
     #[test]
