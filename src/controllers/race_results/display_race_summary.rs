@@ -68,6 +68,18 @@ mod display_race_summary_should {
     }
 
     #[test]
+    fn get_no_fastest_lap() {
+        // Given
+        let race = Race {
+            laptimes: vec![],
+            ..Default::default()
+        };
+
+        // Then
+        assert_eq!(0.0, race.get_fastest_lap())
+    }
+
+    #[test]
     fn get_fastest_lap() {
         // Given
         let race = Race {
@@ -90,6 +102,18 @@ mod display_race_summary_should {
 
         // Then
         assert_eq!(20.34, race.get_fastest_lap())
+    }
+
+    #[test]
+    fn get_no_average_lap() {
+        // Given
+        let race = Race {
+            laptimes: vec![],
+            ..Default::default()
+        };
+
+        // Then
+        assert_eq!(0.0, race.get_average_lap())
     }
 
     #[test]
