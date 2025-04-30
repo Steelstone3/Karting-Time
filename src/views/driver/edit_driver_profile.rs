@@ -1,4 +1,4 @@
-use iced::widget::{column, text, text_input, Column};
+use iced::widget::{Column, column, text, text_input};
 use iced_aw::Card;
 
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};

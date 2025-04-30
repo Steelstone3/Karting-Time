@@ -1,7 +1,7 @@
 use crate::{
     controllers::driver_profile::time_parser::format_laptime, models::driver::race_result::Race,
 };
-use comfy_table::{presets::ASCII_MARKDOWN, Cell, Table};
+use comfy_table::{Cell, Table, presets::ASCII_MARKDOWN};
 use std::{collections::HashMap, fmt::Display};
 
 impl Display for Race {
@@ -143,7 +143,7 @@ mod display_race_results_should {
 
     #[test]
     fn display_race_results_overview() {
-        let expected_display ="| Track Name   | Date       | Session | Race Position | Fastest Lap | Average Lap 5 | Average Lap 10 | Average Lap 15 | Total Lap 5 | Total Lap 10 | Total Lap 15 |\n|--------------|------------|---------|---------------|-------------|---------------|----------------|----------------|-------------|--------------|--------------|\n| Brands Hatch | 2025-12-12 | 1       | 1             | 12.20       | 12.36         | N/A            | N/A            | 1:01.80     | N/A          | N/A          |";
+        let expected_display = "| Track Name   | Date       | Session | Race Position | Fastest Lap | Average Lap 5 | Average Lap 10 | Average Lap 15 | Total Lap 5 | Total Lap 10 | Total Lap 15 |\n|--------------|------------|---------|---------------|-------------|---------------|----------------|----------------|-------------|--------------|--------------|\n| Brands Hatch | 2025-12-12 | 1       | 1             | 12.20       | 12.36         | N/A            | N/A            | 1:01.80     | N/A          | N/A          |";
         let race_result = Race {
             race_information: RaceInformation {
                 track_name: "Brands Hatch".to_string(),
