@@ -30,6 +30,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         let toml = match toml::to_string_pretty(&race_file) {
             Ok(toml) => toml,
             Err(_) => {
+                // TODO Test Line
                 println!("{}", CONVERT_ERROR);
                 return;
             }
@@ -38,6 +39,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         match write!(file, "{}", toml) {
             Ok(_) => (),
             Err(_) => {
+                // TODO Test Line
                 println!("{}", WRITE_ERROR);
                 return;
             }
@@ -133,6 +135,14 @@ mod file_integration_should {
             + ".toml";
         assert!(!fs::metadata(&file_name).is_ok());
     }
+
+    #[test]
+    #[ignore]
+    fn upsert_races_test_failed_to_convert() {}
+
+    #[test]
+    #[ignore]
+    fn upsert_races_test_failed_to_write() {}
 
     #[test]
     fn upsert_races_test() {
