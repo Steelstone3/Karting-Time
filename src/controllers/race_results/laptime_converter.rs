@@ -64,6 +64,16 @@ impl Race {
         total_times_string
     }
 
+    pub fn convert_laps_to_string(&self) -> String {
+        let mut laps = "".to_string();
+
+        for laptime in &self.laptimes {
+            laps += &format!("{}\n", laptime.time);
+        }
+
+        laps
+    }
+
     fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
         laptime_editor_string
             .lines()
