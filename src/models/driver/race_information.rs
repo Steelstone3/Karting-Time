@@ -40,9 +40,22 @@ impl RaceInformation {
 
 #[cfg(test)]
 mod race_information_should {
+    use super::RaceInformation;
     use crate::models::date::Date;
 
-    use super::RaceInformation;
+    #[test]
+    fn create_race_information() {
+        // Given
+        let expected_race_information = RaceInformation {
+            track_name: Default::default(),
+            date: Default::default(),
+            session_id: 1,
+            race_position: 1,
+        };
+
+        // Then
+        assert_eq!(expected_race_information, RaceInformation::default())
+    }
 
     #[test]
     fn get_unique_race_identifier() {

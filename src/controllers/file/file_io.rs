@@ -107,6 +107,34 @@ mod file_integration_should {
     use std::fs;
 
     #[test]
+    fn upsert_races_test_failed_to_create_file() {
+        // Given
+        let file_location = "/";
+        let races = vec![Race {
+            race_information: RaceInformation {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 1,
+                    month: 1,
+                    year: 2025,
+                },
+                session_id: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        }];
+
+        // When
+        upsert_races(file_location, &races);
+
+        // Then
+        let file_name = "/".to_string()
+            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + ".toml";
+        assert!(!fs::metadata(&file_name).is_ok());
+    }
+
+    #[test]
     fn upsert_races_test() {
         // Given
         let file_location = ".";
@@ -200,6 +228,19 @@ mod file_integration_should {
 
         // Then
         assert_eq!(expected_application, karting_time);
+    }
+
+    #[test]
+    fn upsert_application_state_failed_to_create_file() {
+        // Given
+        let karting_time_state_file_name = "/karting_time_test_file_1.toml";
+        let karting_time_file = KartingTimeFile::default();
+
+        // When
+        upsert_application_state(karting_time_state_file_name, &karting_time_file);
+
+        // Then
+        assert!(!fs::metadata(karting_time_state_file_name).is_ok());
     }
 
     #[test]
