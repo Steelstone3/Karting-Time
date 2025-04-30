@@ -51,3 +51,8 @@ pub fn save_folder_location() -> String {
         None => "".to_string(),
     }
 }
+
+#[cfg(test)]
+mod file_picker_should {
+    
+}
