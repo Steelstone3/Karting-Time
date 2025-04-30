@@ -123,10 +123,84 @@ impl KartingTime {
 
 #[cfg(test)]
 mod filter_race_results_should {
+    use crate::models::application::application_state::ApplicationState;
+    use crate::models::date::Date;
+    use crate::models::driver::race_information::RaceInformation;
+    use crate::models::driver::{lap::Lap, race_result::Race};
+    use crate::models::{
+        application::karting_time::KartingTime, driver::driver_profile::DriverProfile,
+    };
     use rstest::rstest;
 
-    #[ignore]
     #[rstest]
-    #[case()]
-    fn apply_filters() {}
+    #[case(false, "", "", vec![ Race { race_information: RaceInformation { track_name: "Silverstone".to_string(), date: Date { day: 21, month: 12, year: 2025 }, session_id: 1, race_position: 1 }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date { day: 12, month: 8, year: 2024 }, session_id: 1, race_position: 2 }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "", vec![ Race { race_information: RaceInformation { track_name: "Silverstone".to_string(), date: Date { day: 21, month: 12, year: 2025 }, session_id: 1, race_position: 1 }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date { day: 12, month: 8, year: 2024 }, session_id: 1, race_position: 2 }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Silverstone", "2025-12-21", vec![ Race { race_information: RaceInformation { track_name: "Silverstone".to_string(), date: Date { day: 21, month: 12, year: 2025 }, session_id: 1, race_position: 1 }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Silverstone", "", vec![ Race { race_information: RaceInformation { track_name: "Silverstone".to_string(), date: Date { day: 21, month: 12, year: 2025 }, session_id: 1, race_position: 1 }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "", "2025-12-21", vec![ Race { race_information: RaceInformation { track_name: "Silverstone".to_string(), date: Date { day: 21, month: 12, year: 2025 }, session_id: 1, race_position: 1 }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Three Sisters", "2024-8-12", vec![ Race { race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date { day: 12, month: 8, year: 2024 }, session_id: 1, race_position: 2 }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Three Sisters", "", vec![ Race { race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date { day: 12, month: 8, year: 2024 }, session_id: 1, race_position: 2 }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "2024-8-12", vec![ Race { race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date { day: 12, month: 8, year: 2024 }, session_id: 1, race_position: 2 }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    fn apply_filters(
+        #[case] is_filter_visible: bool,
+        #[case] track_query: String,
+        #[case] date_query: String,
+        #[case] expected_races: Vec<Race>,
+    ) {
+        // Given
+        let mut karting_time = KartingTime {
+            application_state: ApplicationState {
+                is_filter_visible,
+                track_query,
+                date_query,
+                ..Default::default()
+            },
+            driver_profile: DriverProfile {
+                name: Default::default(),
+                races: vec![
+                    Race {
+                        race_information: RaceInformation {
+                            track_name: "Silverstone".to_string(),
+                            date: Date {
+                                day: 21,
+                                month: 12,
+                                year: 2025,
+                            },
+                            session_id: 1,
+                            race_position: 1,
+                        },
+                        laptimes: vec![Lap {
+                            lap_number: 1,
+                            time: 25.6,
+                        }],
+                    },
+                    Race {
+                        race_information: RaceInformation {
+                            track_name: "Three Sisters".to_string(),
+                            date: Date {
+                                day: 12,
+                                month: 8,
+                                year: 2024,
+                            },
+                            session_id: 1,
+                            race_position: 2,
+                        },
+                        laptimes: vec![Lap {
+                            lap_number: 1,
+                            time: 28.2,
+                        }],
+                    },
+                ],
+            },
+        };
+
+        // When
+        karting_time.apply_filters();
+
+        // Then
+        assert_eq!(
+            expected_races[0],
+            karting_time.application_state.filtered_races[0]
+        );
+    }
 }
