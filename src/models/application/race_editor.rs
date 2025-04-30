@@ -47,6 +47,20 @@ mod race_editor_should {
     use crate::models::driver::lap::Lap;
 
     #[test]
+    fn clone() {
+        // Given
+        let expected_race_editor = RaceEditor {
+            text_editor: Default::default(),
+        };
+
+        // When
+        let race_editor = expected_race_editor.clone();
+
+        // Then
+        assert_eq!(expected_race_editor, race_editor)
+    }
+
+    #[test]
     fn get_text_from_text_editor() {
         // Given
         let expected_text = "Hello There".to_string();

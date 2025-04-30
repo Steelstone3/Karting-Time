@@ -1,5 +1,10 @@
 [tasks.watch]
-args = ["watch", "-c", "-x", "test", "-x", "clippy"]
+args = ["watch", "-c", "-x", "make submit"]
+command = "cargo"
+install_crate = "cargo-watch"
+
+[tasks.watch_test_coverage]
+args = ["watch", "-c", "-x", "tarpaulin --skip-clean --locked"]
 command = "cargo"
 install_crate = "cargo-watch"
 
@@ -16,7 +21,21 @@ args = ["check", "--all-features"]
 command = "cargo"
 
 [tasks.lint]
-args = ["clippy", "--all-features", "--", "-D", "warnings"]
+args = [
+    "clippy",
+    "--all-features",
+    "--",
+    "-D",
+    "warnings",
+    "-D",
+    "clippy::unwrap_used",
+    "-D",
+    "clippy::expect_used",
+    "-D",
+    "clippy::panic",
+    "-D",
+    "unused_must_use",
+]
 command = "cargo"
 
 [tasks.test]
@@ -24,9 +43,10 @@ args = ["test", "--all-features"]
 command = "cargo"
 
 [tasks.test_coverage]
-args = ["tarpaulin", "--skip-clean"]
+args = ["tarpaulin", "--skip-clean", "--locked"]
 command = "cargo"
 install_crate = "tarpaulin"
+
 
 # workflows
 
@@ -34,7 +54,7 @@ install_crate = "tarpaulin"
 dependencies = ["check", "format", "lint"]
 
 [tasks.submit]
-dependencies = ["check", "format", "test", "lint"]
+dependencies = ["check", "test", "lint"]
 
 # aliases
 
@@ -52,3 +72,6 @@ alias = "submit"
 
 [tasks.tc]
 alias = "test_coverage"
+
+[tasks.wtc]
+alias = "watch_test_coverage"
