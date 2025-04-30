@@ -142,6 +142,36 @@ mod display_race_results_should {
     }
 
     #[test]
-    #[ignore]
-    fn display_race_results_overview() {}
+    fn display_race_results_overview() {
+        let expected_display ="| Track Name   | Date       | Session | Race Position | Fastest Lap | Average Lap 5 | Average Lap 10 | Average Lap 15 | Total Lap 5 | Total Lap 10 | Total Lap 15 |\n|--------------|------------|---------|---------------|-------------|---------------|----------------|----------------|-------------|--------------|--------------|\n| Brands Hatch | 2025-12-12 | 1       | 1             | 12.20       | N/A           | N/A            | N/A            | N/A         | N/A          | N/A          |";
+        let race_result = Race {
+            race_information: RaceInformation {
+                track_name: "Brands Hatch".to_string(),
+                date: Date {
+                    day: 12,
+                    month: 12,
+                    year: 2025,
+                },
+                session_id: 1,
+                race_position: 1,
+            },
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 12.2,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 12.4,
+                },
+            ],
+        };
+
+        // When
+        let display = Race::display_race_results_overview(&vec![race_result]);
+
+        // Then
+        assert_eq!(expected_display, display);
+
+    }
 }
