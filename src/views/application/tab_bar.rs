@@ -1,4 +1,4 @@
-use iced::widget::{column, Column, Scrollable};
+use iced::widget::{Column, Scrollable, column};
 use iced_aw::{TabBar, TabLabel};
 
 use crate::{

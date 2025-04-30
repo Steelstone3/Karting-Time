@@ -1,5 +1,5 @@
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
-use iced::widget::{button, column, text, text_editor, text_input, Column};
+use iced::widget::{Column, button, column, text, text_editor, text_input};
 use iced_aw::Card;
 
 impl KartingTime {
