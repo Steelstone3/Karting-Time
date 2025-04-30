@@ -1,10 +1,15 @@
+# [tasks.watch]
+# args = ["watch", "-c", "-x", "test", "-x", "clippy"]
+# command = "cargo"
+# install_crate = "cargo-watch"
+
 [tasks.watch]
-args = ["watch", "-c", "-x", "test", "-x", "clippy"]
+args = ["watch", "-c", "-x", "make submit"]
 command = "cargo"
 install_crate = "cargo-watch"
 
 [tasks.watch_test_coverage]
-args = ["watch", "-x", "tarpaulin --skip-clean --locked"]
+args = ["watch", "-c", "-x", "tarpaulin --skip-clean --locked"]
 command = "cargo"
 install_crate = "cargo-watch"
 
