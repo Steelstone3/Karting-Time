@@ -37,6 +37,7 @@ laptimes = [
 track_name = "Trafford Park"
 session_id = 3
 race_position = 6
+car_used = "Biz Evo 3"
 
 [race_information.date]
 day = 27
@@ -80,6 +81,7 @@ laptimes = [
 track_name = "Three Sisters"
 session_id = 1
 race_position = 7
+car_used = "Sodi RT10"
 
 [driver_profile.races.race_information.date]
 day = 24
@@ -117,6 +119,7 @@ laptimes = [
 track_name = "Three Sisters"
 session_id = 2
 race_position = 6
+car_used = "Sodi RT10"
 
 [driver_profile.races.race_information.date]
 day = 24

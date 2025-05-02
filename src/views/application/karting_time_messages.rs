@@ -66,6 +66,9 @@ impl KartingTime {
                     .race_information
                     .set_race_position(race_position);
             }
+            Message::CarUsedChanged(car_used) => {
+                self.application_state.new_race.race_information.car_used = car_used;
+            }
             Message::LaptimeEditor(action) => self
                 .application_state
                 .race_editor

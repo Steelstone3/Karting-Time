@@ -99,6 +99,21 @@ impl KartingTime {
                 )
                 .on_input(Message::RacePositionChanged),
             )
+            .push(text("Car:"))
+            .spacing(10)
+            .padding(10)
+            .push(
+                text_input(
+                    "Car Used",
+                    &self
+                        .application_state
+                        .new_race
+                        .race_information
+                        .car_used
+                        .to_string(),
+                )
+                .on_input(Message::CarUsedChanged),
+            )
             .push(text("Laps:"))
             .spacing(10)
             .padding(10)

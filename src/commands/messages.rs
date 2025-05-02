@@ -19,6 +19,7 @@ pub enum Message {
     YearChanged(String),
     SessionIdChanged(String),
     RacePositionChanged(String),
+    CarUsedChanged(String),
     LaptimeEditor(text_editor::Action),
     TrackFilterChanged(String),
     DateFilterChanged(String),

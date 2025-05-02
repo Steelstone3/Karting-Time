@@ -48,6 +48,7 @@ mod profile_file_should {
                     },
                     session_id: 1,
                     race_position: 2,
+                    car_used: "Kart".to_string(),
                 },
                 laptimes: vec![
                     Lap {
@@ -74,6 +75,7 @@ mod profile_file_should {
                     },
                     session_id: 1,
                     race_position: 2,
+                    car_used: "Kart".to_string(),
                 },
                 laptimes: vec!["50.662".to_string(), "51.877".to_string()],
             }],
