@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "0.10.7"
+version = "0.11.0"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2024"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -8,14 +8,6 @@ repository = "https://github.com/Steelstone3/Karting-Time"
 license = "GPLv3"
 readme = "README.md"
 include = []
-
-# [lint]
-# deny = [
-#     "clippy::unwrap_used",
-#     "clippy::expect_used",
-#     "clippy::panic",
-#     "unused_must_use",
-# ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -1,6 +1,5 @@
-use serde::{Deserialize, Serialize};
-
 use crate::{models::date::Date, views::application::input_parser::parse_input_u32};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RaceInformation {
@@ -8,6 +7,7 @@ pub struct RaceInformation {
     pub date: Date,
     pub session_id: u32,
     pub race_position: u32,
+    pub car_used: String,
 }
 
 impl Default for RaceInformation {
@@ -17,6 +17,7 @@ impl Default for RaceInformation {
             date: Default::default(),
             session_id: 1,
             race_position: 1,
+            car_used: Default::default(),
         }
     }
 }
@@ -24,7 +25,7 @@ impl Default for RaceInformation {
 impl RaceInformation {
     pub fn get_unique_race_identifier(race_information: &RaceInformation) -> String {
         format!(
-            "{}_{}_{}",
+            "Date_{}_Track_{}_Session_{}",
             race_information.date, race_information.track_name, race_information.session_id
         )
     }
@@ -51,6 +52,7 @@ mod race_information_should {
             date: Default::default(),
             session_id: 1,
             race_position: 1,
+            car_used: Default::default(),
         };
 
         // Then
@@ -60,7 +62,7 @@ mod race_information_should {
     #[test]
     fn get_unique_race_identifier() {
         // Given
-        let expected_race_identifer = "2024-10-15_Three Sisters_1".to_string();
+        let expected_race_identifer = "Date_2024-10-15_Track_Three Sisters_Session_1".to_string();
         let race_information = RaceInformation {
             track_name: "Three Sisters".to_string(),
             date: Date {
@@ -70,6 +72,7 @@ mod race_information_should {
             },
             session_id: 1,
             race_position: 12,
+            car_used: "Kart".to_string(),
         };
 
         // When
@@ -92,6 +95,7 @@ mod race_information_should {
             },
             session_id: 1,
             race_position: 12,
+            car_used: "Kart".to_string(),
         };
 
         // When
@@ -102,7 +106,7 @@ mod race_information_should {
     }
 
     #[test]
-    pub fn update_race_position() {
+    fn update_race_position() {
         // Given
         let race_position = 5;
         let mut race_information = RaceInformation {
@@ -114,6 +118,7 @@ mod race_information_should {
             },
             session_id: 1,
             race_position: 12,
+            car_used: "Kart".to_string(),
         };
 
         // When

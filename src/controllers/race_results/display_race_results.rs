@@ -39,6 +39,7 @@ impl Race {
                 Cell::new(race.race_information.track_name.to_string()),
                 Cell::new(race.race_information.date.to_string()),
                 Cell::new(race.race_information.session_id.to_string()),
+                Cell::new(race.race_information.car_used.to_string()),
                 Cell::new(race.race_information.race_position.to_string()),
                 Cell::new(format_laptime(race.get_fastest_lap())),
                 Race::get_average_time_cell(&average_times, &5),
@@ -63,6 +64,7 @@ impl Race {
                 Cell::new("Track Name"),
                 Cell::new("Date"),
                 Cell::new("Session"),
+                Cell::new("Car Used"),
                 Cell::new("Race Position"),
                 Cell::new("Fastest Lap"),
                 Cell::new("Average Lap 5"),
@@ -121,6 +123,7 @@ mod display_race_results_should {
                 },
                 session_id: 1,
                 race_position: 1,
+                car_used: "Kart".to_string(),
             },
             laptimes: vec![
                 Lap {
@@ -143,7 +146,7 @@ mod display_race_results_should {
 
     #[test]
     fn display_race_results_overview() {
-        let expected_display = "| Track Name   | Date       | Session | Race Position | Fastest Lap | Average Lap 5 | Average Lap 10 | Average Lap 15 | Total Lap 5 | Total Lap 10 | Total Lap 15 |\n|--------------|------------|---------|---------------|-------------|---------------|----------------|----------------|-------------|--------------|--------------|\n| Brands Hatch | 2025-12-12 | 1       | 1             | 12.20       | 12.36         | N/A            | N/A            | 1:01.80     | N/A          | N/A          |";
+        let expected_display = "| Track Name   | Date       | Session | Car Used | Race Position | Fastest Lap | Average Lap 5 | Average Lap 10 | Average Lap 15 | Total Lap 5 | Total Lap 10 | Total Lap 15 |\n|--------------|------------|---------|----------|---------------|-------------|---------------|----------------|----------------|-------------|--------------|--------------|\n| Brands Hatch | 2025-12-12 | 1       | Kart     | 1             | 12.20       | 12.36         | N/A            | N/A            | 1:01.80     | N/A          | N/A          |";
         let race_result = Race {
             race_information: RaceInformation {
                 track_name: "Brands Hatch".to_string(),
@@ -154,6 +157,7 @@ mod display_race_results_should {
                 },
                 session_id: 1,
                 race_position: 1,
+                car_used: "Kart".to_string(),
             },
             laptimes: vec![
                 Lap {

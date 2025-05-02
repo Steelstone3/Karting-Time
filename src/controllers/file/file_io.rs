@@ -131,7 +131,7 @@ mod file_integration_should {
         let file_name = "/".to_string()
             + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
             + ".toml";
-        assert!(!fs::metadata(&file_name).is_ok());
+        assert!(fs::metadata(&file_name).is_err());
     }
 
     #[test]
@@ -240,7 +240,7 @@ mod file_integration_should {
         upsert_application_state(karting_time_state_file_name, &karting_time_file);
 
         // Then
-        assert!(!fs::metadata(karting_time_state_file_name).is_ok());
+        assert!(fs::metadata(karting_time_state_file_name).is_err());
     }
 
     #[test]

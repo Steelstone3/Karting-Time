@@ -180,6 +180,7 @@ mod file_should {
                         },
                         session_id: 1,
                         race_position: 1,
+                        car_used: "Kart".to_string(),
                     },
                     laptimes: vec![
                         Lap {
@@ -202,6 +203,7 @@ mod file_should {
                         },
                         session_id: 2,
                         race_position: 3,
+                        car_used: "Kart".to_string(),
                     },
                     laptimes: vec![
                         Lap {

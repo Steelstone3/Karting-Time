@@ -40,10 +40,10 @@ mod update_existing_race {
     };
 
     #[rstest]
-    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() }, false)]
-    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 16, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 17, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() }, true)]
-    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 2, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 3, race_position: 1 }, ..Default::default() }, true)]
-    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Four Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Five Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1 }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() }, false)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 16, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 17, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 2, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 3, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation { track_name: "Three Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Four Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() },Race{ race_information: RaceInformation { track_name: "Five Sisters".to_string(), date: Date{ day: 15, month: 11, year: 2025 }, session_id: 1, race_position: 1, car_used: "Kart".to_string() }, ..Default::default() }, true)]
     fn is_unique_identifer(
         #[case] race_1: Race,
         #[case] race_2: Race,
@@ -73,6 +73,7 @@ mod update_existing_race {
                 },
                 session_id: 1,
                 race_position: 5,
+                car_used: "Kart".to_string(),
             },
             laptimes: vec![Lap {
                 lap_number: 1,
@@ -91,6 +92,7 @@ mod update_existing_race {
                     },
                     session_id: 1,
                     race_position: 3,
+                    car_used: "Kart".to_string(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
@@ -107,6 +109,7 @@ mod update_existing_race {
                     },
                     session_id: 2,
                     race_position: 5,
+                    car_used: "Kart".to_string(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
@@ -126,6 +129,7 @@ mod update_existing_race {
                     },
                     session_id: 1,
                     race_position: 5,
+                    car_used: "Kart".to_string(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
@@ -142,6 +146,7 @@ mod update_existing_race {
                     },
                     session_id: 2,
                     race_position: 5,
+                    car_used: "Kart".to_string(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,

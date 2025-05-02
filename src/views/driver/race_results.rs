@@ -38,7 +38,8 @@ impl KartingTime {
             );
 
             let race_summary = format!(
-                "Race position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}",
+                "Car Used: {}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}",
+                race.race_information.car_used,
                 race.race_information.race_position,
                 race.get_number_of_laps(),
                 format_laptime(race.get_fastest_lap()),

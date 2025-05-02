@@ -47,6 +47,7 @@ mod race_result_should {
                 },
                 session_id: 2,
                 race_position: 7,
+                car_used: "Kart".to_string(),
             },
             laptimes: vec!["54.2".to_string(), "55.6".to_string()],
         };
@@ -60,6 +61,7 @@ mod race_result_should {
             },
             session_id: 2,
             race_position: 7,
+            car_used: "Kart".to_string(),
         };
         let race = Race {
             race_information,
