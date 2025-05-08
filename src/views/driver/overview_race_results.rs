@@ -2,7 +2,10 @@ use crate::{
     commands::messages::Message,
     models::{application::karting_time::KartingTime, driver::race_result::Race},
 };
-use iced::widget::{column, text};
+use iced::{
+    Element,
+    widget::{column, text},
+};
 use iced_aw::widgets::Card;
 
 impl KartingTime {
@@ -18,14 +21,19 @@ impl KartingTime {
             column = column
                 .push(Card::new(
                     text("Results Overview"),
-                    text(Race::display_race_results_overview(
-                        &self.application_state.filtered_races,
-                    )),
+                    text("Hello")
+                    // KartingTime::race_results_overview_table(
+                    //     &self.application_state.filtered_races,
+                    // ),
                 ))
                 .padding(10)
                 .spacing(10);
 
             column
         }
+    }
+
+    fn race_results_overview_table(_races: &Vec<Race>) -> Element<Message> {
+        todo!()
     }
 }
