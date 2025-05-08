@@ -1,10 +1,9 @@
 use crate::{
     commands::messages::Message, controllers::driver_profile::time_parser::format_laptime,
-    models::application::karting_time::KartingTime,
+    models::{application::karting_time::KartingTime, driver::race_result::Race},
 };
 use iced::{
-    Renderer, Theme,
-    widget::{button, column, text},
+    widget::{button, column, text}, Element, Renderer, Theme
 };
 use iced_aw::widgets::Card;
 
@@ -55,9 +54,14 @@ impl KartingTime {
                 .padding(10)
                 .push(button("Replace").on_press(Message::ReplacePressed(index)));
 
-            result_cards.push(Card::new(text(header), text(race.to_string())).foot(footer));
+            result_cards.push(Card::new(text(header), KartingTime::race_result_table(race)).foot(footer));
         }
 
         result_cards
+    }
+
+    fn race_result_table(race: &Race) -> Element<Message> {
+        todo!()
+        // let table = 
     }
 }
