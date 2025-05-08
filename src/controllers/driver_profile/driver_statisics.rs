@@ -50,6 +50,22 @@ impl DriverProfile {
 
         unique_tracks.len() as u32
     }
+
+    pub fn get_number_of_unique_cars(&self) -> u32 {
+        let unique_cars: HashSet<String> = self
+            .races
+            .iter()
+            .map(|race| {
+                race.race_information
+                    .car_used
+                    .trim()
+                    .to_lowercase()
+                    .clone()
+            })
+            .collect();
+
+        unique_cars.len() as u32
+    }
 }
 
 #[cfg(test)]
