@@ -1,3 +1,5 @@
+use iced::{widget::scrollable, Task};
+
 use crate::{
     commands::messages::Message,
     controllers::file::file_picker::{
@@ -118,6 +120,12 @@ impl KartingTime {
                     self.application_state.race_editor.paste_laptimes(race);
                     self.apply_filters();
                 }
+            }
+            Message::SyncHeader(offset) => {
+                // return Task::batch(vec![
+                //     scrollable::scroll_to(self.header.clone(), offset),
+                //     scrollable::scroll_to(self.footer.clone(), offset),
+                // ]);
             }
         }
     }

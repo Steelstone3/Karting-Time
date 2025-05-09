@@ -1,5 +1,5 @@
 use super::tab_identifiers::TabIdentifier;
-use iced::widget::text_editor;
+use iced::{advanced::widget::operation::scrollable, widget::text_editor};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Message {
@@ -26,4 +26,5 @@ pub enum Message {
     ReplacePressed(usize),
     UpdateRacesPressed,
     ClearRaceEditorPressed,
+    SyncHeader(scrollable::AbsoluteOffset),
 }
