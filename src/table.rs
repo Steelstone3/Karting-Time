@@ -60,7 +60,7 @@ impl Table {
                     .padding(PADDING)
                     .width(Length::Fill)
                     .height(Length::Shrink)
-                    .max_height(TEXT_SIZE + PADDING)
+                    .max_height(22)
                     .style(move |_| table_theme(color))
                     .into(),
             );
