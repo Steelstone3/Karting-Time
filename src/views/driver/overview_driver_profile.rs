@@ -43,6 +43,12 @@ impl KartingTime {
                     .push(text("Unique Tracks:"))
                     .spacing(10)
                     .push(text(self.driver_profile.get_number_of_unique_tracks())),
+            )
+            .push(
+                row!()
+                    .push(text("Unique Cars:"))
+                    .spacing(10)
+                    .push(text(self.driver_profile.get_number_of_unique_cars())),
             );
 
         column!()
