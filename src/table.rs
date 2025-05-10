@@ -1,7 +1,11 @@
 use iced::{
     Border, Color, Element, Length, Renderer, Settings, Theme,
     border::Radius,
-    widget::{Column, Container, Row, container, text},
+    widget::{
+        Column, Container, Row,
+        container::{self, Style},
+        text,
+    },
 };
 
 use crate::commands::messages::Message;
@@ -59,20 +63,7 @@ impl Table {
                 Container::<Message, Theme, Renderer>::new(text(row).size(TEXT_SIZE))
                     .padding(2)
                     .width(Length::Fill)
-                    // .style(|theme: &Theme| container::Style {
-                    //     border: Border {
-                    //         color: Color::from_rgb(0.0, 97.0, 97.0),
-                    //         width: 5.0,
-                    //         radius: Radius::new(5),
-                    //     },
-                    //     ..Default::default() // background: theme.extended_palette().background.base.color.into(), // Default background
-                    //                          // text_color: theme.extended_palette().text.primary, // Default text color
-                    //                          // shadow: todo!(),
-                    // })
-                    // .style(|theme: &Theme| container::Style {
-                    //     // background: , // Apply custom background
-                    //     ..Default::default()
-                    // })
+                    .style(|_| table_theme())
                     .into(),
             );
         }
@@ -115,5 +106,18 @@ impl Table {
         }
 
         max_row_width
+    }
+}
+
+fn table_theme() -> Style {
+    Style {
+        text_color: Default::default(),
+        background: Default::default(),
+        border: Border {
+            color: Color::from_rgb(97.0, 97.0, 97.0),
+            width: 1.0,
+            radius: Default::default(),
+        },
+        shadow: Default::default(),
     }
 }
