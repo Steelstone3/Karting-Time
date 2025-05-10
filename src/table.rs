@@ -58,7 +58,7 @@ impl Table {
                 Container::<Message, Theme, Renderer>::new(text(row).size(TEXT_SIZE))
                     .padding(2)
                     .width(Length::Fill)
-                    .height(Length::Fixed(66.0))
+                    .height(Length::Shrink)
                     .style(move |_| table_theme(color))
                     .into(),
             );
