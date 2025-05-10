@@ -23,9 +23,7 @@ impl KartingTime {
             column = column
                 .push(Card::new(
                     text("Results Overview"),
-                    KartingTime::race_results_overview_table(
-                        &self.application_state.filtered_races,
-                    ),
+                    self.race_results_overview_table(&self.application_state.filtered_races),
                 ))
                 .padding(10)
                 .spacing(10);
@@ -34,7 +32,7 @@ impl KartingTime {
         }
     }
 
-    fn race_results_overview_table(races: &Vec<Race>) -> Element<Message> {
+    fn race_results_overview_table(&self, races: &Vec<Race>) -> Element<Message> {
         let mut table = Table::default();
 
         table.add_headers(vec![
@@ -72,6 +70,6 @@ impl KartingTime {
             ]);
         }
 
-        Table::build(table, None)
+        Table::build(table, self.theme().palette().text, None)
     }
 }

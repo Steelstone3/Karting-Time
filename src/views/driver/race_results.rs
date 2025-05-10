@@ -57,14 +57,13 @@ impl KartingTime {
                 .padding(10)
                 .push(button("Replace").on_press(Message::ReplacePressed(index)));
 
-            result_cards
-                .push(Card::new(text(header), KartingTime::race_result_table(race)).foot(footer));
+            result_cards.push(Card::new(text(header), self.race_result_table(race)).foot(footer));
         }
 
         result_cards
     }
 
-    fn race_result_table(race: &Race) -> Element<Message> {
+    fn race_result_table(&self, race: &Race) -> Element<Message> {
         let mut table = Table::default();
 
         table.add_headers(vec!["Lap".to_string(), "Time (s)".to_string()]);
@@ -76,6 +75,6 @@ impl KartingTime {
             ]);
         }
 
-        Table::build(table, Some(150.0))
+        Table::build(table, self.theme().palette().text, Some(150.0))
     }
 }

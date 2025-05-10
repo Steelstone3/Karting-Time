@@ -1,11 +1,7 @@
 use iced::{
-    Border, Color, Element, Length, Renderer, Settings, Theme,
-    border::Radius,
-    widget::{
-        Column, Container, Row,
-        container::{self, Style},
-        text,
-    },
+    border::Radius, widget::{
+        container::{self, Style}, text, Column, Container, Row, Text
+    }, Border, Color, Element, Length, Renderer, Settings, Theme
 };
 
 use crate::commands::messages::Message;
@@ -37,12 +33,12 @@ impl Table {
         self.rows.push(row);
     }
 
-    pub fn build(table_data: Table, width: Option<f32>) -> Element<'static, Message> {
+    pub fn build(table_data: Table, color: Color, width: Option<f32>) -> Element<'static, Message> {
         let mut table = Column::new();
 
         // with header and rows
         for row in table_data.rows {
-            let row = Table::with_row(row);
+            let row = Table::with_row(row, color);
 
             table = table.push(row);
         }
@@ -56,14 +52,14 @@ impl Table {
         }
     }
 
-    fn with_row(rows: Vec<String>) -> Row<'static, Message> {
+    fn with_row(rows: Vec<String>, color: Color) -> Row<'static, Message> {
         let mut data_row = vec![];
         for row in rows.into_iter() {
             data_row.push(
                 Container::<Message, Theme, Renderer>::new(text(row).size(TEXT_SIZE))
                     .padding(2)
                     .width(Length::Fill)
-                    .style(|_| table_theme())
+                    .style(move |_| table_theme(color))
                     .into(),
             );
         }
@@ -109,12 +105,12 @@ impl Table {
     }
 }
 
-fn table_theme() -> Style {
+fn table_theme(color: Color) -> Style {
     Style {
         text_color: Default::default(),
         background: Default::default(),
         border: Border {
-            color: Color::from_rgb(97.0, 97.0, 97.0),
+            color,
             width: 1.0,
             radius: Default::default(),
         },
