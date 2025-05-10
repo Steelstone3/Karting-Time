@@ -1,6 +1,9 @@
 use std::{cmp::Ordering, collections::HashMap};
 
-use crate::models::driver::{lap::Lap, race_result::Race};
+use crate::{
+    controllers::driver_profile::time_parser::format_laptime,
+    models::driver::{lap::Lap, race_result::Race},
+};
 
 impl Race {
     pub fn calculate_total_times(&self) -> HashMap<usize, f32> {
@@ -20,6 +23,18 @@ impl Race {
         total_times
     }
 
+    // TODO Test
+    pub fn get_total_time_cell(total_times: &HashMap<usize, f32>, key: &usize) -> String {
+        let not_applicable_cell = "N/A".to_string();
+
+        let total_time_cell = match total_times.get(key) {
+            Some(total_time) => format_laptime(*total_time),
+            None => not_applicable_cell.clone(),
+        };
+
+        total_time_cell
+    }
+
     pub fn calculate_average_total_times(
         &self,
         total_times: &HashMap<usize, f32>,
@@ -36,6 +51,18 @@ impl Race {
         }
 
         average_times
+    }
+
+    // TODO Test
+    pub fn get_average_time_cell(average_times: &HashMap<usize, f32>, key: &usize) -> String {
+        let not_applicable_cell = "N/A".to_string();
+
+        let average_time_cell = match average_times.get(key) {
+            Some(average_time) => format_laptime(*average_time),
+            None => not_applicable_cell.clone(),
+        };
+
+        average_time_cell
     }
 
     fn order_by_fastest_lap(&self) -> Vec<Lap> {
