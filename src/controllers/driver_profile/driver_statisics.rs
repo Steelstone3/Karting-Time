@@ -55,13 +55,7 @@ impl DriverProfile {
         let unique_cars: HashSet<String> = self
             .races
             .iter()
-            .map(|race| {
-                race.race_information
-                    .car_used
-                    .trim()
-                    .to_lowercase()
-                    .clone()
-            })
+            .map(|race| race.race_information.car_used.trim().to_lowercase().clone())
             .collect();
 
         unique_cars.len() as u32
