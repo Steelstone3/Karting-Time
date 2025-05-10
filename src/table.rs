@@ -59,6 +59,7 @@ impl Table {
                     .padding(2)
                     .width(Length::Fill)
                     .height(Length::Shrink)
+                    .max_height(22)
                     .style(move |_| table_theme(color))
                     .into(),
             );
@@ -107,7 +108,7 @@ impl Table {
 
 fn table_theme(color: Color) -> Style {
     Style {
-        text_color: Default::default(),
+        text_color: Some(color),
         background: Default::default(),
         border: Border {
             color,
