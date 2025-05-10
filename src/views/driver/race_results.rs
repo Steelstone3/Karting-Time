@@ -75,6 +75,6 @@ impl KartingTime {
             ]);
         }
 
-        Table::build(table, self.theme().palette().text, Some(150.0))
+        Table::build(table, self.theme().palette().text, Some(200.0))
     }
 }
