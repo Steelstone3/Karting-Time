@@ -1,7 +1,6 @@
 use iced::{
-    widget::{
-        container::Style, text, Column, Container, Row
-    }, Border, Color, Element, Length, Renderer, Theme
+    Border, Color, Element, Length, Renderer, Theme,
+    widget::{Column, Container, Row, container::Style, text},
 };
 
 use crate::commands::messages::Message;

@@ -5,8 +5,8 @@ mod commands;
 mod controllers;
 mod data_models;
 mod models;
-mod views;
 mod table;
+mod views;
 
 #[deny(clippy::unwrap_used)]
 #[deny(clippy::expect_used)]
