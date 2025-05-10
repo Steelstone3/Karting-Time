@@ -1,7 +1,7 @@
 use iced::{
-    border::Radius, widget::{
-        container::{self, Style}, text, Column, Container, Row, Text
-    }, Border, Color, Element, Length, Renderer, Settings, Theme
+    widget::{
+        container::Style, text, Column, Container, Row
+    }, Border, Color, Element, Length, Renderer, Theme
 };
 
 use crate::commands::messages::Message;
