@@ -6,6 +6,7 @@ use iced::{
 use crate::commands::messages::Message;
 
 const TEXT_SIZE: u16 = 16;
+const PADDING: u16 = 2;
 
 #[derive(Default)]
 pub struct Table {
@@ -56,10 +57,10 @@ impl Table {
         for row in rows.into_iter() {
             data_row.push(
                 Container::<Message, Theme, Renderer>::new(text(row).size(TEXT_SIZE))
-                    .padding(2)
+                    .padding(PADDING)
                     .width(Length::Fill)
                     .height(Length::Shrink)
-                    .max_height(22)
+                    .max_height(TEXT_SIZE + PADDING)
                     .style(move |_| table_theme(color))
                     .into(),
             );
