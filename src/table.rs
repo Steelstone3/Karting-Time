@@ -14,6 +14,7 @@ pub struct Table {
 }
 
 impl Table {
+    #[allow(dead_code)]
     pub fn new(headers: Vec<String>, rows: Vec<Vec<String>>) -> Self {
         let mut new_rows: Vec<Vec<String>> = vec![];
         new_rows.push(headers);
@@ -80,38 +81,39 @@ impl Table {
         Row::with_children(data_row)
     }
 
-    // pub fn calculate_width(table_data: &Table) -> f32 {
-    //     if table_data.rows.is_empty() {
-    //         return 0.0;
-    //     }
+    #[allow(dead_code)]
+    pub fn calculate_width(table_data: &Table) -> f32 {
+        if table_data.rows.is_empty() {
+            return 0.0;
+        }
 
-    //     let text_size = TEXT_SIZE as f32;
-    //     let mut rows_widths: Vec<Vec<usize>> = vec![];
+        let text_size = TEXT_SIZE as f32;
+        let mut rows_widths: Vec<Vec<usize>> = vec![];
 
-    //     for row in &table_data.rows {
-    //         let mut cell_widths = vec![];
+        for row in &table_data.rows {
+            let mut cell_widths = vec![];
 
-    //         for cell in row {
-    //             cell_widths.push(cell.len());
-    //         }
+            for cell in row {
+                cell_widths.push(cell.len());
+            }
 
-    //         rows_widths.push(cell_widths);
-    //     }
+            rows_widths.push(cell_widths);
+        }
 
-    //     let mut max_row_width = 0.0;
+        let mut max_row_width = 0.0;
 
-    //     for row_widths in rows_widths {
-    //         let mut new_row_width = 0.0;
+        for row_widths in rows_widths {
+            let mut new_row_width = 0.0;
 
-    //         for row_width in row_widths {
-    //             new_row_width += row_width as f32 * text_size;
-    //         }
+            for row_width in row_widths {
+                new_row_width += row_width as f32 * text_size;
+            }
 
-    //         if new_row_width > max_row_width {
-    //             max_row_width = new_row_width;
-    //         }
-    //     }
+            if new_row_width > max_row_width {
+                max_row_width = new_row_width;
+            }
+        }
 
-    //     max_row_width
-    // }
+        max_row_width
+    }
 }

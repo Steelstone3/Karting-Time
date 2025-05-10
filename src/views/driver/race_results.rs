@@ -76,8 +76,6 @@ impl KartingTime {
             ]);
         }
 
-        // let width = Table::calculate_width(&table);
-
-        Table::build(table, None)
+        Table::build(table, Some(150.0))
     }
 }
