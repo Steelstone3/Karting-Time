@@ -323,4 +323,51 @@ mod driver_statistics_should {
         // Then
         assert_eq!(expected_number_of_unique_tracks, number_of_unique_tracks)
     }
+
+     #[test]
+    fn get_number_of_unique_cars() {
+        // Given
+        let car_used_1 = "Go Kart".to_string();
+        let car_used_2 = "GT3 Car".to_string();
+        let expected_number_of_unique_tracks = 2;
+        let driver_profile = DriverProfile {
+            races: vec![
+                Race {
+                    race_information: RaceInformation {
+                        car_used: car_used_1.clone(),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                Race {
+                    race_information: RaceInformation {
+                        car_used: car_used_1.clone(),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                Race {
+                    race_information: RaceInformation {
+                        car_used: car_used_2.clone(),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                Race {
+                    race_information: RaceInformation {
+                        car_used: car_used_2.clone(),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+            ],
+            ..Default::default()
+        };
+
+        // When
+        let number_of_unique_tracks = driver_profile.get_number_of_unique_cars();
+
+        // Then
+        assert_eq!(expected_number_of_unique_tracks, number_of_unique_tracks)
+    }
 }
