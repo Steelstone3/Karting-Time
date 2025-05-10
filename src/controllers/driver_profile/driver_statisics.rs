@@ -324,7 +324,7 @@ mod driver_statistics_should {
         assert_eq!(expected_number_of_unique_tracks, number_of_unique_tracks)
     }
 
-     #[test]
+    #[test]
     fn get_number_of_unique_cars() {
         // Given
         let car_used_1 = "Go Kart".to_string();
