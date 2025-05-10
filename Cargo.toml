@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "0.12.0"
+version = "0.12.1"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2024"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -39,4 +39,3 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 chrono = "0"
 rfd = "0"
-# rdev = "0.5"
