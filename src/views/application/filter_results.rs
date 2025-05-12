@@ -25,5 +25,17 @@ impl KartingTime {
             )
             .padding(10)
             .spacing(10)
+            .push(text("Car Used:"))
+            .padding(10)
+            .spacing(10)
+            .push(
+                text_input(
+                    "Enter car used filter",
+                    &self.application_state.car_used_query,
+                )
+                .on_input(Message::CarUsedFilterChanged),
+            )
+            .padding(10)
+            .spacing(10)
     }
 }

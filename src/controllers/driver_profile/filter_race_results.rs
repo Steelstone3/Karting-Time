@@ -1,44 +1,47 @@
 use crate::models::application::karting_time::KartingTime;
 
 impl KartingTime {
-    pub fn apply_filters(&mut self) {
+    pub fn is_filtering_enabled(&mut self) {
         match self.application_state.is_filter_visible {
-            true => {
-                self.apply_track_filter();
-                self.apply_date_filter();
-            }
+            true => self.apply_filters(),
             false => self.application_state.filtered_races = self.driver_profile.races.clone(),
         }
     }
 
-    fn apply_track_filter(&mut self) {
-        match self.application_state.track_query.is_empty() {
-            // track query is empty apply no filter
-            true => match self.application_state.date_query.is_empty() {
-                // date query is empty apply no filter
-                true => self.application_state.filtered_races = self.driver_profile.races.clone(),
-                // keep date filter
-                false => {}
-            },
-            // apply track filter
-            false => match self.application_state.date_query.is_empty() {
-                // only track filter
-                true => {
-                    self.apply_track_filter_only();
-                }
-                // both filters
-                false => {
-                    self.apply_both_filters();
-                }
-            },
+    fn apply_filters(&mut self) {
+        self.application_state.filtered_races = self.driver_profile.races.clone();
+
+        if !self.all_filters_empty() {
+            self.all_filters();
+        } else if self.application_state.track_query.is_empty() {
+            self.date_filter();
+            self.car_used_filter();
+        } else if self.application_state.date_query.is_empty() {
+            self.track_name_filter();
+            self.car_used_filter();
+        } else if self.application_state.car_used_query.is_empty() {
+            self.track_name_filter();
+            self.date_filter();
+        } else if self.application_state.track_query.is_empty()
+            && self.application_state.date_query.is_empty()
+        {
+            self.car_used_filter();
+        } else if self.application_state.track_query.is_empty()
+            && self.application_state.car_used_query.is_empty()
+        {
+            self.date_filter();
+        } else if self.application_state.date_query.is_empty()
+            && self.application_state.car_used_query.is_empty()
+        {
+            self.track_name_filter();
         }
     }
 
-    fn apply_track_filter_only(&mut self) {
+    fn track_name_filter(&mut self) {
         let query = self.application_state.track_query.to_lowercase();
         self.application_state.filtered_races = self
-            .driver_profile
-            .races
+            .application_state
+            .filtered_races
             .iter()
             .filter(|race| {
                 // track matches
@@ -51,34 +54,11 @@ impl KartingTime {
             .collect();
     }
 
-    fn apply_date_filter(&mut self) {
-        match self.application_state.date_query.is_empty() {
-            // date query is empty apply no filter
-            true => match self.application_state.track_query.is_empty() {
-                // track query is empty apply no filter
-                true => self.application_state.filtered_races = self.driver_profile.races.clone(),
-                // keep track filter
-                false => {}
-            },
-            // apply date filter
-            false => match self.application_state.track_query.is_empty() {
-                // only date filter
-                true => {
-                    self.apply_date_filter_only();
-                }
-                // both filters
-                false => {
-                    self.apply_both_filters();
-                }
-            },
-        }
-    }
-
-    fn apply_date_filter_only(&mut self) {
+    fn date_filter(&mut self) {
         let query = self.application_state.date_query.to_lowercase();
         self.application_state.filtered_races = self
-            .driver_profile
-            .races
+            .application_state
+            .filtered_races
             .iter()
             .filter(|race| {
                 // date matches
@@ -89,35 +69,37 @@ impl KartingTime {
                     .contains(&query)
             })
             .cloned()
-            .collect();
+            .collect()
     }
 
-    fn apply_both_filters(&mut self) {
-        let track_query = self.application_state.track_query.to_lowercase();
-        let date_query = self.application_state.date_query.to_lowercase();
+    fn car_used_filter(&mut self) {
+        let query = self.application_state.car_used_query.to_lowercase();
         self.application_state.filtered_races = self
-            .driver_profile
-            .races
+            .application_state
+            .filtered_races
             .iter()
             .filter(|race| {
-                // track matches
-                let is_track_filtered = race
-                    .race_information
-                    .track_name
-                    .to_lowercase()
-                    .contains(&track_query);
                 // date matches
-                let is_date_filtered = race
-                    .race_information
-                    .date
+                race.race_information
+                    .car_used
                     .to_string()
                     .to_lowercase()
-                    .contains(&date_query);
-
-                is_track_filtered && is_date_filtered
+                    .contains(&query)
             })
             .cloned()
-            .collect();
+            .collect()
+    }
+
+    fn all_filters_empty(&self) -> bool {
+        self.application_state.track_query.is_empty()
+            && self.application_state.date_query.is_empty()
+            && self.application_state.car_used_query.is_empty()
+    }
+
+    fn all_filters(&mut self) {
+        self.track_name_filter();
+        self.date_filter();
+        self.car_used_filter();
     }
 }
 
@@ -132,19 +114,21 @@ mod filter_race_results_should {
     };
     use rstest::rstest;
 
+    // todo add car filtering tests
     #[rstest]
-    #[case(false, "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "Silverstone", "2025-12-21", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
-    #[case(true, "Silverstone", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
-    #[case(true, "", "2025-12-21", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
-    #[case(true, "Three Sisters", "2024-8-12", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "Three Sisters", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "", "2024-8-12", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(false, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Silverstone", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Silverstone", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Three Sisters", "", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "2024-8-12", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
     fn apply_filters(
         #[case] is_filter_visible: bool,
         #[case] track_query: String,
         #[case] date_query: String,
+        #[case] car_used_query: String,
         #[case] expected_races: Vec<Race>,
     ) {
         // Given
@@ -153,6 +137,7 @@ mod filter_race_results_should {
                 is_filter_visible,
                 track_query,
                 date_query,
+                car_used_query,
                 ..Default::default()
             },
             driver_profile: DriverProfile {
@@ -197,7 +182,7 @@ mod filter_race_results_should {
         };
 
         // When
-        karting_time.apply_filters();
+        karting_time.is_filtering_enabled();
 
         // Then
         assert_eq!(

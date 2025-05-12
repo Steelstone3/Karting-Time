@@ -15,19 +15,19 @@ impl KartingTime {
             Message::ImportRaces => {
                 self.import_race(select_files_to_load());
                 self.driver_profile.sort_races();
-                self.apply_filters();
+                self.is_filtering_enabled();
             }
             Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
                 self.driver_profile.sort_races();
-                self.apply_filters();
+                self.is_filtering_enabled();
             }
             Message::ViewToggleTheme => self.switch_theme(),
             Message::ViewToggleFilter => {
                 self.toggle_filter();
-                self.apply_filters();
+                self.is_filtering_enabled();
             }
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
             Message::TrackNameChanged(track_name) => {
@@ -77,12 +77,17 @@ impl KartingTime {
             Message::TrackFilterChanged(track_query) => {
                 self.application_state.track_query = track_query;
 
-                self.apply_filters();
+                self.is_filtering_enabled();
             }
             Message::DateFilterChanged(date_query) => {
                 self.application_state.date_query = date_query;
 
-                self.apply_filters();
+                self.is_filtering_enabled();
+            }
+            Message::CarUsedFilterChanged(car_used_query) => {
+                self.application_state.car_used_query = car_used_query;
+
+                self.is_filtering_enabled();
             }
             Message::UpdateRacesPressed => {
                 self.application_state.new_race.convert_to_laps(
@@ -106,7 +111,7 @@ impl KartingTime {
                 }
 
                 self.driver_profile.sort_races();
-                self.apply_filters();
+                self.is_filtering_enabled();
             }
             Message::ClearRaceEditorPressed => {
                 self.application_state.race_editor.clear_text_editor();
@@ -116,7 +121,7 @@ impl KartingTime {
                     self.application_state.new_race = race.clone();
                     self.application_state.race_editor.clear_text_editor();
                     self.application_state.race_editor.paste_laptimes(race);
-                    self.apply_filters();
+                    self.is_filtering_enabled();
                 }
             }
         }
