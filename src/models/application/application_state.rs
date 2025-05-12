@@ -15,6 +15,8 @@ pub struct ApplicationState {
     pub track_query: String,
     #[serde(skip)]
     pub date_query: String,
+     #[serde(skip)]
+    pub car_used_query: String,
     #[serde(skip)]
     pub filtered_races: Vec<Race>,
 }
