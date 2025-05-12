@@ -79,7 +79,7 @@ impl KartingTime {
             .filtered_races
             .iter()
             .filter(|race| {
-                // date matches
+                // car used matches
                 race.race_information
                     .car_used
                     .to_string()
@@ -114,16 +114,23 @@ mod filter_race_results_should {
     };
     use rstest::rstest;
 
-    // todo add car filtering tests
     #[rstest]
-    #[case(false, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "Silverstone", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
-    #[case(true, "Silverstone", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
-    #[case(true, "", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
-    #[case(true, "Three Sisters", "2024-8-12", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "Three Sisters", "", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
-    #[case(true, "", "2024-8-12", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(false, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Silverstone", "2025-12-21", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Silverstone", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Silverstone", "", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "", "2025-12-21", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Silverstone", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "", "", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},session_id:1,race_position:1, car_used: "Kart Type 1".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 25.6 }] } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "Kart Type 2", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Three Sisters", "", "Kart Type 2", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "2024-8-12", "Kart Type 2", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "Three Sisters", "", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "2024-8-12", "", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
+    #[case(true, "", "", "Kart Type 2", vec![ Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024},session_id:1,race_position:2, car_used: "Kart Type 2".to_string() }, laptimes: vec![Lap { lap_number: 1, time: 28.2 }] } ])]
     fn apply_filters(
         #[case] is_filter_visible: bool,
         #[case] track_query: String,
@@ -153,7 +160,7 @@ mod filter_race_results_should {
                             },
                             session_id: 1,
                             race_position: 1,
-                            car_used: "Kart".to_string(),
+                            car_used: "Kart Type 1".to_string(),
                         },
                         laptimes: vec![Lap {
                             lap_number: 1,
@@ -170,7 +177,7 @@ mod filter_race_results_should {
                             },
                             session_id: 1,
                             race_position: 2,
-                            car_used: "Kart".to_string(),
+                            car_used: "Kart Type 2".to_string(),
                         },
                         laptimes: vec![Lap {
                             lap_number: 1,

@@ -23,13 +23,10 @@ impl Race {
         total_times
     }
 
-    // TODO Test
-    pub fn get_total_time_cell(total_times: &HashMap<usize, f32>, key: &usize) -> String {
-        let not_applicable_cell = "N/A".to_string();
-
+    pub fn get_total_time(total_times: &HashMap<usize, f32>, key: &usize) -> String {
         let total_time_cell = match total_times.get(key) {
             Some(total_time) => format_laptime(*total_time),
-            None => not_applicable_cell.clone(),
+            None => "N/A".to_string(),
         };
 
         total_time_cell
@@ -53,13 +50,10 @@ impl Race {
         average_times
     }
 
-    // TODO Test
-    pub fn get_average_time_cell(average_times: &HashMap<usize, f32>, key: &usize) -> String {
-        let not_applicable_cell = "N/A".to_string();
-
+    pub fn get_average_time(average_times: &HashMap<usize, f32>, key: &usize) -> String {
         let average_time_cell = match average_times.get(key) {
             Some(average_time) => format_laptime(*average_time),
-            None => not_applicable_cell.clone(),
+            None => "N/A".to_string(),
         };
 
         average_time_cell
@@ -74,6 +68,8 @@ impl Race {
 
 #[cfg(test)]
 mod calculate_race_time_summaries_should {
+    use std::collections::HashMap;
+
     use crate::models::driver::{lap::Lap, race_result::Race};
 
     #[test]
@@ -115,6 +111,20 @@ mod calculate_race_time_summaries_should {
     }
 
     #[test]
+    fn get_total_time() {
+        // Given
+        let mut total_times: HashMap<usize, f32> = HashMap::new();
+        total_times.insert(5, 100.0);
+        total_times.insert(10, 200.0);
+        total_times.insert(15, 300.0);
+
+        // Then
+        assert_eq!("1:40.00", Race::get_total_time(&total_times, &5));
+        assert_eq!("3:20.00", Race::get_total_time(&total_times, &10));
+        assert_eq!("5:00.00", Race::get_total_time(&total_times, &15));
+    }
+
+    #[test]
     fn calculate_average_total_times() {
         // Given
         let race = Race {
@@ -151,6 +161,20 @@ mod calculate_race_time_summaries_should {
         let average_5_laps = *total_times.get(&5).unwrap();
 
         assert_eq!(46.5, average_5_laps);
+    }
+
+    #[test]
+    fn get_average_time() {
+        // Given
+        let mut average_times: HashMap<usize, f32> = HashMap::new();
+        average_times.insert(5, 100.0);
+        average_times.insert(10, 200.0);
+        average_times.insert(15, 300.0);
+
+        // Then
+        assert_eq!("1:40.00", Race::get_total_time(&average_times, &5));
+        assert_eq!("3:20.00", Race::get_total_time(&average_times, &10));
+        assert_eq!("5:00.00", Race::get_total_time(&average_times, &15));
     }
 
     #[test]

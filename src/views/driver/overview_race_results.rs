@@ -61,12 +61,12 @@ impl KartingTime {
                 race.race_information.car_used.to_string(),
                 race.race_information.race_position.to_string(),
                 format_laptime(race.get_fastest_lap()),
-                Race::get_average_time_cell(&average_times, &5),
-                Race::get_average_time_cell(&average_times, &10),
-                Race::get_average_time_cell(&average_times, &15),
-                Race::get_total_time_cell(&total_times, &5),
-                Race::get_total_time_cell(&total_times, &10),
-                Race::get_total_time_cell(&total_times, &15),
+                Race::get_average_time(&average_times, &5),
+                Race::get_average_time(&average_times, &10),
+                Race::get_average_time(&average_times, &15),
+                Race::get_total_time(&total_times, &5),
+                Race::get_total_time(&total_times, &10),
+                Race::get_total_time(&total_times, &15),
             ]);
         }
 
