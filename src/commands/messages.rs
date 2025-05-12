@@ -23,6 +23,7 @@ pub enum Message {
     LaptimeEditor(text_editor::Action),
     TrackFilterChanged(String),
     DateFilterChanged(String),
+    CarUsedFilterChanged(String),
     ReplacePressed(usize),
     UpdateRacesPressed,
     ClearRaceEditorPressed,
