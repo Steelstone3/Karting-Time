@@ -3,7 +3,7 @@ use crate::{
     controllers::file::file_picker::{
         save_file_location, save_folder_location, select_file_to_load, select_files_to_load,
     },
-    models::application::karting_time::KartingTime,
+    models::{application::karting_time::KartingTime, driver::race_information::RaceInformation},
 };
 
 impl KartingTime {
@@ -116,8 +116,11 @@ impl KartingTime {
             Message::ClearRaceEditorPressed => {
                 self.application_state.race_editor.clear_text_editor();
             }
-            Message::ReplacePressed(index) => {
-                if let Some(race) = self.driver_profile.races.get(index) {
+            Message::ReplacePressed(identifier) => {
+                if let Some(race) = self.driver_profile.races.iter_mut().find(|race| {
+                    RaceInformation::get_unique_race_identifier(&race.race_information)
+                        == identifier
+                }) {
                     self.application_state.new_race = race.clone();
                     self.application_state.race_editor.clear_text_editor();
                     self.application_state.race_editor.paste_laptimes(race);
