@@ -1,7 +1,10 @@
 use crate::{
     commands::messages::Message,
     controllers::driver_profile::time_parser::format_laptime,
-    models::{application::karting_time::KartingTime, driver::race_result::Race},
+    models::{
+        application::karting_time::KartingTime,
+        driver::{race_information::RaceInformation, race_result::Race},
+    },
     table::Table,
 };
 use iced::{
@@ -31,7 +34,7 @@ impl KartingTime {
     fn read_only_result_cards(&self) -> Vec<Card<Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
-        for (index, race) in self.application_state.filtered_races.iter().enumerate() {
+        for race in self.application_state.filtered_races.iter() {
             let header = format!(
                 "{} Session: {} Date: {}",
                 race.race_information.track_name,
@@ -55,7 +58,9 @@ impl KartingTime {
                 .push(text(race_summary))
                 .spacing(10)
                 .padding(10)
-                .push(button("Replace").on_press(Message::ReplacePressed(index)));
+                .push(button("Replace").on_press(Message::ReplacePressed(
+                    RaceInformation::get_unique_race_identifier(&race.race_information),
+                )));
 
             result_cards.push(Card::new(text(header), self.race_result_table(race)).foot(footer));
         }

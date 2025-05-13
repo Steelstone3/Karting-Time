@@ -24,12 +24,10 @@ impl Race {
     }
 
     pub fn get_total_time(total_times: &HashMap<usize, f32>, key: &usize) -> String {
-        let total_time_cell = match total_times.get(key) {
+        match total_times.get(key) {
             Some(total_time) => format_laptime(*total_time),
             None => "N/A".to_string(),
-        };
-
-        total_time_cell
+        }
     }
 
     pub fn calculate_average_total_times(
@@ -51,12 +49,10 @@ impl Race {
     }
 
     pub fn get_average_time(average_times: &HashMap<usize, f32>, key: &usize) -> String {
-        let average_time_cell = match average_times.get(key) {
+        match average_times.get(key) {
             Some(average_time) => format_laptime(*average_time),
             None => "N/A".to_string(),
-        };
-
-        average_time_cell
+        }
     }
 
     fn order_by_fastest_lap(&self) -> Vec<Lap> {

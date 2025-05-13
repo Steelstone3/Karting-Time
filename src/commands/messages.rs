@@ -24,7 +24,7 @@ pub enum Message {
     TrackFilterChanged(String),
     DateFilterChanged(String),
     CarUsedFilterChanged(String),
-    ReplacePressed(usize),
+    ReplacePressed(String),
     UpdateRacesPressed,
     ClearRaceEditorPressed,
 }
