@@ -61,7 +61,7 @@ impl KartingTime {
 }
 
 fn selected_tab_bar(active_tab: &TabIdentifier) -> TabBar<'static, Message, TabIdentifier> {
-    let tab_bar = TabBar::new(Message::SelectedTabChanged)
+    TabBar::new(Message::SelectedTabChanged)
         .push(
             TabIdentifier::Race,
             TabLabel::IconText('\u{1F3CE}', "Race".to_string()),
@@ -78,6 +78,5 @@ fn selected_tab_bar(active_tab: &TabIdentifier) -> TabBar<'static, Message, TabI
             TabIdentifier::Results,
             TabLabel::IconText('\u{1F3C1}', "Results".to_string()),
         )
-        .set_active_tab(active_tab);
-    tab_bar
+        .set_active_tab(active_tab)
 }
