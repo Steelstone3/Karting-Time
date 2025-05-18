@@ -60,6 +60,7 @@ mod profile_file_should {
                         time: 51.877,
                     },
                 ],
+                ..Default::default()
             }],
         };
 
@@ -79,6 +80,7 @@ mod profile_file_should {
                 },
                 laptimes: vec!["50.662".to_string(), "51.877".to_string()],
             }],
+            ..Default::default()
         };
 
         // When

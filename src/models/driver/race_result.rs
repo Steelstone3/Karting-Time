@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 pub struct Race {
     pub race_information: RaceInformation,
     pub laptimes: Vec<Lap>,
+    #[serde(skip)]
+    pub is_deleting: bool,
 }
 
 impl Race {
@@ -75,6 +77,7 @@ mod race_result_should {
                     time: 55.6,
                 },
             ],
+            ..Default::default()
         };
 
         // When

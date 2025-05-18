@@ -25,6 +25,9 @@ pub enum Message {
     DateFilterChanged(String),
     CarUsedFilterChanged(String),
     ReplacePressed(String),
+    DeletePressed(String),
+    DeleteConfirmedPressed(String),
+    DeleteCancelledPressed(String),
     UpdateRacesPressed,
     ClearRaceEditorPressed,
 }

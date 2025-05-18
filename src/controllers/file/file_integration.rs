@@ -192,6 +192,7 @@ mod file_should {
                             time: 55.5,
                         },
                     ],
+                    ..Default::default()
                 },
                 Race {
                     race_information: RaceInformation {
@@ -215,6 +216,7 @@ mod file_should {
                             time: 58.7,
                         },
                     ],
+                    ..Default::default()
                 },
             ],
         }
