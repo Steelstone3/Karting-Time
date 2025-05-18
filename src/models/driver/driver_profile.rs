@@ -100,6 +100,7 @@ mod driver_profile_should {
                         time: 51.877,
                     },
                 ],
+                ..Default::default()
             }],
         };
 

@@ -13,6 +13,7 @@ impl RaceFile {
         Race {
             race_information: self.race_information.clone(),
             laptimes: self.convert_laptimes_to_laps(),
+            is_deleting: Default::default(),
         }
     }
 
@@ -64,6 +65,7 @@ mod race_file_should {
                     time: 51.877,
                 },
             ],
+            ..Default::default()
         };
 
         let race_file = RaceFile {

@@ -9,7 +9,7 @@ use crate::{
 };
 use iced::{
     Element, Renderer, Theme,
-    widget::{button, column, text},
+    widget::{button, column, row, text},
 };
 use iced_aw::widgets::Card;
 
@@ -54,13 +54,47 @@ impl KartingTime {
             )
             .to_string();
 
-            let footer = column!()
-                .push(text(race_summary))
-                .spacing(10)
-                .padding(10)
-                .push(button("Replace").on_press(Message::ReplacePressed(
-                    RaceInformation::get_unique_race_identifier(&race.race_information),
-                )));
+            let footer = match race.is_deleting {
+                true => column!()
+                    .push(text(race_summary))
+                    .spacing(10)
+                    .padding(10)
+                    .push(
+                        row!()
+                            // .push(button("Replace").on_press(Message::ReplacePressed(
+                            //     RaceInformation::get_unique_race_identifier(&race.race_information),
+                            // )))
+                            // .spacing(10)
+                            // .padding(10)
+                            .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
+                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                            )))
+                            .spacing(10)
+                            .padding(10)
+                            .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
+                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                            )))
+                            .spacing(10)
+                            .padding(10),
+                    ),
+                false => column!()
+                    .push(text(race_summary))
+                    .spacing(10)
+                    .padding(10)
+                    .push(
+                        row!()
+                            .push(button("Replace").on_press(Message::ReplacePressed(
+                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                            )))
+                            .spacing(10)
+                            .padding(10)
+                            .push(button("Delete").on_press(Message::DeletePressed(
+                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                            )))
+                            .spacing(10)
+                            .padding(10),
+                    ),
+            };
 
             result_cards.push(Card::new(text(header), self.race_result_table(race)).foot(footer));
         }

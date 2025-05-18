@@ -58,6 +58,7 @@ mod karting_time_file_should {
                             time: 51.877,
                         },
                     ],
+                    ..Default::default()
                 }],
             },
             application_state: Default::default(),

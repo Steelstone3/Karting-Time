@@ -79,6 +79,7 @@ mod update_existing_race {
                 lap_number: 1,
                 time: 10.5,
             }],
+            ..Default::default()
         };
 
         let existing_races = vec![
@@ -98,6 +99,7 @@ mod update_existing_race {
                     lap_number: 1,
                     time: 9.5,
                 }],
+                ..Default::default()
             },
             Race {
                 race_information: RaceInformation {
@@ -115,6 +117,7 @@ mod update_existing_race {
                     lap_number: 1,
                     time: 10.5,
                 }],
+                ..Default::default()
             },
         ];
 
@@ -135,6 +138,7 @@ mod update_existing_race {
                     lap_number: 1,
                     time: 10.5,
                 }],
+                ..Default::default()
             },
             Race {
                 race_information: RaceInformation {
@@ -152,6 +156,7 @@ mod update_existing_race {
                     lap_number: 1,
                     time: 10.5,
                 }],
+                ..Default::default()
             },
         ];
 
