@@ -55,6 +55,7 @@ mod sort_races_should {
                     time: 51.877,
                 },
             ],
+            ..Default::default()
         };
 
         let race_2 = Race {
@@ -79,6 +80,7 @@ mod sort_races_should {
                     time: 51.956,
                 },
             ],
+            ..Default::default()
         };
 
         let race_3 = Race {
@@ -103,6 +105,7 @@ mod sort_races_should {
                     time: 31.956,
                 },
             ],
+            ..Default::default()
         };
 
         let mut driver_profile = DriverProfile {
