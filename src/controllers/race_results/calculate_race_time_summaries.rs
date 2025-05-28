@@ -11,11 +11,13 @@ impl Race {
         let mut current_sum = 0.0;
         let mut current_lap = 0;
 
-        for lap in &self.order_by_fastest_lap() {
+        let fastest_laps = self.order_by_fastest_lap();
+
+        for lap in &fastest_laps {
             current_sum += lap.time;
             current_lap += 1;
 
-            if current_lap % 5 == 0 {
+            if current_lap % 5 == 0 || current_lap == fastest_laps.len() {
                 total_times.insert(current_lap, current_sum);
             }
         }
@@ -104,6 +106,50 @@ mod calculate_race_time_summaries_should {
         let total_5_laps = *total_times.get(&5).unwrap();
 
         assert_eq!(63.299995, total_5_laps);
+    }
+
+    #[test]
+    fn calculate_total_times_last_lap() {
+        // Given
+        let race = Race {
+            laptimes: vec![
+                Lap {
+                    lap_number: 1,
+                    time: 12.4,
+                },
+                Lap {
+                    lap_number: 2,
+                    time: 12.5,
+                },
+                Lap {
+                    lap_number: 3,
+                    time: 12.7,
+                },
+                Lap {
+                    lap_number: 4,
+                    time: 12.8,
+                },
+                Lap {
+                    lap_number: 5,
+                    time: 12.9,
+                },
+                Lap {
+                    lap_number: 6,
+                    time: 20.0,
+                },
+            ],
+            ..Default::default()
+        };
+
+        // When
+        let total_times = race.calculate_total_times();
+
+        // Then
+        let total_5_laps = *total_times.get(&5).unwrap();
+        let total_6_laps = *total_times.get(&6).unwrap();
+
+        assert_eq!(63.299995, total_5_laps);
+        assert_eq!(83.299995, total_6_laps);
     }
 
     #[test]

@@ -48,6 +48,7 @@ impl KartingTime {
             "Total Lap 5".to_string(),
             "Total Lap 10".to_string(),
             "Total Lap 15".to_string(),
+            "Total Time".to_string(),
         ]);
 
         for race in races {
@@ -67,6 +68,7 @@ impl KartingTime {
                 Race::get_total_time(&total_times, &5),
                 Race::get_total_time(&total_times, &10),
                 Race::get_total_time(&total_times, &15),
+                Race::get_total_time(&total_times, &race.laptimes.len()),
             ]);
         }
 
