@@ -22,7 +22,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         let mut file = match File::create(file_name) {
             Ok(file) => file,
             Err(_) => {
-                println!("{}", FILE_ERROR);
+                println!("{FILE_ERROR}");
                 return;
             }
         };
@@ -30,15 +30,15 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         let toml = match toml::to_string_pretty(&race_file) {
             Ok(toml) => toml,
             Err(_) => {
-                println!("{}", CONVERT_ERROR);
+                println!("{CONVERT_ERROR}");
                 return;
             }
         };
 
-        match write!(file, "{}", toml) {
+        match write!(file, "{toml}") {
             Ok(_) => (),
             Err(_) => {
-                println!("{}", WRITE_ERROR);
+                println!("{WRITE_ERROR}");
                 return;
             }
         }
@@ -59,7 +59,7 @@ pub fn upsert_application_state(file_name: &str, karting_time: &KartingTimeFile)
     let mut file = match File::create(file_name) {
         Ok(file) => file,
         Err(_) => {
-            println!("{}", FILE_ERROR);
+            println!("{FILE_ERROR}");
             return;
         }
     };
@@ -67,15 +67,15 @@ pub fn upsert_application_state(file_name: &str, karting_time: &KartingTimeFile)
     let toml = match toml::to_string_pretty(&karting_time) {
         Ok(toml) => toml,
         Err(_) => {
-            println!("{}", CONVERT_ERROR);
+            println!("{CONVERT_ERROR}");
             "".to_string()
         }
     };
 
-    match write!(file, "{}", toml) {
+    match write!(file, "{toml}") {
         Ok(file) => file,
         Err(_) => {
-            println!("{}", WRITE_ERROR);
+            println!("{WRITE_ERROR}");
         }
     }
 }
