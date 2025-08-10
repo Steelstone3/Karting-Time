@@ -14,7 +14,7 @@ use iced::{
 use iced_aw::widgets::Card;
 
 impl KartingTime {
-    pub fn race_results_view(&self) -> iced::widget::Column<Message> {
+    pub fn race_results_view(&self) -> iced::widget::Column<'_, Message> {
         if self.driver_profile.name.is_empty() {
             column!()
         } else {
@@ -31,7 +31,7 @@ impl KartingTime {
         }
     }
 
-    fn read_only_result_cards(&self) -> Vec<Card<Message, Theme, Renderer>> {
+    fn read_only_result_cards(&self) -> Vec<Card<'_, Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
         for race in self.application_state.filtered_races.iter() {
@@ -97,7 +97,7 @@ impl KartingTime {
         result_cards
     }
 
-    fn race_result_table(&self, race: &Race) -> Element<Message> {
+    fn race_result_table(&self, race: &Race) -> Element<'_, Message> {
         let mut table = Table::default();
 
         table.add_headers(vec!["Lap".to_string(), "Time (s)".to_string()]);

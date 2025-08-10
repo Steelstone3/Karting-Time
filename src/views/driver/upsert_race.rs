@@ -3,7 +3,7 @@ use iced::widget::{Column, button, column, text, text_editor, text_input};
 use iced_aw::Card;
 
 impl KartingTime {
-    pub fn upsert_race_view(&self) -> Column<Message> {
+    pub fn upsert_race_view(&self) -> Column<'_, Message> {
         let add_race_contents = column!()
             .push(text("Track Name:"))
             .spacing(10)
