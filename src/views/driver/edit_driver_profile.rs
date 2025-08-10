@@ -4,7 +4,7 @@ use iced_aw::Card;
 use crate::{commands::messages::Message, models::application::karting_time::KartingTime};
 
 impl KartingTime {
-    pub fn edit_driver_profile_view(&self) -> Column<Message> {
+    pub fn edit_driver_profile_view(&self) -> Column<'_, Message> {
         let edit_profile_contents = column!()
             .push(text("Driver Name:"))
             .spacing(10)

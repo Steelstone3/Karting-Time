@@ -6,7 +6,7 @@ use iced_aw::menu::{Item, Menu};
 use iced_aw::{menu_bar, menu_items};
 
 impl KartingTime {
-    pub fn menu_bar_view(&self) -> iced::widget::Column<Message> {
+    pub fn menu_bar_view(&self) -> iced::widget::Column<'_, Message> {
         let menu_template = |items| Menu::new(items).max_width(180.0).offset(6.0);
 
         let menu_bar = menu_bar!((
