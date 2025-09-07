@@ -44,7 +44,7 @@ mod sort_races_should {
                 session_id: 1,
                 race_position: 2,
                 car_used: "Kart".to_string(),
-                notes: Default::default()
+                notes: Default::default(),
             },
             laptimes: vec![
                 Lap {
@@ -70,7 +70,7 @@ mod sort_races_should {
                 session_id: 2,
                 race_position: 1,
                 car_used: "Kart".to_string(),
-                notes: Default::default()
+                notes: Default::default(),
             },
             laptimes: vec![
                 Lap {
@@ -96,7 +96,7 @@ mod sort_races_should {
                 session_id: 1,
                 race_position: 1,
                 car_used: "Kart".to_string(),
-                notes: Default::default()
+                notes: Default::default(),
             },
             laptimes: vec![
                 Lap {

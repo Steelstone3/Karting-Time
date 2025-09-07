@@ -98,21 +98,8 @@ impl KartingTime {
                         .race_editor
                         .get_text_from_text_editor(),
                 );
-                if self
-                    .application_state
-                    .new_race
-                    .is_unique_identifer(&self.driver_profile.races)
-                {
-                    self.driver_profile
-                        .races
-                        .push(self.application_state.new_race.clone());
-                } else {
-                    self.driver_profile.races = self
-                        .application_state
-                        .new_race
-                        .replace_existing_race(&self.driver_profile.races);
-                }
 
+                self.upsert_race();
                 self.driver_profile.sort_races();
                 self.update_filtering();
             }

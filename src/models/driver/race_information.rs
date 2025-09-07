@@ -21,7 +21,7 @@ impl Default for RaceInformation {
             date: Default::default(),
             session_id: 1,
             race_position: 1,
-            car_used: Default::default(),
+            car_used: "N/A".to_string(),
             notes: Default::default(),
         }
     }
@@ -78,7 +78,7 @@ mod race_information_should {
             date: Default::default(),
             session_id: 1,
             race_position: 1,
-            car_used: Default::default(),
+            car_used: "N/A".to_string(),
             notes: Default::default(),
         };
 

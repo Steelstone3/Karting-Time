@@ -41,7 +41,10 @@ impl RaceFile {
 #[cfg(test)]
 mod race_file_should {
     use super::*;
-    use crate::{data_models::race_file::RaceFile, models::{date::Date, driver::race_information::RaceInformation}};
+    use crate::{
+        data_models::race_file::RaceFile,
+        models::{date::Date, driver::race_information::RaceInformation},
+    };
 
     #[test]
     fn convert_to_race() {
