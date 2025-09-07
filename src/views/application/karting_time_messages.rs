@@ -58,24 +58,28 @@ impl KartingTime {
                 self.application_state
                     .new_race
                     .race_information
+                    .session
                     .set_session_id(session_id);
             }
             Message::SessionTypeChanged(session_type) => {
                 self.application_state
                     .new_race
                     .race_information
+                    .session
                     .session_type = session_type;
             }
             Message::TrackConditionsChanged(session_condition) => {
                 self.application_state
                     .new_race
                     .race_information
-                    .track_conditions = session_condition;
+                    .session
+                    .track_condition = session_condition;
             }
             Message::RacePositionChanged(race_position) => {
                 self.application_state
                     .new_race
                     .race_information
+                    .session
                     .set_race_position(race_position);
             }
             Message::CarUsedChanged(car_used) => {

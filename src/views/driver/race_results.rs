@@ -38,16 +38,16 @@ impl KartingTime {
             let header = format!(
                 "{} Session: {} Date: {}",
                 race.race_information.track_name,
-                race.race_information.session_id,
+                race.race_information.session.session_id,
                 race.race_information.date
             );
 
             let race_summary = format!(
                 "Session Type: {}\nTrack Conditions: {}\nCar Used: {}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}\n\nNotes: {}",
-                race.race_information.session_type,
-                race.race_information.track_conditions,
+                race.race_information.session.session_type,
+                race.race_information.session.track_condition,
                 race.race_information.car_used,
-                race.race_information.race_position,
+                race.race_information.session.race_position,
                 race.get_number_of_laps(),
                 format_laptime(race.get_fastest_lap()),
                 format_laptime(race.get_average_lap()),

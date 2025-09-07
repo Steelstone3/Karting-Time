@@ -79,6 +79,7 @@ impl KartingTime {
                         .application_state
                         .new_race
                         .race_information
+                        .session
                         .session_id
                         .to_string(),
                 )
@@ -94,6 +95,7 @@ impl KartingTime {
                         .application_state
                         .new_race
                         .race_information
+                        .session
                         .session_type
                         .to_string(),
                 )
@@ -109,7 +111,8 @@ impl KartingTime {
                         .application_state
                         .new_race
                         .race_information
-                        .track_conditions
+                        .session
+                        .track_condition
                         .to_string(),
                 )
                 .on_input(Message::TrackConditionsChanged),
@@ -124,6 +127,7 @@ impl KartingTime {
                         .application_state
                         .new_race
                         .race_information
+                        .session
                         .race_position
                         .to_string(),
                 )

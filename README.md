@@ -10,42 +10,73 @@ Project to document all race times in a profile
 >
 > cargo run
 
-### Testing Karting Time
+## Testing Karting Time
 
 > cd ~/Karting-Time
 >
 > cargo test
 
-### Importing Files
+## Importing Files
 
 To import races use the following formats
 
-#### TOML
+### TOML
 
-##### Race
+#### Race
 
 ```toml
 laptimes = [
-    53.59,
-    35.68,
-    35.34,
-    34.63,
-    34.65,
+    "48.667",
+    "43.434",
+    "42.564",
+    "33.39",
+    "34.011",
+    "34.915",
+    "31.127",
+    "33.36",
+    "30.971",
+    "30.875",
+    "32.708",
+    "31.274",
+    "36.726",
+    "32.192",
+    "30.264",
+    "31.648",
+    "30.544",
+    "30.402",
+    "31.014",
+    "30.696",
+    "30.784",
+    "32.554",
+    "31.242",
+    "30.626",
+    "30.914",
+    "29.7",
+    "29.922",
+    "30.833",
+    "30.624",
+    "30.041",
+    "31.061",
+    "30.488",
+    "31.239",
+    "33.217",
+    "29.931",
 ]
+day = 18
+month = 11
+year = 2023
+race_position = 2
+track_name = "Rochdale"
+session_id = 1
 
-[race_information]
-track_name = "Trafford Park"
-session_id = 3
-race_position = 6
-car_used = "Biz Evo 3"
-
-[race_information.date]
-day = 27
-month = 1
-year = 2025
+# Optional
+track_conditions = "Indoor"
+session_type = "Race"
+car_used = "Sodi GT5"
+notes = "Private race event"
 ```
 
-##### Driver Profile
+#### Driver Profile
 
 ```toml
 [driver_profile]
@@ -76,17 +107,18 @@ laptimes = [
     "52.555",
     "58.763",
 ]
-
-[driver_profile.races.race_information]
-track_name = "Three Sisters"
-session_id = 1
-race_position = 7
-car_used = "Sodi RT10"
-
-[driver_profile.races.race_information.date]
 day = 24
 month = 3
 year = 2025
+race_position = 7
+track_name = "Three Sisters"
+session_id = 1
+
+# Optional
+track_conditions = "Dry"
+session_type = "Practise"
+car_used = "Sodi RT10"
+notes = "Had fun!"
 
 [[driver_profile.races]]
 laptimes = [
@@ -114,20 +146,21 @@ laptimes = [
     "52.455",
     "52.261",
 ]
-
-[driver_profile.races.race_information]
-track_name = "Three Sisters"
-session_id = 2
-race_position = 6
-car_used = "Sodi RT10"
-
-[driver_profile.races.race_information.date]
 day = 24
 month = 3
 year = 2025
+track_name = "Three Sisters"
+session_id = 2
+race_position = 6
+
+# Optional
+track_conditions = "Dry"
+session_type = "Practise"
+car_used = "Sodi RT10"
+notes = "Had fun!"
 ```
 
-### Dependencies
+## Dependencies
 
 Follow the steps for installing rustc runtime for your given operating system.
 
