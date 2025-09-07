@@ -58,9 +58,9 @@ impl KartingTime {
             table.add_row(vec![
                 race.race_information.track_name.to_string(),
                 race.race_information.date.to_string(),
-                race.race_information.session_id.to_string(),
+                race.race_information.session.session_id.to_string(),
                 race.race_information.car_used.to_string(),
-                race.race_information.race_position.to_string(),
+                race.race_information.session.race_position.to_string(),
                 format_laptime(race.get_fastest_lap()),
                 Race::get_average_time(&average_times, &5),
                 Race::get_average_time(&average_times, &10),

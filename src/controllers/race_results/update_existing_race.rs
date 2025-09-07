@@ -38,14 +38,16 @@ mod update_existing_race {
 
     use crate::models::{
         date::Date,
-        driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
+        driver::{
+            lap::Lap, race_information::RaceInformation, race_result::Race, session::Session,
+        },
     };
 
     #[rstest]
-    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() }, false)]
-    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:16,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:17,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() }, true)]
-    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:2,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:3,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() }, true)]
-    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Four Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Five Sisters".to_string(),date:Date{day:15,month:11,year:2025},session_id:1,race_position:1,car_used:"Kart".to_string(),notes:Default::default(), session_type: "N/A".to_string(), track_conditions: "N/A".to_string() }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default()}, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default()}, ..Default::default() }, ..Default::default() }, false)]
+    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default()}, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 2, ..Default::default() }, ..Default::default() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 3, ..Default::default()}, ..Default::default() }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default()}, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Four Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Five Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default()}, ..Default::default() }, ..Default::default() }, true)]
+    #[case(Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:15,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default()}, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:16,month:11,year:2025}, session: Session { session_id: 1, ..Default::default() }, ..Default::default() }, ..Default::default() },Race{ race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:17,month:11,year:2025}, session: Session { session_id: 1, ..Default::default()}, ..Default::default() }, ..Default::default() }, true)]
     fn is_unique_identifer(
         #[case] race_1: Race,
         #[case] race_2: Race,
@@ -73,11 +75,13 @@ mod update_existing_race {
                     month: 11,
                     year: 2025,
                 },
-                session_id: 1,
-                session_type: "N/A".to_string(),
-                track_conditions: "N/A".to_string(),
-
-                race_position: 5,
+                session: Session {
+                    session_id: 1,
+                    session_type: "N/A".to_string(),
+                    track_condition: "N/A".to_string(),
+                    race_position: 5,
+                    ..Default::default()
+                },
                 car_used: "Kart".to_string(),
                 notes: Default::default(),
             },
@@ -97,10 +101,13 @@ mod update_existing_race {
                         month: 11,
                         year: 2025,
                     },
-                    session_id: 1,
-                    session_type: "N/A".to_string(),
-                    track_conditions: "N/A".to_string(),
-                    race_position: 3,
+                    session: Session {
+                        session_id: 1,
+                        session_type: "N/A".to_string(),
+                        track_condition: "N/A".to_string(),
+                        race_position: 3,
+                        ..Default::default()
+                    },
                     car_used: "Kart".to_string(),
                     notes: Default::default(),
                 },
@@ -118,10 +125,13 @@ mod update_existing_race {
                         month: 11,
                         year: 2025,
                     },
-                    session_id: 2,
-                    session_type: "N/A".to_string(),
-                    track_conditions: "N/A".to_string(),
-                    race_position: 5,
+                    session: Session {
+                        session_id: 2,
+                        session_type: "N/A".to_string(),
+                        track_condition: "N/A".to_string(),
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     car_used: "Kart".to_string(),
                     notes: Default::default(),
                 },
@@ -142,10 +152,13 @@ mod update_existing_race {
                         month: 11,
                         year: 2025,
                     },
-                    session_id: 1,
-                    session_type: "N/A".to_string(),
-                    track_conditions: "N/A".to_string(),
-                    race_position: 5,
+                    session: Session {
+                        session_id: 1,
+                        session_type: "N/A".to_string(),
+                        track_condition: "N/A".to_string(),
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     car_used: "Kart".to_string(),
                     notes: Default::default(),
                 },
@@ -163,10 +176,13 @@ mod update_existing_race {
                         month: 11,
                         year: 2025,
                     },
-                    session_id: 2,
-                    session_type: "N/A".to_string(),
-                    track_conditions: "N/A".to_string(),
-                    race_position: 5,
+                    session: Session {
+                        session_id: 2,
+                        session_type: "N/A".to_string(),
+                        track_condition: "N/A".to_string(),
+                        race_position: 5,
+                        ..Default::default()
+                    },
                     car_used: "Kart".to_string(),
                     notes: Default::default(),
                 },

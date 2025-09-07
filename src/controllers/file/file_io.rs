@@ -1,6 +1,5 @@
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
-use crate::data_models::race_information_file::RaceInformationFile;
 use crate::models::driver::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -16,9 +15,7 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         let file_name = format!(
             "{}/{}.toml",
             file_location,
-            RaceInformationFile::get_unique_race_information_file_identifier(
-                &race_file.race_information
-            )
+            RaceFile::get_unique_race_information_file_identifier(&race_file)
         );
 
         let mut file = match File::create(file_name) {
@@ -105,9 +102,9 @@ fn get_file_contents(file_name: &str) -> String {
 #[cfg(test)]
 mod file_integration_should {
     use super::*;
-    use crate::{
-        data_models::race_information_file::RaceInformationFile,
-        models::{date::Date, driver::race_information::RaceInformation},
+    use crate::models::{
+        date::Date,
+        driver::{race_information::RaceInformation, session::Session},
     };
     use std::fs;
 
@@ -123,7 +120,10 @@ mod file_integration_should {
                     month: 1,
                     year: 2025,
                 },
-                session_id: 1,
+                session: Session {
+                    session_id: 1,
+                    ..Default::default()
+                },
                 ..Default::default()
             },
             ..Default::default()
@@ -151,7 +151,10 @@ mod file_integration_should {
                     month: 1,
                     year: 2025,
                 },
-                session_id: 1,
+                session: Session {
+                    session_id: 1,
+                    ..Default::default()
+                },
                 ..Default::default()
             },
             ..Default::default()
@@ -192,30 +195,31 @@ mod file_integration_should {
                     month: 5,
                     year: 2026,
                 },
-                session_id: 1,
-                session_type: "N/A".to_string(),
-                track_conditions: "N/A".to_string(),
-                race_position: 1,
+                session: Session {
+                    session_id: 1,
+                    session_type: "N/A".to_string(),
+                    track_condition: "N/A".to_string(),
+                    race_position: 1,
+                    ..Default::default()
+                },
                 car_used: "Kart".to_string(),
                 notes: "Notes".to_string(),
             },
             ..Default::default()
         }];
         let expected_race_file = RaceFile {
-            race_information: RaceInformationFile {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 17,
-                    month: 5,
-                    year: 2026,
-                },
-                session_id: 1,
-                race_position: 1,
-                car_used: Some("Kart".to_string()),
-                notes: Some("Notes".to_string()),
-                session_type: Some("N/A".to_string()),
-                session_conditions: Some("N/A".to_string()),
-            },
+            track_name: "Three Sisters".to_string(),
+
+            day: 17,
+            month: 5,
+            year: 2026,
+
+            session_id: 1,
+            race_position: 1,
+            car_used: Some("Kart".to_string()),
+            notes: Some("Notes".to_string()),
+            session_type: Some("N/A".to_string()),
+            track_conditions: Some("N/A".to_string()),
             ..Default::default()
         };
 
@@ -242,30 +246,29 @@ mod file_integration_should {
                     month: 5,
                     year: 2026,
                 },
-                session_id: 1,
-                session_type: "".to_string(),
-                track_conditions: "".to_string(),
-                race_position: 1,
+                session: Session {
+                    session_id: 1,
+                    session_type: "".to_string(),
+                    track_condition: "".to_string(),
+                    race_position: 1,
+                    ..Default::default()
+                },
                 car_used: "".to_string(),
                 notes: "".to_string(),
             },
             ..Default::default()
         }];
         let expected_race_file = RaceFile {
-            race_information: RaceInformationFile {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 27,
-                    month: 5,
-                    year: 2026,
-                },
-                session_id: 1,
-                race_position: 1,
-                car_used: None,
-                notes: None,
-                session_type: None,
-                session_conditions: None,
-            },
+            track_name: "Three Sisters".to_string(),
+            day: 27,
+            month: 5,
+            year: 2026,
+            session_id: 1,
+            race_position: 1,
+            car_used: None,
+            notes: None,
+            session_type: None,
+            track_conditions: None,
             ..Default::default()
         };
 

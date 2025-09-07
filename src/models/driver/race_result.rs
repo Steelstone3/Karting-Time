@@ -12,9 +12,38 @@ pub struct Race {
 
 impl Race {
     pub fn convert_to_race_file(&self) -> RaceFile {
+        let mut session_type = None;
+        if !self.race_information.session.session_type.is_empty() {
+            session_type = Some(self.race_information.session.session_type.clone());
+        }
+
+        let mut track_conditions = None;
+        if !self.race_information.session.track_condition.is_empty() {
+            track_conditions = Some(self.race_information.session.track_condition.clone());
+        }
+
+        let mut car_used = None;
+        if !self.race_information.car_used.is_empty() {
+            car_used = Some(self.race_information.car_used.clone());
+        }
+
+        let mut notes = None;
+        if !self.race_information.notes.is_empty() {
+            notes = Some(self.race_information.notes.clone());
+        }
+
         RaceFile {
-            race_information: self.race_information.convert_to_race_information_file(),
             laptimes: self.convert_laps_to_laptimes(),
+            race_position: self.race_information.session.race_position,
+            track_name: self.race_information.track_name.clone(),
+            track_conditions,
+            session_id: self.race_information.session.session_id,
+            session_type,
+            car_used,
+            notes,
+            day: self.race_information.date.day,
+            month: self.race_information.date.month,
+            year: self.race_information.date.year,
         }
     }
 
@@ -34,26 +63,22 @@ impl Race {
 #[cfg(test)]
 mod race_result_should {
     use super::*;
-    use crate::{data_models::race_information_file::RaceInformationFile, models::date::Date};
+    use crate::models::{date::Date, driver::session::Session};
 
     #[test]
     fn convert_to_race_file() {
         // Given
         let expected_race_file = RaceFile {
-            race_information: RaceInformationFile {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 15,
-                    month: 11,
-                    year: 2025,
-                },
-                session_id: 2,
-                race_position: 7,
-                car_used: Some("Kart".to_string()),
-                notes: Some("Notes".to_string()),
-                session_type: Some("N/A".to_string()),
-                session_conditions: Some("N/A".to_string()),
-            },
+            track_name: "Three Sisters".to_string(),
+            day: 15,
+            month: 11,
+            year: 2025,
+            session_id: 2,
+            race_position: 7,
+            car_used: Some("Kart".to_string()),
+            notes: Some("Notes".to_string()),
+            session_type: Some("N/A".to_string()),
+            track_conditions: Some("N/A".to_string()),
             laptimes: vec!["54.2".to_string(), "55.6".to_string()],
         };
 
@@ -64,10 +89,12 @@ mod race_result_should {
                 month: 11,
                 year: 2025,
             },
-            session_id: 2,
-            session_type: "N/A".to_string(),
-            track_conditions: "N/A".to_string(),
-            race_position: 7,
+            session: Session {
+                session_id: 2,
+                session_type: "N/A".to_string(),
+                track_condition: "N/A".to_string(),
+                race_position: 7,
+            },
             car_used: "Kart".to_string(),
             notes: "Notes".to_string(),
         };

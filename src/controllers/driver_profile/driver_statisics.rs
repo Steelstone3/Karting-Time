@@ -10,7 +10,7 @@ impl KartingTime {
         self.application_state
             .filtered_races
             .iter()
-            .filter(|race| race.race_information.race_position == 1)
+            .filter(|race| race.race_information.session.race_position == 1)
             .count() as u32
     }
 
@@ -18,7 +18,7 @@ impl KartingTime {
         self.application_state
             .filtered_races
             .iter()
-            .filter(|race| race.race_information.race_position <= 3)
+            .filter(|race| race.race_information.session.race_position <= 3)
             .count() as u32
     }
 
@@ -26,7 +26,7 @@ impl KartingTime {
         self.application_state
             .filtered_races
             .iter()
-            .filter(|race| race.race_information.race_position <= 5)
+            .filter(|race| race.race_information.session.race_position <= 5)
             .count() as u32
     }
 
@@ -34,7 +34,7 @@ impl KartingTime {
         self.application_state
             .filtered_races
             .iter()
-            .filter(|race| race.race_information.race_position <= 10)
+            .filter(|race| race.race_information.session.race_position <= 10)
             .count() as u32
     }
 
@@ -71,7 +71,7 @@ impl KartingTime {
 mod driver_statistics_should {
     use crate::models::{
         application::{application_state::ApplicationState, karting_time::KartingTime},
-        driver::{race_information::RaceInformation, race_result::Race},
+        driver::{race_information::RaceInformation, race_result::Race, session::Session},
     };
 
     #[test]
@@ -117,28 +117,40 @@ mod driver_statistics_should {
                 filtered_races: vec![
                     Race {
                         race_information: RaceInformation {
-                            race_position: 1,
+                            session: Session {
+                                race_position: 1,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 5,
+                            session: Session {
+                                race_position: 5,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 1,
+                            session: Session {
+                                race_position: 1,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 3,
+                            session: Session {
+                                race_position: 3,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
@@ -166,28 +178,40 @@ mod driver_statistics_should {
                 filtered_races: vec![
                     Race {
                         race_information: RaceInformation {
-                            race_position: 2,
+                            session: Session {
+                                race_position: 2,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 5,
+                            session: Session {
+                                race_position: 5,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 1,
+                            session: Session {
+                                race_position: 1,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 3,
+                            session: Session {
+                                race_position: 3,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
@@ -215,28 +239,40 @@ mod driver_statistics_should {
                 filtered_races: vec![
                     Race {
                         race_information: RaceInformation {
-                            race_position: 1,
+                            session: Session {
+                                race_position: 1,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 6,
+                            session: Session {
+                                race_position: 6,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 5,
+                            session: Session {
+                                race_position: 5,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 3,
+                            session: Session {
+                                race_position: 3,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
@@ -264,28 +300,40 @@ mod driver_statistics_should {
                 filtered_races: vec![
                     Race {
                         race_information: RaceInformation {
-                            race_position: 10,
+                            session: Session {
+                                race_position: 10,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 12,
+                            session: Session {
+                                race_position: 12,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 11,
+                            session: Session {
+                                race_position: 11,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
                     },
                     Race {
                         race_information: RaceInformation {
-                            race_position: 3,
+                            session: Session {
+                                race_position: 3,
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()

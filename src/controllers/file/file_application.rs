@@ -46,7 +46,7 @@ mod file_should {
         date::Date,
         driver::{
             driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
-            race_result::Race,
+            race_result::Race, session::Session,
         },
     };
     use std::fs;
@@ -94,15 +94,17 @@ mod file_should {
         let races = vec![Race {
             race_information: RaceInformation {
                 track_name: "Three Sisters".to_string(),
-                race_position: 1,
                 date: Date {
                     day: 17,
                     month: 10,
                     year: 2027,
                 },
-                session_id: 1,
-                session_type: "N/A".to_string(),
-                track_conditions: "N/A".to_string(),
+                session: Session {
+                    race_position: 1,
+                    session_id: 1,
+                    session_type: "N/A".to_string(),
+                    track_condition: "N/A".to_string(),
+                },
                 car_used: "Kart".to_string(),
                 notes: "Notes".to_string(),
             },
@@ -182,10 +184,12 @@ mod file_should {
                             month: 12,
                             year: 2025,
                         },
-                        session_id: 1,
-                        session_type: "N/A".to_string(),
-                        track_conditions: "N/A".to_string(),
-                        race_position: 1,
+                        session: Session {
+                            session_id: 1,
+                            session_type: "N/A".to_string(),
+                            track_condition: "N/A".to_string(),
+                            race_position: 1,
+                        },
                         car_used: "Kart".to_string(),
                         notes: Default::default(),
                     },
@@ -209,10 +213,12 @@ mod file_should {
                             month: 1,
                             year: 2024,
                         },
-                        session_id: 2,
-                        session_type: "N/A".to_string(),
-                        track_conditions: "N/A".to_string(),
-                        race_position: 3,
+                        session: Session {
+                            session_id: 2,
+                            session_type: "N/A".to_string(),
+                            track_condition: "N/A".to_string(),
+                            race_position: 3,
+                        },
                         car_used: "Kart".to_string(),
                         notes: Default::default(),
                     },

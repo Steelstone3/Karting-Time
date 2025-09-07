@@ -13,8 +13,9 @@ impl DriverProfile {
                 })
                 .then_with(|| {
                     a.race_information
+                        .session
                         .session_id
-                        .cmp(&b.race_information.session_id)
+                        .cmp(&b.race_information.session.session_id)
                 })
         });
     }
@@ -26,7 +27,7 @@ mod sort_races_should {
         date::Date,
         driver::{
             driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
-            race_result::Race,
+            race_result::Race, session::Session,
         },
     };
 
@@ -41,10 +42,13 @@ mod sort_races_should {
                     month: 10,
                     year: 2024,
                 },
-                session_id: 1,
-                session_type: "N/A".to_string(),
-                track_conditions: "N/A".to_string(),
-                race_position: 2,
+                session: Session {
+                    session_id: 1,
+                    session_type: "N/A".to_string(),
+                    track_condition: "N/A".to_string(),
+                    race_position: 2,
+                    ..Default::default()
+                },
                 car_used: "Kart".to_string(),
                 notes: Default::default(),
             },
@@ -69,10 +73,13 @@ mod sort_races_should {
                     month: 10,
                     year: 2024,
                 },
-                session_id: 2,
-                session_type: "N/A".to_string(),
-                track_conditions: "N/A".to_string(),
-                race_position: 1,
+                session: Session {
+                    session_id: 2,
+                    session_type: "N/A".to_string(),
+                    track_condition: "N/A".to_string(),
+                    race_position: 1,
+                    ..Default::default()
+                },
                 car_used: "Kart".to_string(),
                 notes: Default::default(),
             },
@@ -97,10 +104,13 @@ mod sort_races_should {
                     month: 10,
                     year: 2024,
                 },
-                session_id: 1,
-                session_type: "N/A".to_string(),
-                track_conditions: "N/A".to_string(),
-                race_position: 1,
+                session: Session {
+                    session_id: 1,
+                    session_type: "N/A".to_string(),
+                    track_condition: "N/A".to_string(),
+                    race_position: 1,
+                    ..Default::default()
+                },
                 car_used: "Kart".to_string(),
                 notes: Default::default(),
             },

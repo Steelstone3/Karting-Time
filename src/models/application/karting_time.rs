@@ -23,13 +23,12 @@ impl KartingTime {
 #[cfg(test)]
 mod karting_time_should {
     use crate::{
-        data_models::{
-            driver_profile_file::DriverProfileFile, race_file::RaceFile,
-            race_information_file::RaceInformationFile,
-        },
+        data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
         models::{
             date::Date,
-            driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
+            driver::{
+                lap::Lap, race_information::RaceInformation, race_result::Race, session::Session,
+            },
         },
     };
 
@@ -42,20 +41,16 @@ mod karting_time_should {
             driver_profile: DriverProfileFile {
                 name: "Karl Chadwick".to_string(),
                 races: vec![RaceFile {
-                    race_information: RaceInformationFile {
-                        track_name: "Three Ponies".to_string(),
-                        date: Date {
-                            day: 15,
-                            month: 10,
-                            year: 2024,
-                        },
-                        session_id: 1,
-                        race_position: 2,
-                        car_used: Some("Kart".to_string()),
-                        notes: Some("Notes".to_string()),
-                        session_type: Some("N/A".to_string()),
-                        session_conditions: Some("N/A".to_string()),
-                    },
+                    track_name: "Three Ponies".to_string(),
+                    day: 15,
+                    month: 10,
+                    year: 2024,
+                    session_id: 1,
+                    race_position: 2,
+                    car_used: Some("Kart".to_string()),
+                    notes: Some("Notes".to_string()),
+                    session_type: Some("N/A".to_string()),
+                    track_conditions: Some("N/A".to_string()),
                     laptimes: vec!["50.662".to_string(), "51.877".to_string()],
                 }],
             },
@@ -72,10 +67,12 @@ mod karting_time_should {
                             month: 10,
                             year: 2024,
                         },
-                        session_id: 1,
-                        session_type: "N/A".to_string(),
-                        track_conditions: "N/A".to_string(),
-                        race_position: 2,
+                        session: Session {
+                            session_id: 1,
+                            session_type: "N/A".to_string(),
+                            track_condition: "N/A".to_string(),
+                            race_position: 2,
+                        },
                         car_used: "Kart".to_string(),
                         notes: "Notes".to_string(),
                     },
