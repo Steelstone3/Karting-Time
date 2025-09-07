@@ -84,6 +84,36 @@ impl KartingTime {
                 )
                 .on_input(Message::SessionIdChanged),
             )
+            .push(text("Session Type:"))
+            .spacing(10)
+            .padding(10)
+            .push(
+                text_input(
+                    "Session Type: e.g Q, R, FP",
+                    &self
+                        .application_state
+                        .new_race
+                        .race_information
+                        .session_type
+                        .to_string(),
+                )
+                .on_input(Message::SessionTypeChanged),
+            )
+            .push(text("Track Conditions:"))
+            .spacing(10)
+            .padding(10)
+            .push(
+                text_input(
+                    "Track Conditions: e.g Dry, Wet etc.",
+                    &self
+                        .application_state
+                        .new_race
+                        .race_information
+                        .track_conditions
+                        .to_string(),
+                )
+                .on_input(Message::TrackConditionsChanged),
+            )
             .push(text("Race Position:"))
             .spacing(10)
             .padding(10)

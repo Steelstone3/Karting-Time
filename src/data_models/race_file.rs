@@ -58,6 +58,8 @@ mod race_file_should {
                     year: 2024,
                 },
                 session_id: 1,
+                session_type: "N/A".to_string(),
+                track_conditions: "N/A".to_string(),
                 race_position: 2,
                 car_used: "Kart".to_string(),
                 notes: "Notes".to_string(),
@@ -87,6 +89,8 @@ mod race_file_should {
                 race_position: 2,
                 car_used: Some("Kart".to_string()),
                 notes: Some("Notes".to_string()),
+                session_type: Some("N/A".to_string()),
+                session_conditions: Some("N/A".to_string()),
             },
             laptimes: vec!["50.662".to_string(), "51.877".to_string()],
         };
