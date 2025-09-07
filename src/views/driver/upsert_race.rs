@@ -114,6 +114,16 @@ impl KartingTime {
                 )
                 .on_input(Message::CarUsedChanged),
             )
+            .push(text("Notes:"))
+            .spacing(10)
+            .padding(10)
+            .push(
+                text_input(
+                    "Notes about the session",
+                    &self.application_state.new_race.race_information.notes,
+                )
+                .on_input(Message::NotesChanged),
+            )
             .push(text("Laps:"))
             .spacing(10)
             .padding(10)

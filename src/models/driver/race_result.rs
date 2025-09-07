@@ -13,7 +13,7 @@ pub struct Race {
 impl Race {
     pub fn convert_to_race_file(&self) -> RaceFile {
         RaceFile {
-            race_information: self.race_information.clone(),
+            race_information: self.race_information.convert_to_race_information_file(),
             laptimes: self.convert_laps_to_laptimes(),
         }
     }
@@ -34,13 +34,13 @@ impl Race {
 #[cfg(test)]
 mod race_result_should {
     use super::*;
-    use crate::models::date::Date;
+    use crate::{data_models::race_information_file::RaceInformationFile, models::date::Date};
 
     #[test]
     fn convert_to_race_file() {
         // Given
         let expected_race_file = RaceFile {
-            race_information: RaceInformation {
+            race_information: RaceInformationFile {
                 track_name: "Three Sisters".to_string(),
                 date: Date {
                     day: 15,
@@ -49,7 +49,8 @@ mod race_result_should {
                 },
                 session_id: 2,
                 race_position: 7,
-                car_used: "Kart".to_string(),
+                car_used: Some("Kart".to_string()),
+                notes: Some("Notes".to_string()),
             },
             laptimes: vec!["54.2".to_string(), "55.6".to_string()],
         };
@@ -64,6 +65,7 @@ mod race_result_should {
             session_id: 2,
             race_position: 7,
             car_used: "Kart".to_string(),
+            notes: "Notes".to_string(),
         };
         let race = Race {
             race_information,

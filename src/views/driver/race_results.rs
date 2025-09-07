@@ -42,15 +42,17 @@ impl KartingTime {
                 race.race_information.date
             );
 
+          
             let race_summary = format!(
-                "Car Used: {}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}",
+                "Car Used: {}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}\n\nNotes: {}",
                 race.race_information.car_used,
                 race.race_information.race_position,
                 race.get_number_of_laps(),
                 format_laptime(race.get_fastest_lap()),
                 format_laptime(race.get_average_lap()),
                 race.convert_total_times_to_string(),
-                race.convert_average_total_times_to_string()
+                race.convert_average_total_times_to_string(),
+                race.race_information.notes
             )
             .to_string();
 
@@ -62,12 +64,12 @@ impl KartingTime {
                     .push(
                         row!()
                             .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
-                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                                RaceInformation::get_unique_race_information_identifier(&race.race_information),
                             )))
                             .spacing(10)
                             .padding(10)
                             .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
-                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                                RaceInformation::get_unique_race_information_identifier(&race.race_information),
                             )))
                             .spacing(10)
                             .padding(10),
@@ -79,12 +81,12 @@ impl KartingTime {
                     .push(
                         row!()
                             .push(button("Replace").on_press(Message::ReplacePressed(
-                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                                RaceInformation::get_unique_race_information_identifier(&race.race_information),
                             )))
                             .spacing(10)
                             .padding(10)
                             .push(button("Delete").on_press(Message::DeletePressed(
-                                RaceInformation::get_unique_race_identifier(&race.race_information),
+                                RaceInformation::get_unique_race_information_identifier(&race.race_information),
                             )))
                             .spacing(10)
                             .padding(10),

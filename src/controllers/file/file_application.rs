@@ -65,7 +65,7 @@ mod file_should {
 
         // Then
         let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_identifier(
+            + &RaceInformation::get_unique_race_information_identifier(
                 &karting_time.driver_profile.races[0].race_information,
             )
             + ".toml";
@@ -108,7 +108,7 @@ mod file_should {
         // When
         upsert_races(file_location, &races);
         let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
         karting_time.import_race(vec![file_name]);
 
@@ -181,6 +181,7 @@ mod file_should {
                         session_id: 1,
                         race_position: 1,
                         car_used: "Kart".to_string(),
+                        notes: Default::default()
                     },
                     laptimes: vec![
                         Lap {
@@ -205,6 +206,7 @@ mod file_should {
                         session_id: 2,
                         race_position: 3,
                         car_used: "Kart".to_string(),
+                        notes: Default::default()
                     },
                     laptimes: vec![
                         Lap {
