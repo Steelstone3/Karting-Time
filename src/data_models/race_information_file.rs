@@ -30,7 +30,7 @@ impl RaceInformationFile {
             race_position,
             car_used: match &self.car_used {
                 Some(car_used) => car_used,
-                None => "",
+                None => "N/A",
             }
             .to_string(),
             notes: match &self.notes {
@@ -106,7 +106,7 @@ mod race_information_file_should {
             },
             session_id: 1,
             race_position: 2,
-            car_used: "".to_string(),
+            car_used: "N/A".to_string(),
             notes: "".to_string(),
         };
 

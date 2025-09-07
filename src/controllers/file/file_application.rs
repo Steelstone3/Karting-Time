@@ -94,13 +94,15 @@ mod file_should {
         let races = vec![Race {
             race_information: RaceInformation {
                 track_name: "Three Sisters".to_string(),
+                race_position: 1,
                 date: Date {
                     day: 17,
                     month: 10,
                     year: 2027,
                 },
                 session_id: 1,
-                ..Default::default()
+                car_used: "Kart".to_string(),
+                notes: "Notes".to_string(),
             },
             ..Default::default()
         }];
@@ -181,7 +183,7 @@ mod file_should {
                         session_id: 1,
                         race_position: 1,
                         car_used: "Kart".to_string(),
-                        notes: Default::default()
+                        notes: Default::default(),
                     },
                     laptimes: vec![
                         Lap {
@@ -206,7 +208,7 @@ mod file_should {
                         session_id: 2,
                         race_position: 3,
                         car_used: "Kart".to_string(),
-                        notes: Default::default()
+                        notes: Default::default(),
                     },
                     laptimes: vec![
                         Lap {

@@ -1,5 +1,6 @@
 use iced::widget::canvas::path::lyon_path::geom::euclid::num::Floor;
 
+// TODO AH consider hours
 pub fn format_laptime(time_in_seconds: f32) -> String {
     if time_in_seconds < 60.0 {
         return format!("{time_in_seconds:.2}");
@@ -17,4 +18,11 @@ pub fn format_laptime(time_in_seconds: f32) -> String {
     } else {
         format!("{minutes}:{seconds:02.2}")
     }
+}
+
+#[cfg(test)]
+mod format_laptime_should {
+    #[test]
+    #[ignore]
+    fn format_laptime() {}
 }

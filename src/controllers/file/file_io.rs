@@ -234,7 +234,7 @@ mod file_integration_should {
             race_information: RaceInformation {
                 track_name: "Three Sisters".to_string(),
                 date: Date {
-                    day: 17,
+                    day: 27,
                     month: 5,
                     year: 2026,
                 },
@@ -249,7 +249,7 @@ mod file_integration_should {
             race_information: RaceInformationFile {
                 track_name: "Three Sisters".to_string(),
                 date: Date {
-                    day: 17,
+                    day: 27,
                     month: 5,
                     year: 2026,
                 },

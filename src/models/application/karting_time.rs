@@ -23,7 +23,10 @@ impl KartingTime {
 #[cfg(test)]
 mod karting_time_should {
     use crate::{
-        data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile, race_information_file::RaceInformationFile},
+        data_models::{
+            driver_profile_file::DriverProfileFile, race_file::RaceFile,
+            race_information_file::RaceInformationFile,
+        },
         models::{
             date::Date,
             driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
@@ -49,7 +52,7 @@ mod karting_time_should {
                         session_id: 1,
                         race_position: 2,
                         car_used: Some("Kart".to_string()),
-                        notes: Some("Notes".to_string())
+                        notes: Some("Notes".to_string()),
                     },
                     laptimes: vec!["50.662".to_string(), "51.877".to_string()],
                 }],
@@ -70,7 +73,7 @@ mod karting_time_should {
                         session_id: 1,
                         race_position: 2,
                         car_used: "Kart".to_string(),
-                        notes: "Notes".to_string()
+                        notes: "Notes".to_string(),
                     },
                     laptimes: vec![
                         Lap {

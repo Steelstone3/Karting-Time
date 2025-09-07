@@ -19,7 +19,9 @@ impl Race {
 
         for i in 0..updated_races.len() {
             if RaceInformation::get_unique_race_information_identifier(&self.race_information)
-                == RaceInformation::get_unique_race_information_identifier(&updated_races[i].race_information)
+                == RaceInformation::get_unique_race_information_identifier(
+                    &updated_races[i].race_information,
+                )
             {
                 updated_races[i] = self.clone();
                 return updated_races;
@@ -74,7 +76,7 @@ mod update_existing_race {
                 session_id: 1,
                 race_position: 5,
                 car_used: "Kart".to_string(),
-                notes: Default::default()
+                notes: Default::default(),
             },
             laptimes: vec![Lap {
                 lap_number: 1,
@@ -95,7 +97,7 @@ mod update_existing_race {
                     session_id: 1,
                     race_position: 3,
                     car_used: "Kart".to_string(),
-                    notes: Default::default()
+                    notes: Default::default(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
@@ -114,7 +116,7 @@ mod update_existing_race {
                     session_id: 2,
                     race_position: 5,
                     car_used: "Kart".to_string(),
-                    notes: Default::default()
+                    notes: Default::default(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
@@ -136,7 +138,7 @@ mod update_existing_race {
                     session_id: 1,
                     race_position: 5,
                     car_used: "Kart".to_string(),
-                    notes: Default::default()
+                    notes: Default::default(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
@@ -155,7 +157,7 @@ mod update_existing_race {
                     session_id: 2,
                     race_position: 5,
                     car_used: "Kart".to_string(),
-                    notes: Default::default()
+                    notes: Default::default(),
                 },
                 laptimes: vec![Lap {
                     lap_number: 1,
