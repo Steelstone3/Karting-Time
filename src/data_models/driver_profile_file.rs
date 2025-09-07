@@ -26,9 +26,12 @@ impl DriverProfileFile {
 
 #[cfg(test)]
 mod profile_file_should {
-    use crate::models::{
-        date::Date,
-        driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
+    use crate::{
+        data_models::race_information_file::RaceInformationFile,
+        models::{
+            date::Date,
+            driver::{lap::Lap, race_information::RaceInformation, race_result::Race},
+        },
     };
 
     use super::*;
@@ -49,6 +52,7 @@ mod profile_file_should {
                     session_id: 1,
                     race_position: 2,
                     car_used: "Kart".to_string(),
+                    notes: "Notes".to_string(),
                 },
                 laptimes: vec![
                     Lap {
@@ -67,7 +71,7 @@ mod profile_file_should {
         let driver_profile_file = DriverProfileFile {
             name: "Karl Chadwick".to_string(),
             races: vec![RaceFile {
-                race_information: RaceInformation {
+                race_information: RaceInformationFile {
                     track_name: "Three Ponies".to_string(),
                     date: Date {
                         day: 15,
@@ -76,7 +80,8 @@ mod profile_file_should {
                     },
                     session_id: 1,
                     race_position: 2,
-                    car_used: "Kart".to_string(),
+                    car_used: Some("Kart".to_string()),
+                    notes: Some("Notes".to_string()),
                 },
                 laptimes: vec!["50.662".to_string(), "51.877".to_string()],
             }],

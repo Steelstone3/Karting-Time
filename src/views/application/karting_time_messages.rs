@@ -69,6 +69,9 @@ impl KartingTime {
             Message::CarUsedChanged(car_used) => {
                 self.application_state.new_race.race_information.car_used = car_used;
             }
+            Message::NotesChanged(notes) => {
+                self.application_state.new_race.race_information.notes = notes;
+            }
             Message::LaptimeEditor(action) => self
                 .application_state
                 .race_editor
@@ -118,7 +121,7 @@ impl KartingTime {
             }
             Message::ReplacePressed(identifier) => {
                 if let Some(race) = self.driver_profile.races.iter_mut().find(|race| {
-                    RaceInformation::get_unique_race_identifier(&race.race_information)
+                    RaceInformation::get_unique_race_information_identifier(&race.race_information)
                         == identifier
                 }) {
                     self.application_state.new_race = race.clone();
@@ -129,7 +132,7 @@ impl KartingTime {
             }
             Message::DeletePressed(identifier) => {
                 if let Some(race) = self.driver_profile.races.iter_mut().find(|race| {
-                    RaceInformation::get_unique_race_identifier(&race.race_information)
+                    RaceInformation::get_unique_race_information_identifier(&race.race_information)
                         == identifier
                 }) {
                     race.is_deleting = true;
@@ -138,7 +141,7 @@ impl KartingTime {
             }
             Message::DeleteConfirmedPressed(identifier) => {
                 if let Some(index) = self.driver_profile.races.iter().position(|race| {
-                    RaceInformation::get_unique_race_identifier(&race.race_information)
+                    RaceInformation::get_unique_race_information_identifier(&race.race_information)
                         == identifier
                 }) {
                     self.driver_profile.races.remove(index);
@@ -147,7 +150,7 @@ impl KartingTime {
             }
             Message::DeleteCancelledPressed(identifier) => {
                 if let Some(race) = self.driver_profile.races.iter_mut().find(|race| {
-                    RaceInformation::get_unique_race_identifier(&race.race_information)
+                    RaceInformation::get_unique_race_information_identifier(&race.race_information)
                         == identifier
                 }) {
                     race.is_deleting = false;

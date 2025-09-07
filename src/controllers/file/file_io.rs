@@ -1,6 +1,6 @@
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
-use crate::models::driver::race_information::RaceInformation;
+use crate::data_models::race_information_file::RaceInformationFile;
 use crate::models::driver::race_result::Race;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -16,7 +16,9 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
         let file_name = format!(
             "{}/{}.toml",
             file_location,
-            RaceInformation::get_unique_race_identifier(&race_file.race_information)
+            RaceInformationFile::get_unique_race_information_file_identifier(
+                &race_file.race_information
+            )
         );
 
         let mut file = match File::create(file_name) {
@@ -103,7 +105,10 @@ fn get_file_contents(file_name: &str) -> String {
 #[cfg(test)]
 mod file_integration_should {
     use super::*;
-    use crate::models::date::Date;
+    use crate::{
+        data_models::race_information_file::RaceInformationFile,
+        models::{date::Date, driver::race_information::RaceInformation},
+    };
     use std::fs;
 
     #[test]
@@ -129,7 +134,7 @@ mod file_integration_should {
 
         // Then
         let file_name = "/".to_string()
-            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
         assert!(fs::metadata(&file_name).is_err());
     }
@@ -157,7 +162,7 @@ mod file_integration_should {
 
         // Then
         let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
         assert!(fs::metadata(&file_name).is_ok());
         assert!(fs::metadata(&file_name).unwrap().len() != 0);
@@ -188,11 +193,44 @@ mod file_integration_should {
                     year: 2026,
                 },
                 session_id: 1,
-                ..Default::default()
+                race_position: 1,
+                car_used: "Kart".to_string(),
+                notes: "Notes".to_string(),
             },
             ..Default::default()
         }];
         let expected_race_file = RaceFile {
+            race_information: RaceInformationFile {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 17,
+                    month: 5,
+                    year: 2026,
+                },
+                session_id: 1,
+                race_position: 1,
+                car_used: Some("Kart".to_string()),
+                notes: Some("Notes".to_string()),
+            },
+            ..Default::default()
+        };
+
+        // When
+        upsert_races(file_location, &races);
+        let file_name = "./".to_string()
+            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
+            + ".toml";
+        let race_file = read_race_file(&file_name);
+
+        // Then
+        assert_eq!(expected_race_file, race_file);
+    }
+
+    #[test]
+    fn read_race_file_test_no_car_used_or_notes() {
+        // Given
+        let file_location = "./";
+        let races = vec![Race {
             race_information: RaceInformation {
                 track_name: "Three Sisters".to_string(),
                 date: Date {
@@ -201,7 +239,24 @@ mod file_integration_should {
                     year: 2026,
                 },
                 session_id: 1,
-                ..Default::default()
+                race_position: 1,
+                car_used: "".to_string(),
+                notes: "".to_string(),
+            },
+            ..Default::default()
+        }];
+        let expected_race_file = RaceFile {
+            race_information: RaceInformationFile {
+                track_name: "Three Sisters".to_string(),
+                date: Date {
+                    day: 17,
+                    month: 5,
+                    year: 2026,
+                },
+                session_id: 1,
+                race_position: 1,
+                car_used: None,
+                notes: None,
             },
             ..Default::default()
         };
@@ -209,7 +264,7 @@ mod file_integration_should {
         // When
         upsert_races(file_location, &races);
         let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_identifier(&races[0].race_information)
+            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
         let race_file = read_race_file(&file_name);
 

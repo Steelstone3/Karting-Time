@@ -20,7 +20,7 @@ impl KartingTimeFile {
 mod karting_time_file_should {
     use super::*;
     use crate::{
-        data_models::race_file::RaceFile,
+        data_models::{race_file::RaceFile, race_information_file::RaceInformationFile},
         models::{
             date::Date,
             driver::{
@@ -47,6 +47,7 @@ mod karting_time_file_should {
                         session_id: 1,
                         race_position: 2,
                         car_used: "Kart".to_string(),
+                        notes: "Notes".to_string(),
                     },
                     laptimes: vec![
                         Lap {
@@ -67,7 +68,7 @@ mod karting_time_file_should {
             driver_profile: DriverProfileFile {
                 name: "Karl Chadwick".to_string(),
                 races: vec![RaceFile {
-                    race_information: RaceInformation {
+                    race_information: RaceInformationFile {
                         track_name: "Three Ponies".to_string(),
                         date: Date {
                             day: 15,
@@ -76,7 +77,8 @@ mod karting_time_file_should {
                         },
                         session_id: 1,
                         race_position: 2,
-                        car_used: "Kart".to_string(),
+                        car_used: Some("Kart".to_string()),
+                        notes: Some("Notes".to_string()),
                     },
                     laptimes: vec!["50.662".to_string(), "51.877".to_string()],
                 }],

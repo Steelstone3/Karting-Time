@@ -1,17 +1,20 @@
-use crate::models::driver::{lap::Lap, race_information::RaceInformation, race_result::Race};
+use crate::{
+    data_models::race_information_file::RaceInformationFile,
+    models::driver::{lap::Lap, race_result::Race},
+};
 use serde::{Deserialize, Serialize};
 use std::f32;
 
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RaceFile {
-    pub race_information: RaceInformation,
+    pub race_information: RaceInformationFile,
     pub laptimes: Vec<String>,
 }
 
 impl RaceFile {
     pub fn convert_to_race(&self) -> Race {
         Race {
-            race_information: self.race_information.clone(),
+            race_information: self.race_information.convert_to_race_information(),
             laptimes: self.convert_laptimes_to_laps(),
             is_deleting: Default::default(),
         }
@@ -38,7 +41,7 @@ impl RaceFile {
 #[cfg(test)]
 mod race_file_should {
     use super::*;
-    use crate::{data_models::race_file::RaceFile, models::date::Date};
+    use crate::{data_models::race_file::RaceFile, models::{date::Date, driver::race_information::RaceInformation}};
 
     #[test]
     fn convert_to_race() {
@@ -54,6 +57,7 @@ mod race_file_should {
                 session_id: 1,
                 race_position: 2,
                 car_used: "Kart".to_string(),
+                notes: "Notes".to_string(),
             },
             laptimes: vec![
                 Lap {
@@ -69,7 +73,7 @@ mod race_file_should {
         };
 
         let race_file = RaceFile {
-            race_information: RaceInformation {
+            race_information: RaceInformationFile {
                 track_name: "Three Ponies".to_string(),
                 date: Date {
                     day: 15,
@@ -78,7 +82,8 @@ mod race_file_should {
                 },
                 session_id: 1,
                 race_position: 2,
-                car_used: "Kart".to_string(),
+                car_used: Some("Kart".to_string()),
+                notes: Some("Notes".to_string()),
             },
             laptimes: vec!["50.662".to_string(), "51.877".to_string()],
         };
