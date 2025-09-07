@@ -9,6 +9,8 @@ pub struct RaceInformation {
     pub track_name: String,
     pub date: Date,
     pub session_id: u32,
+    pub session_type: String,
+    pub track_conditions: String,
     pub race_position: u32,
     pub car_used: String,
     pub notes: String,
@@ -19,8 +21,12 @@ impl Default for RaceInformation {
         Self {
             track_name: Default::default(),
             date: Default::default(),
+            // TODO AH Wrap into a session
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 1,
+            // Up to here
             car_used: "N/A".to_string(),
             notes: Default::default(),
         }
@@ -44,6 +50,16 @@ impl RaceInformation {
     }
 
     pub fn convert_to_race_information_file(&self) -> RaceInformationFile {
+        let mut session_type = None;
+        if !self.session_type.is_empty() {
+            session_type = Some(self.session_type.clone());
+        }
+
+        let mut session_conditions = None;
+        if !self.track_conditions.is_empty() {
+            session_conditions = Some(self.track_conditions.clone());
+        }
+
         let mut car_used = None;
         if !self.car_used.is_empty() {
             car_used = Some(self.car_used.clone());
@@ -58,6 +74,8 @@ impl RaceInformation {
             track_name: self.track_name.clone(),
             date: self.date.clone(),
             session_id: self.session_id,
+            session_type,
+            session_conditions,
             race_position: self.race_position,
             car_used,
             notes,
@@ -77,6 +95,8 @@ mod race_information_should {
             track_name: Default::default(),
             date: Default::default(),
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 1,
             car_used: "N/A".to_string(),
             notes: Default::default(),
@@ -98,6 +118,8 @@ mod race_information_should {
                 year: 2024,
             },
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 12,
             car_used: "Kart".to_string(),
             notes: Default::default(),
@@ -123,6 +145,8 @@ mod race_information_should {
                 year: 2024,
             },
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 12,
             car_used: "Kart".to_string(),
             notes: Default::default(),
@@ -147,6 +171,8 @@ mod race_information_should {
                 year: 2024,
             },
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 12,
             car_used: "Kart".to_string(),
             notes: Default::default(),
@@ -173,6 +199,8 @@ mod race_information_should {
             race_position: 2,
             car_used: Some("Kart".to_string()),
             notes: Some("Notes".to_string()),
+            session_type: Some("N/A".to_string()),
+            session_conditions: Some("N/A".to_string()),
         };
 
         let race_information = RaceInformation {
@@ -183,6 +211,8 @@ mod race_information_should {
                 year: 2024,
             },
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 2,
             car_used: "Kart".to_string(),
             notes: "Notes".to_string(),
@@ -209,6 +239,8 @@ mod race_information_should {
             race_position: 2,
             car_used: None,
             notes: None,
+            session_type: Some("N/A".to_string()),
+            session_conditions: Some("N/A".to_string()),
         };
 
         let race_information = RaceInformation {
@@ -219,6 +251,8 @@ mod race_information_should {
                 year: 2024,
             },
             session_id: 1,
+            session_type: "N/A".to_string(),
+            track_conditions: "N/A".to_string(),
             race_position: 2,
             car_used: "".to_string(),
             notes: "".to_string(),

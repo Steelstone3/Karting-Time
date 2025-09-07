@@ -18,6 +18,8 @@ pub enum Message {
     MonthChanged(String),
     YearChanged(String),
     SessionIdChanged(String),
+    SessionTypeChanged(String),
+    TrackConditionsChanged(String),
     RacePositionChanged(String),
     CarUsedChanged(String),
     NotesChanged(String),

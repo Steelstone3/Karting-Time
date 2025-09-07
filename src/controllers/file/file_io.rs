@@ -193,6 +193,8 @@ mod file_integration_should {
                     year: 2026,
                 },
                 session_id: 1,
+                session_type: "N/A".to_string(),
+                track_conditions: "N/A".to_string(),
                 race_position: 1,
                 car_used: "Kart".to_string(),
                 notes: "Notes".to_string(),
@@ -211,6 +213,8 @@ mod file_integration_should {
                 race_position: 1,
                 car_used: Some("Kart".to_string()),
                 notes: Some("Notes".to_string()),
+                session_type: Some("N/A".to_string()),
+                session_conditions: Some("N/A".to_string()),
             },
             ..Default::default()
         };
@@ -227,7 +231,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_race_file_test_no_car_used_or_notes() {
+    fn read_race_file_test_no_session_type_or_session_conditions_or_car_used_or_notes() {
         // Given
         let file_location = "./";
         let races = vec![Race {
@@ -239,6 +243,8 @@ mod file_integration_should {
                     year: 2026,
                 },
                 session_id: 1,
+                session_type: "".to_string(),
+                track_conditions: "".to_string(),
                 race_position: 1,
                 car_used: "".to_string(),
                 notes: "".to_string(),
@@ -257,6 +263,8 @@ mod file_integration_should {
                 race_position: 1,
                 car_used: None,
                 notes: None,
+                session_type: None,
+                session_conditions: None,
             },
             ..Default::default()
         };
