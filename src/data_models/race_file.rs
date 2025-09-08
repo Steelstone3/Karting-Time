@@ -12,11 +12,12 @@ pub struct RaceFile {
     pub month: u32,
     pub year: i32,
     pub track_name: String,
-    pub race_position: u32,
     pub session_id: u32,
+    pub race_position: u32,
     pub session_type: Option<String>,
     pub track_conditions: Option<String>,
     pub car_used: Option<String>,
+    pub championship: Option<String>,
     pub notes: Option<String>,
 }
 
@@ -91,6 +92,11 @@ impl RaceFile {
                 None => "N/A",
             }
             .to_string(),
+            championship: match &self.championship {
+                Some(championship) => championship,
+                None => "",
+            }
+            .to_string(),
             notes: match &self.notes {
                 Some(notes) => notes,
                 None => "",
@@ -144,6 +150,7 @@ mod race_file_should {
                     race_position: 2,
                 },
                 car_used: "Kart".to_string(),
+                championship: "Championship".to_string(),
                 notes: "Notes".to_string(),
             },
             laptimes: vec![
@@ -171,6 +178,7 @@ mod race_file_should {
             session_type: Some("N/A".to_string()),
             track_conditions: Some("N/A".to_string()),
             laptimes: vec!["50.662".to_string(), "51.877".to_string()],
+            championship: Some("Championship".to_string()),
         };
 
         // When

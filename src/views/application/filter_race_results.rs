@@ -37,6 +37,18 @@ impl KartingTime {
             )
             .padding(10)
             .spacing(10)
+            .push(text("Championship:"))
+            .padding(10)
+            .spacing(10)
+            .push(
+                text_input(
+                    "Enter championship filter",
+                    &self.application_state.championship_query,
+                )
+                .on_input(Message::ChampionshipFilterChanged),
+            )
+            .padding(10)
+            .spacing(10)
             .push(text("Session Type:"))
             .padding(10)
             .spacing(10)

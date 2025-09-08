@@ -18,6 +18,8 @@ pub struct ApplicationState {
     #[serde(skip)]
     pub car_used_query: String,
     #[serde(skip)]
+    pub championship_query: String,
+    #[serde(skip)]
     pub session_type_query: String,
     #[serde(skip)]
     pub filtered_races: Vec<Race>,

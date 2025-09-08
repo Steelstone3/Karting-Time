@@ -42,18 +42,31 @@ impl KartingTime {
                 race.race_information.date
             );
 
+            let notes_line = if !race.race_information.notes.is_empty() {
+                format!("\n\nNotes: {}", race.race_information.notes)
+            } else {
+                String::from("")
+            };
+
+            let championship_line = if !race.race_information.championship.is_empty() {
+                format!("\nChampionship: {}", race.race_information.championship)
+            } else {
+                String::from("")
+            };
+
             let race_summary = format!(
-                "Session Type: {}\nTrack Conditions: {}\nCar Used: {}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}\n\nNotes: {}",
+                "Session Type: {}\nTrack Conditions: {}\nCar Used: {}{}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}{}",
                 race.race_information.session.session_type,
                 race.race_information.session.track_condition,
                 race.race_information.car_used,
+                championship_line,
                 race.race_information.session.race_position,
                 race.get_number_of_laps(),
                 format_laptime(race.get_fastest_lap()),
                 format_laptime(race.get_average_lap()),
                 race.convert_total_times_to_string(),
                 race.convert_average_total_times_to_string(),
-                race.race_information.notes
+                notes_line
             )
             .to_string();
 

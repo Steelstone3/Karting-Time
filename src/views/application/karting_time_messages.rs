@@ -85,6 +85,12 @@ impl KartingTime {
             Message::CarUsedChanged(car_used) => {
                 self.application_state.new_race.race_information.car_used = car_used;
             }
+            Message::ChampionshipChanged(championship) => {
+                self.application_state
+                    .new_race
+                    .race_information
+                    .championship = championship;
+            }
             Message::NotesChanged(notes) => {
                 self.application_state.new_race.race_information.notes = notes;
             }
@@ -105,6 +111,11 @@ impl KartingTime {
             }
             Message::CarUsedFilterChanged(car_used_query) => {
                 self.application_state.car_used_query = car_used_query;
+
+                self.update_filtering();
+            }
+            Message::ChampionshipFilterChanged(championship_query) => {
+                self.application_state.championship_query = championship_query;
 
                 self.update_filtering();
             }

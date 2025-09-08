@@ -7,6 +7,7 @@ pub struct RaceInformation {
     pub date: Date,
     pub session: Session,
     pub car_used: String,
+    pub championship: String,
     pub notes: String,
 }
 
@@ -14,9 +15,10 @@ impl Default for RaceInformation {
     fn default() -> Self {
         Self {
             track_name: Default::default(),
+            car_used: "N/A".to_string(),
             date: Default::default(),
             session: Session::default(),
-            car_used: "N/A".to_string(),
+            championship: Default::default(),
             notes: Default::default(),
         }
     }
@@ -44,6 +46,7 @@ mod race_information_should {
             date: Default::default(),
             session: Default::default(),
             car_used: "N/A".to_string(),
+            championship: Default::default(),
             notes: Default::default(),
         };
 
@@ -69,6 +72,7 @@ mod race_information_should {
                 race_position: 12,
             },
             car_used: "Kart".to_string(),
+            championship: "Championship".to_string(),
             notes: Default::default(),
         };
 

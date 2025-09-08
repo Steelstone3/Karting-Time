@@ -1,4 +1,4 @@
-use iced::widget::{Column, Scrollable, column};
+use iced::widget::{Column, Container, Scrollable, column, container, scrollable};
 use iced_aw::{TabBar, TabLabel};
 
 use crate::{
@@ -25,10 +25,13 @@ impl KartingTime {
 
                 let filter: Column<Message> = self.filter_results_view();
 
+                let scrollable_filter: Container<Message> =
+                    container(scrollable(filter)).height(200);
+
                 let contents = Scrollable::new(column!().push(self.overview_driver_profile_view()));
 
                 match self.application_state.is_filter_visible {
-                    true => column!(self.menu_bar_view(), tab_bar, filter, contents),
+                    true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
                     false => column!(self.menu_bar_view(), tab_bar, contents),
                 }
             }
@@ -37,10 +40,13 @@ impl KartingTime {
 
                 let filter: Column<Message> = self.filter_results_view();
 
+                let scrollable_filter: Container<Message> =
+                    container(scrollable(filter)).height(200);
+
                 let contents = Scrollable::new(column!().push(self.overview_race_results_view()));
 
                 match self.application_state.is_filter_visible {
-                    true => column!(self.menu_bar_view(), tab_bar, filter, contents),
+                    true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
                     false => column!(self.menu_bar_view(), tab_bar, contents),
                 }
             }
@@ -49,10 +55,13 @@ impl KartingTime {
 
                 let filter: Column<Message> = self.filter_results_view();
 
+                let scrollable_filter: Container<Message> =
+                    container(scrollable(filter)).height(200);
+
                 let contents = Scrollable::new(column!().push(self.race_results_view()));
 
                 match self.application_state.is_filter_visible {
-                    true => column!(self.menu_bar_view(), tab_bar, filter, contents),
+                    true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
                     false => column!(self.menu_bar_view(), tab_bar, contents),
                 }
             }
