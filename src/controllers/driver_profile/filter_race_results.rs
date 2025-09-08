@@ -11,29 +11,76 @@ impl KartingTime {
     fn apply_filters(&mut self) {
         self.application_state.filtered_races = self.driver_profile.races.clone();
 
-        if !self.all_filters_empty() {
+        if !self.is_all_filters_empty() {
             self.all_filters();
-        } else if self.application_state.track_query.is_empty() {
-            self.date_filter();
-            self.car_used_filter();
-        } else if self.application_state.date_query.is_empty() {
-            self.track_name_filter();
-            self.car_used_filter();
-        } else if self.application_state.car_used_query.is_empty() {
-            self.track_name_filter();
-            self.date_filter();
         } else if self.application_state.track_query.is_empty()
+            && self.application_state.date_query.is_empty()
+            && self.application_state.car_used_query.is_empty()
+        {
+            self.session_type_filter();
+        } else if self.application_state.date_query.is_empty()
+            && self.application_state.car_used_query.is_empty()
+            && self.application_state.session_type_query.is_empty()
+        {
+            self.track_name_filter();
+        } else if self.application_state.car_used_query.is_empty()
+            && self.application_state.session_type_query.is_empty()
+            && self.application_state.track_query.is_empty()
+        {
+            self.date_filter();
+        } else if self.application_state.session_type_query.is_empty()
+            && self.application_state.track_query.is_empty()
             && self.application_state.date_query.is_empty()
         {
             self.car_used_filter();
         } else if self.application_state.track_query.is_empty()
+            && self.application_state.date_query.is_empty()
+        {
+            self.car_used_filter();
+            self.session_type_filter();
+        } else if self.application_state.track_query.is_empty()
             && self.application_state.car_used_query.is_empty()
         {
             self.date_filter();
+            self.session_type_filter();
+        } else if self.application_state.track_query.is_empty()
+            && self.application_state.session_type_query.is_empty()
+        {
+            self.date_filter();
+            self.car_used_filter();
         } else if self.application_state.date_query.is_empty()
             && self.application_state.car_used_query.is_empty()
         {
             self.track_name_filter();
+            self.session_type_filter();
+        } else if self.application_state.date_query.is_empty()
+            && self.application_state.session_type_query.is_empty()
+        {
+            self.track_name_filter();
+            self.car_used_filter();
+        } else if self.application_state.car_used_query.is_empty()
+            && self.application_state.session_type_query.is_empty()
+        {
+            self.track_name_filter();
+            self.car_used_filter();
+        } else if self.application_state.track_query.is_empty() {
+            self.date_filter();
+            self.car_used_filter();
+            self.session_type_filter();
+        } else if self.application_state.date_query.is_empty() {
+            self.track_name_filter();
+            self.car_used_filter();
+            self.session_type_filter();
+        } else if self.application_state.car_used_query.is_empty() {
+            self.track_name_filter();
+            self.date_filter();
+            self.session_type_filter();
+        } else if self.application_state.session_type_query.is_empty() {
+            self.track_name_filter();
+            self.date_filter();
+            self.car_used_filter();
+        } else if self.is_all_filters_empty() {
+            self.application_state.filtered_races = self.driver_profile.races.clone();
         }
     }
 
@@ -90,16 +137,37 @@ impl KartingTime {
             .collect()
     }
 
-    fn all_filters_empty(&self) -> bool {
+    fn session_type_filter(&mut self) {
+        let query = self.application_state.session_type_query.to_lowercase();
+        self.application_state.filtered_races = self
+            .application_state
+            .filtered_races
+            .iter()
+            .filter(|race| {
+                // session type matches
+                race.race_information
+                    .session
+                    .session_type
+                    .to_string()
+                    .to_lowercase()
+                    .contains(&query)
+            })
+            .cloned()
+            .collect()
+    }
+
+    fn is_all_filters_empty(&self) -> bool {
         self.application_state.track_query.is_empty()
             && self.application_state.date_query.is_empty()
             && self.application_state.car_used_query.is_empty()
+            && self.application_state.session_type_query.is_empty()
     }
 
     fn all_filters(&mut self) {
         self.track_name_filter();
         self.date_filter();
         self.car_used_filter();
+        self.session_type_filter();
     }
 }
 
@@ -109,32 +177,51 @@ mod filter_race_results_should {
     use crate::models::date::Date;
     use crate::models::driver::race_information::RaceInformation;
     use crate::models::driver::race_result::Race;
+    use crate::models::driver::session::Session;
     use crate::models::{
         application::karting_time::KartingTime, driver::driver_profile::DriverProfile,
     };
     use rstest::rstest;
 
     #[rstest]
-    #[case(false, "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "Silverstone", "2025-12-21", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "Silverstone", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "Silverstone", "", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "", "2025-12-21", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "Silverstone", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "", "2025-12-21", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "", "", "Kart Type 1", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } ])]
-    #[case(true, "Three Sisters", "2024-8-12", "Kart Type 2", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
-    #[case(true, "Three Sisters", "2024-8-12", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
-    #[case(true, "Three Sisters", "", "Kart Type 2", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
-    #[case(true, "", "2024-8-12", "Kart Type 2", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
-    #[case(true, "Three Sisters", "", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
-    #[case(true, "", "2024-8-12", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
-    #[case(true, "", "", "Kart Type 2", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), ..Default::default()}, ..Default::default() } ])]
+    #[case(false, "", "", "","", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session:Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "", "","", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session:Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "2025-12-21", "Kart Type 1", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "2025-12-21", "Kart Type 1", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "2025-12-21", "", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "", "Kart Type 1", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "2025-12-21", "Kart Type 1", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "2025-12-21", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "2025-12-21", "Kart Type 1", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "", "Kart Type 1", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "", "", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "", "Kart Type 1", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "2025-12-21", "", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Silverstone", "", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "2025-12-21", "", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "", "Kart Type 1", "", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "", "", "", "Race", vec![ Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() }, Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "Kart Type 2", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "Kart Type 2", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "", "Kart Type 2", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "2024-8-12", "Kart Type 2", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "2024-8-12", "", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "2024-8-12", "Kart Type 2", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "", "Kart Type 2", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "", "", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "", "Kart Type 2", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "2024-8-12", "", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "Three Sisters", "", "", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "2024-8-12", "", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "", "Kart Type 2", "", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
+    #[case(true, "", "", "", "Qualifying", vec![  Race { race_information: RaceInformation {track_name:"Three Sisters".to_string(),date:Date{day:12,month:8,year:2024}, car_used:"Kart Type 2".to_string(), session: Session { session_type: "Qualifying".to_string(), ..Default::default() }, ..Default::default() }, ..Default::default() } , Race { race_information: RaceInformation {track_name:"Silverstone".to_string(),date:Date{day:21,month:12,year:2025},car_used:"Kart Type 1".to_string(), session: Session { session_type: "Race".to_string(), ..Default::default() }, ..Default::default()}, ..Default::default() } ])]
     fn update_filtering(
         #[case] is_filter_visible: bool,
         #[case] track_query: String,
         #[case] date_query: String,
         #[case] car_used_query: String,
+        #[case] session_type_query: String,
         #[case] expected_races: Vec<Race>,
     ) {
         // Given
@@ -144,6 +231,7 @@ mod filter_race_results_should {
                 track_query,
                 date_query,
                 car_used_query,
+                session_type_query,
                 ..Default::default()
             },
             driver_profile: DriverProfile {
@@ -158,6 +246,10 @@ mod filter_race_results_should {
                                 year: 2025,
                             },
                             car_used: "Kart Type 1".to_string(),
+                            session: Session {
+                                session_type: "Race".to_string(),
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()
@@ -171,6 +263,10 @@ mod filter_race_results_should {
                                 year: 2024,
                             },
                             car_used: "Kart Type 2".to_string(),
+                            session: Session {
+                                session_type: "Qualifying".to_string(),
+                                ..Default::default()
+                            },
                             ..Default::default()
                         },
                         ..Default::default()

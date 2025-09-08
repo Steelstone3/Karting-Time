@@ -8,16 +8,16 @@ use std::f32;
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RaceFile {
     pub laptimes: Vec<String>,
-    pub race_position: u32,
-    pub track_name: String,
-    pub track_conditions: Option<String>,
-    pub session_id: u32,
-    pub session_type: Option<String>,
-    pub car_used: Option<String>,
-    pub notes: Option<String>,
     pub day: u32,
     pub month: u32,
     pub year: i32,
+    pub track_name: String,
+    pub race_position: u32,
+    pub session_id: u32,
+    pub session_type: Option<String>,
+    pub track_conditions: Option<String>,
+    pub car_used: Option<String>,
+    pub notes: Option<String>,
 }
 
 impl RaceFile {
