@@ -73,6 +73,7 @@ session_id = 1
 track_conditions = "Indoor"
 session_type = "Race"
 car_used = "Sodi GT5"
+championship = "Who Is Faster Round 1"
 notes = "Private race event"
 ```
 
@@ -84,41 +85,42 @@ name = "Jack Jackson"
 
 [[driver_profile.races]]
 laptimes = [
-    "85.984",
-    "53.024",
-    "54.996",
-    "52.514",
-    "51.889",
-    "52.492",
-    "51.887",
-    "53.747",
-    "53.628",
-    "52.208",
-    "51.984",
-    "52.011",
-    "52.179",
-    "52.115",
-    "51.995",
-    "52.456",
-    "56.41",
-    "52.672",
-    "52.32",
-    "52.784",
-    "52.555",
-    "58.763",
+    "88.886",
+    "53.356",
+    "52.117",
+    "52.437",
+    "52.094",
+    "52.436",
+    "51.218",
+    "51.517",
+    "51.432",
+    "51.251",
+    "92.104",
+    "71.307",
+    "52.458",
+    "51.948",
+    "51.552",
+    "52.113",
+    "51.912",
+    "87.159",
+    "55.39",
+    "52.187",
+    "50.781",
+    "51.99",
 ]
-day = 24
-month = 3
+day = 23
+month = 7
 year = 2025
-race_position = 7
 track_name = "Three Sisters"
 session_id = 1
+race_position = 8
 
 # Optional
+session_type = "Qualifying"
 track_conditions = "Dry"
-session_type = "Practise"
 car_used = "Sodi RT10"
-notes = "Had fun!"
+championship = "Team Enduro Round 5 2025"
+notes = "Kart 29"
 
 [[driver_profile.races]]
 laptimes = [
@@ -153,11 +155,7 @@ track_name = "Three Sisters"
 session_id = 2
 race_position = 6
 
-# Optional
-track_conditions = "Dry"
-session_type = "Practise"
-car_used = "Sodi RT10"
-notes = "Had fun!"
+# No Optional Fields Used
 ```
 
 ## Dependencies

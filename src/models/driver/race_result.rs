@@ -32,6 +32,11 @@ impl Race {
             notes = Some(self.race_information.notes.clone());
         }
 
+        let mut championship = None;
+        if !self.race_information.championship.is_empty() {
+            championship = Some(self.race_information.championship.clone());
+        }
+
         RaceFile {
             laptimes: self.convert_laps_to_laptimes(),
             race_position: self.race_information.session.race_position,
@@ -41,6 +46,7 @@ impl Race {
             session_type,
             car_used,
             notes,
+            championship,
             day: self.race_information.date.day,
             month: self.race_information.date.month,
             year: self.race_information.date.year,
@@ -77,6 +83,7 @@ mod race_result_should {
             race_position: 7,
             car_used: Some("Kart".to_string()),
             notes: Some("Notes".to_string()),
+            championship: Some("Championship".to_string()),
             session_type: Some("N/A".to_string()),
             track_conditions: Some("N/A".to_string()),
             laptimes: vec!["54.2".to_string(), "55.6".to_string()],
@@ -96,6 +103,7 @@ mod race_result_should {
                 race_position: 7,
             },
             car_used: "Kart".to_string(),
+            championship: "Championship".to_string(),
             notes: "Notes".to_string(),
         };
         let race = Race {

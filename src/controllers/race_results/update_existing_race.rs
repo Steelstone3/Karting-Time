@@ -83,6 +83,7 @@ mod update_existing_race {
                     ..Default::default()
                 },
                 car_used: "Kart".to_string(),
+                championship: Default::default(),
                 notes: Default::default(),
             },
             laptimes: vec![Lap {
@@ -109,6 +110,7 @@ mod update_existing_race {
                         ..Default::default()
                     },
                     car_used: "Kart".to_string(),
+                    championship: Default::default(),
                     notes: Default::default(),
                 },
                 laptimes: vec![Lap {
@@ -133,6 +135,7 @@ mod update_existing_race {
                         ..Default::default()
                     },
                     car_used: "Kart".to_string(),
+                    championship: Default::default(),
                     notes: Default::default(),
                 },
                 laptimes: vec![Lap {
@@ -160,6 +163,7 @@ mod update_existing_race {
                         ..Default::default()
                     },
                     car_used: "Kart".to_string(),
+                    championship: Default::default(),
                     notes: Default::default(),
                 },
                 laptimes: vec![Lap {
@@ -184,6 +188,7 @@ mod update_existing_race {
                         ..Default::default()
                     },
                     car_used: "Kart".to_string(),
+                    championship: Default::default(),
                     notes: Default::default(),
                 },
                 laptimes: vec![Lap {

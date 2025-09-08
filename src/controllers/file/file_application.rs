@@ -106,6 +106,7 @@ mod file_should {
                     track_condition: "N/A".to_string(),
                 },
                 car_used: "Kart".to_string(),
+                championship: "Championship".to_string(),
                 notes: "Notes".to_string(),
             },
             ..Default::default()
@@ -191,6 +192,7 @@ mod file_should {
                             race_position: 1,
                         },
                         car_used: "Kart".to_string(),
+                        championship: "Championship".to_string(),
                         notes: Default::default(),
                     },
                     laptimes: vec![
@@ -220,6 +222,7 @@ mod file_should {
                             race_position: 3,
                         },
                         car_used: "Kart".to_string(),
+                        championship: "Championship".to_string(),
                         notes: Default::default(),
                     },
                     laptimes: vec![

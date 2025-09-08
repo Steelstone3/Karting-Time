@@ -55,6 +55,7 @@ mod profile_file_should {
                         race_position: 2,
                     },
                     car_used: "Kart".to_string(),
+                    championship: "Championship".to_string(),
                     notes: "Notes".to_string(),
                 },
                 laptimes: vec![
@@ -82,6 +83,7 @@ mod profile_file_should {
                 race_position: 2,
                 car_used: Some("Kart".to_string()),
                 notes: Some("Notes".to_string()),
+                championship: Some("Championship".to_string()),
                 session_type: Some("N/A".to_string()),
                 track_conditions: Some("N/A".to_string()),
                 laptimes: vec!["50.662".to_string(), "51.877".to_string()],

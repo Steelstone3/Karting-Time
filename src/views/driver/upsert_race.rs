@@ -10,7 +10,7 @@ impl KartingTime {
             .padding(10)
             .push(
                 text_input(
-                    "Track Name",
+                    "Track Name: e.g Spa",
                     &self.application_state.new_race.race_information.track_name,
                 )
                 .on_input(Message::TrackNameChanged),
@@ -90,7 +90,7 @@ impl KartingTime {
             .padding(10)
             .push(
                 text_input(
-                    "Session Type: e.g Q, R, FP",
+                    "(Optional) Session Type: e.g Qualifying, Race, Free Practise",
                     &self
                         .application_state
                         .new_race
@@ -106,7 +106,7 @@ impl KartingTime {
             .padding(10)
             .push(
                 text_input(
-                    "Track Conditions: e.g Dry, Wet etc.",
+                    "(Optional) Track Conditions: e.g Dry, Wet etc.",
                     &self
                         .application_state
                         .new_race
@@ -138,7 +138,7 @@ impl KartingTime {
             .padding(10)
             .push(
                 text_input(
-                    "Car Used",
+                    "(Optional) Car Used: e.g Ferrari 296 GTB",
                     &self
                         .application_state
                         .new_race
@@ -148,12 +148,27 @@ impl KartingTime {
                 )
                 .on_input(Message::CarUsedChanged),
             )
+            .push(text("Championship:"))
+            .spacing(10)
+            .padding(10)
+            .push(
+                text_input(
+                    "(Optional) Championship: e.g GT World Challenge",
+                    &self
+                        .application_state
+                        .new_race
+                        .race_information
+                        .championship
+                        .to_string(),
+                )
+                .on_input(Message::ChampionshipChanged),
+            )
             .push(text("Notes:"))
             .spacing(10)
             .padding(10)
             .push(
                 text_input(
-                    "Notes about the session",
+                    "(Optional) Notes about the session",
                     &self.application_state.new_race.race_information.notes,
                 )
                 .on_input(Message::NotesChanged),

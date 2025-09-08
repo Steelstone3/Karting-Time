@@ -203,6 +203,7 @@ mod file_integration_should {
                     ..Default::default()
                 },
                 car_used: "Kart".to_string(),
+                championship: "Championship".to_string(),
                 notes: "Notes".to_string(),
             },
             ..Default::default()
@@ -218,6 +219,7 @@ mod file_integration_should {
             race_position: 1,
             car_used: Some("Kart".to_string()),
             notes: Some("Notes".to_string()),
+            championship: Some("Championship".to_string()),
             session_type: Some("N/A".to_string()),
             track_conditions: Some("N/A".to_string()),
             ..Default::default()
@@ -254,6 +256,7 @@ mod file_integration_should {
                     ..Default::default()
                 },
                 car_used: "".to_string(),
+                championship: "".to_string(),
                 notes: "".to_string(),
             },
             ..Default::default()

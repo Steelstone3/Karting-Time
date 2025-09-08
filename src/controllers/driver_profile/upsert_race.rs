@@ -101,6 +101,7 @@ mod upsert_race_should {
                     race_position: 12,
                 },
                 car_used: "N/A".to_string(),
+                championship: "".to_string(),
                 notes: "".to_string(),
             },
             ..Default::default()
@@ -122,6 +123,7 @@ mod upsert_race_should {
                             race_position: 12,
                         },
                         car_used: "".to_string(),
+                        championship: "".to_string(),
                         notes: "".to_string(),
                     },
                     ..Default::default()
@@ -162,6 +164,7 @@ mod upsert_race_should {
                     race_position: 12,
                 },
                 car_used: "Kart Type 1".to_string(),
+                championship: "Championship".to_string(),
                 notes: "Some notes".to_string(),
             },
             ..Default::default()
@@ -183,6 +186,7 @@ mod upsert_race_should {
                             race_position: 12,
                         },
                         car_used: "Kart Type 1".to_string(),
+                        championship: "Championship".to_string(),
                         notes: "Some notes".to_string(),
                     },
                     ..Default::default()
@@ -223,6 +227,7 @@ mod upsert_race_should {
                     race_position: 8,
                 },
                 car_used: "Kart Type 2".to_string(),
+                championship: "Championship".to_string(),
                 notes: "Some different notes".to_string(),
             },
             ..Default::default()
@@ -244,6 +249,7 @@ mod upsert_race_should {
                             race_position: 8,
                         },
                         car_used: "Kart Type 2".to_string(),
+                        championship: "Championship".to_string(),
                         notes: "Some different notes".to_string(),
                     },
                     ..Default::default()
@@ -266,6 +272,7 @@ mod upsert_race_should {
                             race_position: 12,
                         },
                         car_used: "Kart Type 1".to_string(),
+                        championship: "Championship".to_string(),
                         notes: "Some notes".to_string(),
                     },
                     ..Default::default()

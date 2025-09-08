@@ -50,6 +50,7 @@ mod sort_races_should {
                     ..Default::default()
                 },
                 car_used: "Kart".to_string(),
+                championship: "Championship".to_string(),
                 notes: Default::default(),
             },
             laptimes: vec![
@@ -81,6 +82,7 @@ mod sort_races_should {
                     ..Default::default()
                 },
                 car_used: "Kart".to_string(),
+                championship: "Championship".to_string(),
                 notes: Default::default(),
             },
             laptimes: vec![
@@ -112,6 +114,7 @@ mod sort_races_should {
                     ..Default::default()
                 },
                 car_used: "Kart".to_string(),
+                championship: Default::default(),
                 notes: Default::default(),
             },
             laptimes: vec![
