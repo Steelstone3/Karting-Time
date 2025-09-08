@@ -37,5 +37,17 @@ impl KartingTime {
             )
             .padding(10)
             .spacing(10)
+            .push(text("Session Type:"))
+            .padding(10)
+            .spacing(10)
+            .push(
+                text_input(
+                    "Enter session type filter",
+                    &self.application_state.session_type_query,
+                )
+                .on_input(Message::SessionTypeFilterChanged),
+            )
+            .padding(10)
+            .spacing(10)
     }
 }

@@ -108,6 +108,11 @@ impl KartingTime {
 
                 self.update_filtering();
             }
+            Message::SessionTypeFilterChanged(session_type_query) => {
+                self.application_state.session_type_query = session_type_query;
+
+                self.update_filtering();
+            }
             Message::UpdateRacesPressed => {
                 self.application_state.new_race.convert_to_laps(
                     self.application_state
