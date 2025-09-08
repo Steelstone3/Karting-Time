@@ -10,75 +10,8 @@ impl KartingTime {
 
     fn apply_filters(&mut self) {
         self.application_state.filtered_races = self.driver_profile.races.clone();
-
-        if !self.is_all_filters_empty() {
+        if !self.is_all_filters_empty() || self.is_any_filters_used() {
             self.all_filters();
-        } else if self.application_state.track_query.is_empty()
-            && self.application_state.date_query.is_empty()
-            && self.application_state.car_used_query.is_empty()
-        {
-            self.session_type_filter();
-        } else if self.application_state.date_query.is_empty()
-            && self.application_state.car_used_query.is_empty()
-            && self.application_state.session_type_query.is_empty()
-        {
-            self.track_name_filter();
-        } else if self.application_state.car_used_query.is_empty()
-            && self.application_state.session_type_query.is_empty()
-            && self.application_state.track_query.is_empty()
-        {
-            self.date_filter();
-        } else if self.application_state.session_type_query.is_empty()
-            && self.application_state.track_query.is_empty()
-            && self.application_state.date_query.is_empty()
-        {
-            self.car_used_filter();
-        } else if self.application_state.track_query.is_empty()
-            && self.application_state.date_query.is_empty()
-        {
-            self.car_used_filter();
-            self.session_type_filter();
-        } else if self.application_state.track_query.is_empty()
-            && self.application_state.car_used_query.is_empty()
-        {
-            self.date_filter();
-            self.session_type_filter();
-        } else if self.application_state.track_query.is_empty()
-            && self.application_state.session_type_query.is_empty()
-        {
-            self.date_filter();
-            self.car_used_filter();
-        } else if self.application_state.date_query.is_empty()
-            && self.application_state.car_used_query.is_empty()
-        {
-            self.track_name_filter();
-            self.session_type_filter();
-        } else if self.application_state.date_query.is_empty()
-            && self.application_state.session_type_query.is_empty()
-        {
-            self.track_name_filter();
-            self.car_used_filter();
-        } else if self.application_state.car_used_query.is_empty()
-            && self.application_state.session_type_query.is_empty()
-        {
-            self.track_name_filter();
-            self.car_used_filter();
-        } else if self.application_state.track_query.is_empty() {
-            self.date_filter();
-            self.car_used_filter();
-            self.session_type_filter();
-        } else if self.application_state.date_query.is_empty() {
-            self.track_name_filter();
-            self.car_used_filter();
-            self.session_type_filter();
-        } else if self.application_state.car_used_query.is_empty() {
-            self.track_name_filter();
-            self.date_filter();
-            self.session_type_filter();
-        } else if self.application_state.session_type_query.is_empty() {
-            self.track_name_filter();
-            self.date_filter();
-            self.car_used_filter();
         } else if self.is_all_filters_empty() {
             self.application_state.filtered_races = self.driver_profile.races.clone();
         }
@@ -161,6 +94,13 @@ impl KartingTime {
             && self.application_state.date_query.is_empty()
             && self.application_state.car_used_query.is_empty()
             && self.application_state.session_type_query.is_empty()
+    }
+
+    fn is_any_filters_used(&self) -> bool {
+        !self.application_state.track_query.is_empty()
+            || !self.application_state.date_query.is_empty()
+            || !self.application_state.car_used_query.is_empty()
+            || !self.application_state.session_type_query.is_empty()
     }
 
     fn all_filters(&mut self) {
