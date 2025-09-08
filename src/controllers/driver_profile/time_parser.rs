@@ -1,23 +1,24 @@
-use iced::widget::canvas::path::lyon_path::geom::euclid::num::Floor;
-
-// TODO AH consider hours
 pub fn format_laptime(time_in_seconds: f32) -> String {
     if time_in_seconds < 60.0 {
-        return format!("{time_in_seconds:.2}");
+        return format!("{:.2}", time_in_seconds);
     }
 
-    let minutes = (time_in_seconds as u32 / 60).floor();
-    let seconds = time_in_seconds - (minutes * 60) as f32;
+    let total_milliseconds = (time_in_seconds.fract() * 100.0).round() as u32;
 
-    // add leading zero
-    if seconds < 10.0 {
-        let mut formatted_seconds = format!("{seconds:02.2}");
-        formatted_seconds.insert(0, '0');
+    let minutes = (time_in_seconds / 60.0).floor() as u32;
+    let seconds = (time_in_seconds % 60.0) as u32;
 
-        format!("{minutes}:{formatted_seconds}")
-    } else {
-        format!("{minutes}:{seconds:02.2}")
+    if minutes < 60 {
+        return format!("{}:{:02}.{:02}", minutes, seconds, total_milliseconds);
     }
+
+    let hours = minutes / 60;
+    let remaining_minutes = minutes % 60;
+
+    format!(
+        "{}:{:02}:{:02}.{:02}",
+        hours, remaining_minutes, seconds, total_milliseconds
+    )
 }
 
 #[cfg(test)]
@@ -37,6 +38,16 @@ mod format_laptime_should {
     #[case(120.0, "2:00.00".to_string())]
     #[case(121.90, "2:01.90".to_string())]
     #[case(121.99, "2:01.99".to_string())]
+    #[case(3600.0, "1:00:00.00".to_string())]
+    #[case(3601.0, "1:00:01.00".to_string())]
+    #[case(3601.9, "1:00:01.90".to_string())]
+    #[case(3601.99, "1:00:01.99".to_string())]
+    #[case(3660.0, "1:01:00.00".to_string())]
+    #[case(3660.0, "1:01:00.00".to_string())]
+    #[case(3661.0, "1:01:01.00".to_string())]
+    #[case(3661.9, "1:01:01.90".to_string())]
+    #[case(3661.99, "1:01:01.99".to_string())]
+    #[case(8661.99, "2:24:21.99".to_string())]
     fn form_laptime(#[case] time_in_seconds: f32, #[case] expected_formatted_time: String) {
         // When
         let formatted_time = format_laptime(time_in_seconds);
