@@ -102,9 +102,12 @@ fn get_file_contents(file_name: &str) -> String {
 #[cfg(test)]
 mod file_integration_should {
     use super::*;
-    use crate::models::{
-        date::Date,
-        driver::{race_information::RaceInformation, session::Session},
+    use crate::{
+        controllers::file::test_file_guard::TestFileGuard,
+        models::{
+            date::Date,
+            driver::{race_information::RaceInformation, session::Session},
+        },
     };
     use std::fs;
 
@@ -136,6 +139,8 @@ mod file_integration_should {
         let file_name = "/".to_string()
             + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
+        let _guard = TestFileGuard::new(&file_name);
+
         assert!(fs::metadata(&file_name).is_err());
     }
 
@@ -167,6 +172,8 @@ mod file_integration_should {
         let file_name = "./".to_string()
             + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
+        let _guard = TestFileGuard::new(&file_name);
+
         assert!(fs::metadata(&file_name).is_ok());
         assert!(fs::metadata(&file_name).unwrap().len() != 0);
     }
@@ -230,6 +237,9 @@ mod file_integration_should {
         let file_name = "./".to_string()
             + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
+
+        let _guard = TestFileGuard::new(&file_name);
+
         let race_file = read_race_file(&file_name);
 
         // Then
@@ -280,6 +290,9 @@ mod file_integration_should {
         let file_name = "./".to_string()
             + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
+
+        let _guard = TestFileGuard::new(&file_name);
+
         let race_file = read_race_file(&file_name);
 
         // Then
@@ -293,6 +306,8 @@ mod file_integration_should {
         let expected_application = KartingTimeFile::default();
 
         // When
+        let _guard = TestFileGuard::new(file_name);
+
         let karting_time = read_application_state(file_name);
 
         // Then
@@ -302,28 +317,32 @@ mod file_integration_should {
     #[test]
     fn upsert_application_state_failed_to_create_file() {
         // Given
-        let karting_time_state_file_name = "/karting_time_test_file_1.toml";
+        let file_name = "/karting_time_test_file_1.toml";
         let karting_time_file = KartingTimeFile::default();
 
         // When
-        upsert_application_state(karting_time_state_file_name, &karting_time_file);
+        let _guard = TestFileGuard::new(file_name);
+
+        upsert_application_state(file_name, &karting_time_file);
 
         // Then
-        assert!(fs::metadata(karting_time_state_file_name).is_err());
+        assert!(fs::metadata(file_name).is_err());
     }
 
     #[test]
     fn upsert_application_state_to_file() {
         // Given
-        let karting_time_state_file_name = "karting_time_test_file_1.toml";
+        let file_name = "karting_time_test_file_1.toml";
         let karting_time_file = KartingTimeFile::default();
 
         // When
-        upsert_application_state(karting_time_state_file_name, &karting_time_file);
+        let _guard = TestFileGuard::new(file_name);
+
+        upsert_application_state(file_name, &karting_time_file);
 
         // Then
-        assert!(fs::metadata(karting_time_state_file_name).is_ok());
-        assert!(fs::metadata(karting_time_state_file_name).unwrap().len() != 0);
+        assert!(fs::metadata(file_name).is_ok());
+        assert!(fs::metadata(file_name).unwrap().len() != 0);
     }
 
     #[test]
@@ -333,6 +352,8 @@ mod file_integration_should {
         let expected_karting_time = KartingTimeFile::default();
 
         // When
+        let _guard = TestFileGuard::new(file_name);
+
         upsert_application_state(file_name, &expected_karting_time);
         let karting_time = read_application_state(file_name);
 
