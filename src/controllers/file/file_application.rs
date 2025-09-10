@@ -41,12 +41,15 @@ impl KartingTime {
 #[cfg(test)]
 mod file_should {
     use super::*;
-    use crate::models::{
-        application::application_state::ApplicationState,
-        date::Date,
-        driver::{
-            driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
-            race_result::Race, session::Session,
+    use crate::{
+        controllers::file::test_file_guard::TestFileGuard,
+        models::{
+            application::application_state::ApplicationState,
+            date::Date,
+            driver::{
+                driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
+                race_result::Race, session::Session,
+            },
         },
     };
     use std::fs;
@@ -64,13 +67,25 @@ mod file_should {
         karting_time.export_races(file_location);
 
         // Then
-        let file_name = "./".to_string()
+        let file_name_1 = "./".to_string()
             + &RaceInformation::get_unique_race_information_identifier(
                 &karting_time.driver_profile.races[0].race_information,
             )
             + ".toml";
-        assert!(fs::metadata(&file_name).is_ok());
-        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+
+        let file_name_2 = "./".to_string()
+            + &RaceInformation::get_unique_race_information_identifier(
+                &karting_time.driver_profile.races[1].race_information,
+            )
+            + ".toml";
+
+        let _guard = TestFileGuard::new(&file_name_1);
+        let _guard = TestFileGuard::new(&file_name_2);
+
+        assert!(fs::metadata(&file_name_1).is_ok());
+        assert!(fs::metadata(&file_name_1).unwrap().len() != 0);
+        assert!(fs::metadata(&file_name_2).is_ok());
+        assert!(fs::metadata(&file_name_2).unwrap().len() != 0);
     }
 
     #[test]
@@ -113,10 +128,14 @@ mod file_should {
         }];
 
         // When
-        upsert_races(file_location, &races);
         let file_name = "./".to_string()
             + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
+
+        let _guard = TestFileGuard::new(&file_name);
+
+        upsert_races(file_location, &races);
+
         karting_time.import_race(vec![file_name]);
 
         // Then
@@ -144,7 +163,7 @@ mod file_should {
     #[test]
     fn acceptance_test_application_saves_then_loads() {
         // Given
-        let application_state_file_name_toml = "./karting_time_state.toml";
+        let file_name = "./karting_time_state.toml";
         let expected = KartingTime {
             application_state: ApplicationState {
                 ..Default::default()
@@ -159,17 +178,14 @@ mod file_should {
         };
 
         // When
-        karting_time.save_application(application_state_file_name_toml);
-        karting_time.load_application(application_state_file_name_toml);
+        let _guard = TestFileGuard::new(&file_name);
+
+        karting_time.save_application(file_name);
+        karting_time.load_application(file_name);
 
         // Then
-        assert!(fs::metadata(application_state_file_name_toml).is_ok());
-        assert!(
-            fs::metadata(application_state_file_name_toml)
-                .unwrap()
-                .len()
-                != 0
-        );
+        assert!(fs::metadata(file_name).is_ok());
+        assert!(fs::metadata(file_name).unwrap().len() != 0);
         assert_eq!(expected, karting_time);
     }
 
