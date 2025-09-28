@@ -128,8 +128,7 @@ fn get_file_contents(file_name: &str) -> String {
 mod file_integration_should {
     use super::*;
     use crate::{
-        controllers::{driver_profile, file::test_file_guard::TestFileGuard},
-        data_models::driver_profile_file::DriverProfileFile,
+        controllers::file::test_file_guard::TestFileGuard,
         models::{
             date::Date,
             driver::{lap::Lap, race_information::RaceInformation, session::Session},
