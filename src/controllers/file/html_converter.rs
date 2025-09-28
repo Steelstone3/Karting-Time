@@ -8,21 +8,10 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
         (DOCTYPE)
         html lang="en" {
             head {
+                link rel="stylesheet" href="https://cdn.simplecss.org/simple.css";
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width,initial-scale=1";
                 title { "Race results" }
-                style { r#"
-                    body{font-family:system-ui,Segoe UI,Roboto,Arial}
-                    table{width:100%;border-collapse:collapse}
-                    th,td{padding:.5rem;border:1px solid #ddd;text-align:left}
-                    @media(max-width:640px){
-                        table,thead,tbody,tr{display:block}
-                        th{display:none}
-                        td{display:flex;justify-content:space-between;border:none;border-bottom:1px solid #eee}
-                        td::before{content:attr(data-label);font-weight:600}
-                        }
-                        "# 
-                }
             }
             body {
                 h1 { ( &driver_profile.name ) }
