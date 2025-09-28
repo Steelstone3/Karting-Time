@@ -26,26 +26,43 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                 h1 { ( &driver_profile.name ) }
                 @for race in &driver_profile.races {
                     section {
-                        h2 { 
-                            ( &race.track_name ) " - " ( race.day ) "/" ( race.month ) "/" ( race.year ) 
+                        h2 {
+                            ( &race.track_name ) " Session: " ( &race.session_id ) " Date: " ( race.day ) "/" ( race.month ) "/" ( race.year )
                         }
                         table {
-                        caption { "Session " ( race.session_id ) " position " ( race.race_position ) }
                             thead {
                                 tr { th { "Lap" } th { "Time" } }
                             }
                             tbody {
-                                @for (i, lt) in race.laptimes.iter().enumerate() {
+                                @for (lap_number, lap_time) in race.laptimes.iter().enumerate() {
                                     tr {
-                                        td data-label="Lap" { ( i+1 ) }
-                                        td data-label="Time" { ( lt ) }
+                                        td data-label="Lap" { ( lap_number + 1 ) }
+                                        td data-label="Time" { ( lap_time ) }
                                     }
                                 }
                             }
                         }
                     }
-                    @if let Some(notes) = &race.notes {
-                        p { strong { "Notes" } " " ( notes ) }
+                    section {
+                        @if let Some(session_type) = &race.session_type {
+                            p { strong { "Session type: " } ( session_type ) }
+                        }
+                    
+                        @if let Some(track_conditions) = &race.track_conditions {
+                            p { strong { "Track condition: " } ( track_conditions ) }
+                        }
+                    
+                        @if let Some(car_used) = &race.car_used {
+                            p { strong { "Car used: " } ( car_used ) }
+                        }
+                    
+                        @if let Some(championship) = &race.championship {
+                            p { strong { "Championship: " } ( championship ) }
+                        }
+                    
+                        @if let Some(notes) = &race.notes {
+                            p { strong { "Notes: " } ( notes ) }
+                        }
                     }
                 }
             }
