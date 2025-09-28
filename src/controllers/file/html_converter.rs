@@ -179,6 +179,9 @@ mod html_converter_should {
         // Then
         let markdown_string = markdown.into_string();
 
+        // Title
+        assert!(markdown_string.contains("<title>Race results</title"));
+
         assert!(
             markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile_file.name.clone()))
         );
@@ -223,7 +226,7 @@ mod html_converter_should {
                 markdown_string
                     .contains(&format!("<td data-label=\"Race Pace\">Average Time 6</td>"))
             );
-            
+
             assert!(markdown_string.contains(&format!("<td data-label=\"Value\">15</td>")));
             assert!(markdown_string.contains(&format!("<td data-label=\"Value\">17.5</td>")));
 
