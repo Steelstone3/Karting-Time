@@ -55,7 +55,6 @@ impl Race {
         total_times_string
     }
 
-    // TODO Test
     pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, f32)> {
         let mut sorted: Vec<(usize, f32)> = hash_map.into_iter().collect();
 
@@ -106,6 +105,8 @@ impl Race {
 
 #[cfg(test)]
 mod laptime_converter_should {
+    use std::collections::HashMap;
+
     use crate::models::driver::{lap::Lap, race_result::Race};
 
     #[test]
@@ -254,6 +255,22 @@ mod laptime_converter_should {
 
         // Then
         assert_eq!(expected_average_laps, average_laps)
+    }
+
+    #[test]
+    fn convet_hash_map() {
+        // Given
+        let expected_sorted_races = vec![(5, 230.0), (10, 550.0), (15, 770.0)];
+        let mut races_hash_map = HashMap::new();
+        races_hash_map.insert(15, 770.0);
+        races_hash_map.insert(5, 230.0);
+        races_hash_map.insert(10, 550.0);
+
+        // When
+        let sorted_races = Race::convert_hash_map(races_hash_map);
+
+        // Then
+        assert_eq!(expected_sorted_races, sorted_races);
     }
 
     #[test]
