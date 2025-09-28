@@ -30,6 +30,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                             ( &race.track_name ) " Session: " ( &race.session_id ) " Date: " ( race.day ) "/" ( race.month ) "/" ( race.year )
                         }
                         table {
+                            caption { "Race" }
                             thead {
                                 tr { th { "Lap" } th { "Time" } }
                             }
@@ -42,8 +43,8 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 }
                             }
                         }
-                        h3 { "Summary" }
                         table {
+                            caption { "Summary" }
                             thead {
                                 tr { th { "Summary" } th { "Value" } }
                             }
@@ -66,8 +67,8 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 }                            
                             }
                         }
-                        h3 { "Race Pace" }
                         table {
+                            caption { "Race Pace" }
                             thead {
                                 tr { th { "Race Statistic" } th { "Pace" } }
                             }
