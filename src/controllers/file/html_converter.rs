@@ -3,7 +3,6 @@ use crate::{
 };
 use maud::{DOCTYPE, Markup, html};
 
-// TODO Test
 pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
     html! {
         (DOCTYPE)
@@ -135,6 +134,106 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                     }
                 }
             }
+        }
+    }
+}
+
+#[cfg(test)]
+mod html_converter_should {
+    use crate::{
+        controllers::file::html_converter::convert_to_html,
+        data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
+        models::driver::race_result::Race,
+    };
+
+    #[test]
+    fn convert() {
+        // Given
+        let driver_profile_file = DriverProfileFile {
+            name: "Derek".to_string(),
+            races: vec![RaceFile {
+                laptimes: vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                day: 24,
+                month: 12,
+                year: 2025,
+                track_name: "Three Brothers".to_string(),
+                session_id: 1,
+                race_position: 1,
+                session_type: Some("Race".to_string()),
+                track_conditions: Some("Dry".to_string()),
+                car_used: Some("Mercedes GT3".to_string()),
+                championship: Some("GT World Challenge".to_string()),
+                notes: Some("No comment".to_string()),
+            }],
+        };
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        assert!(markdown_string.contains(&driver_profile_file.name.clone()));
+
+        for race in driver_profile_file.races {
+            assert!(
+                markdown_string.contains(
+                    &format!(
+                        "{} Session: {} Date: {}/{}/{}",
+                        race.track_name, race.session_id, race.day, race.month, race.year
+                    )
+                    .clone(),
+                )
+            );
+            assert!(markdown_string.contains(&race.race_position.to_string()));
+
+            // TODO Ideally a known expected value
+            assert!(
+                markdown_string.contains(&race.convert_to_race().get_number_of_laps().to_string())
+            );
+            // TODO Ideally a known expected value
+            assert!(
+                markdown_string.contains(&race.convert_to_race().get_fastest_lap().to_string())
+            );
+            // TODO Ideally a known expected value
+            assert!(
+                markdown_string.contains(&race.convert_to_race().get_average_lap().to_string())
+            );
+
+            // TODO Ideally a known expected value
+            for (total_time_key, total_time_value) in
+                Race::convert_hash_map(race.convert_to_race().calculate_total_times())
+            {
+                assert!(markdown_string.contains(&total_time_key.to_string()));
+                assert!(markdown_string.contains(&total_time_value.to_string()));
+            }
+
+            // TODO Ideally a known expected value
+            for (average_time_key, average_time_value) in Race::convert_hash_map(
+                race.convert_to_race()
+                    .calculate_average_total_times(&race.convert_to_race().calculate_total_times()),
+            ) {
+                assert!(markdown_string.contains(&average_time_key.to_string()));
+                assert!(markdown_string.contains(&average_time_value.to_string()));
+            }
+
+            for laptime in race.laptimes {
+                assert!(markdown_string.contains(&laptime.clone()));
+            }
+
+            assert!(markdown_string.contains(&race.session_type.unwrap_or_default()));
+            assert!(markdown_string.contains(&race.track_conditions.unwrap_or_default()));
+            assert!(markdown_string.contains(&race.car_used.unwrap_or_default()));
+            assert!(markdown_string.contains(&race.championship.unwrap_or_default()));
+
+            assert!(markdown_string.contains(&format!("<strong>Notes: </strong>{}", &race.notes.unwrap_or_default())));
         }
     }
 }
