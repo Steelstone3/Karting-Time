@@ -29,6 +29,10 @@ impl KartingTime {
                 button("Export Races")
                     .width(Length::Fill)
                     .on_press(Message::ExportRaces)
+            )(
+                button("Export HTML Races")
+                    .width(Length::Fill)
+                    .on_press(Message::ExportHtmlRaces)
             )))
         )(
             button("View").on_press(Message::MenuBar),

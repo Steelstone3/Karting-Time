@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     controllers::driver_profile::time_parser::format_laptime,
     models::driver::{lap::Lap, race_result::Race},
@@ -20,21 +22,15 @@ impl Race {
     }
 
     pub fn convert_total_times_to_string(&self) -> String {
-        let total_times = self.calculate_total_times();
-
         let mut total_times_string = String::new();
 
-        // Sort the HashMap by key (lap number)
-        let mut sorted_total_times: Vec<(&usize, &f32)> = total_times.iter().collect();
-
-        // Sort by key (lap number)
-        sorted_total_times.sort_by(|(a, _), (b, _)| a.cmp(b));
+        let sorted_total_times = Self::convert_hash_map(self.calculate_total_times());
 
         for (lap_number, total_time) in sorted_total_times {
             total_times_string += &format!(
                 "\nTotal Time {}: {}",
                 lap_number,
-                format_laptime(*total_time)
+                format_laptime(total_time)
             );
         }
 
@@ -42,26 +38,30 @@ impl Race {
     }
 
     pub fn convert_average_total_times_to_string(&self) -> String {
-        let total_times = self.calculate_total_times();
-        let average_times = self.calculate_average_total_times(&total_times);
-
         let mut total_times_string = String::new();
 
-        // Sort the HashMap by key (lap number)
-        let mut sorted_average_times: Vec<(&usize, &f32)> = average_times.iter().collect();
-
-        // Sort by key (lap number)
-        sorted_average_times.sort_by(|(a, _), (b, _)| a.cmp(b));
+        let sorted_average_times = Self::convert_hash_map(
+            self.calculate_average_total_times(&self.calculate_total_times()),
+        );
 
         for (lap_number, average_time) in sorted_average_times {
             total_times_string += &format!(
                 "\nAverage Time {}: {}",
                 lap_number,
-                format_laptime(*average_time)
+                format_laptime(average_time)
             );
         }
 
         total_times_string
+    }
+
+    // TODO Test
+    pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, f32)> {
+        let mut sorted: Vec<(usize, f32)> = hash_map.into_iter().collect();
+
+        sorted.sort_by_key(|(k, _)| *k);
+
+        sorted
     }
 
     pub fn convert_laps_to_string(&self) -> String {
