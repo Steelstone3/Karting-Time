@@ -67,6 +67,12 @@ pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
                   }
                 "# }
             }
+            body {
+                h1 { ( &driver_profile.name ) }
+                @for race in &driver_profile.races {}
+            }
+
+
             // body {
             //     h1 { ( &driver_profile.name ) }
             //     @for race in &driver_profile.races {
