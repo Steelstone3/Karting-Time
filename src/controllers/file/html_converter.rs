@@ -80,10 +80,13 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                     tr {
                                         td data-label="Race Pace" { "Total Time " (total_time_key) }
                                         td data-label="Value" { (total_time_value) }
-                                        // tr { td data-label="Race position" { ( race.race_position ) } }
-                                        // tr { td data-label="Number of laps" { ( race.convert_to_race().get_number_of_laps() ) } }
-                                        // tr { td data-label="Fastest lap" { ( race.convert_to_race().get_fastest_lap() ) } }
-                                        // tr { td data-label="Average lap (105%)" { ( race.convert_to_race().get_average_lap() ) } }
+                                    }
+                                }
+
+                                @for (average_time_key, average_time_value) in &race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times()) {
+                                    tr {
+                                        td data-label="Race Pace" { "Average Time " (average_time_key) }
+                                        td data-label="Value" { (average_time_value) }
                                     }
                                 }
                             }
