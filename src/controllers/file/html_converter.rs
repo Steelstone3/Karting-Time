@@ -223,6 +223,7 @@ mod html_converter_should {
                 markdown_string
                     .contains(&format!("<td data-label=\"Race Pace\">Average Time 6</td>"))
             );
+            
             assert!(markdown_string.contains(&format!("<td data-label=\"Value\">15</td>")));
             assert!(markdown_string.contains(&format!("<td data-label=\"Value\">17.5</td>")));
 
