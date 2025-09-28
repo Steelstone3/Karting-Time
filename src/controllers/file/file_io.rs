@@ -64,7 +64,6 @@ pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
         Ok(_) => (),
         Err(_) => {
             println!("{WRITE_ERROR}");
-            return;
         }
     }
 }
