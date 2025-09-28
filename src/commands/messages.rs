@@ -7,6 +7,7 @@ pub enum Message {
     FileNew,
     ImportRaces,
     ExportRaces,
+    ExportHtmlRaces,
     SaveApplication,
     LoadApplication,
     ViewToggleTheme,

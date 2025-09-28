@@ -1,4 +1,6 @@
-use crate::models::application::karting_time::KartingTime;
+use crate::{
+    controllers::file::file_io::upsert_html_races, models::application::karting_time::KartingTime,
+};
 
 use super::file_io::{
     read_application_state, read_race_file, upsert_application_state, upsert_races,
@@ -11,6 +13,10 @@ impl KartingTime {
 
     pub fn export_races(&self, file_location: &str) {
         upsert_races(file_location, &self.driver_profile.races);
+    }
+
+    pub(crate) fn export_html_races(&self, file_location: &str) {
+        upsert_html_races(file_location, &self.driver_profile);
     }
 
     pub fn import_race(&mut self, file_names: Vec<String>) {
