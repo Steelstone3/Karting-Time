@@ -64,7 +64,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 tr {
                                     td data-label="Summary" { "Average lap (105%)" }
                                     td data-label="Value" { ( race.convert_to_race().get_average_lap() ) }
-                                }                            
+                                }
                             }
                         }
                         table {
@@ -79,29 +79,42 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 // tr { td data-label="Average lap (105%)" { ( race.convert_to_race().get_average_lap() ) } }
                             }
                         }
+                         table {
+                            caption { "Metadata" }
+                            thead {
+                                tr { th { "Metadata" } th { "Value" } }
+                            }
+                            tbody {
+                                tr {
+                                    @if let Some(session_type) = &race.session_type {
+                                        td data-label="Metadata" { "Session type" }
+                                        td data-label="Value" { ( session_type ) }
+                                    }
+                                }
+                                tr {
+                                    @if let Some(track_conditions) = &race.track_conditions {
+                                         td data-label="Metadata" { "Track condition" }
+                                         td data-label="Value" { ( track_conditions ) }
+                                    }
+                                }
+                                tr {
+                                    @if let Some(car_used) = &race.car_used {
+                                        td data-label="Metadata" { "Car used" }
+                                        td data-label="Value" { ( car_used ) }
+                                    }
+                                }
+                                tr {
+                                    @if let Some(championship) = &race.championship {
+                                        td data-label="Metadata" { "Championship" }
+                                        td data-label="Value" { ( championship ) }
+                                    }
+                                }
+                            }
+                        }
                     }
 
-                    h3 { "Metadata" }
-                    section {
-                        @if let Some(session_type) = &race.session_type {
-                            p { strong { "Session type: " } ( session_type ) }
-                        }
-
-                        @if let Some(track_conditions) = &race.track_conditions {
-                            p { strong { "Track condition: " } ( track_conditions ) }
-                        }
-
-                        @if let Some(car_used) = &race.car_used {
-                            p { strong { "Car used: " } ( car_used ) }
-                        }
-
-                        @if let Some(championship) = &race.championship {
-                            p { strong { "Championship: " } ( championship ) }
-                        }
-
-                        @if let Some(notes) = &race.notes {
-                            p { strong { "Notes: " } ( notes ) }
-                        }
+                    @if let Some(notes) = &race.notes {
+                        p { strong { "Notes: " } ( notes ) }
                     }
                 }
             }
