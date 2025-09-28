@@ -30,7 +30,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
 
                 hr {}
 
-                h2 { ( &driver_profile.name ) " Driver Profile Summary" }
+                h2 { ( &driver_profile.name ) " Profile Summary" }
 
                 // Driver Profile Summary
                 table {
@@ -70,7 +70,86 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                 }
 
                 // Race Summary
-                table {}
+                h2 { ( &driver_profile.name ) " Race Summary" }
+                table {
+                    thead {
+                        tr {
+                            th { "Track Name" }
+                            th { "Date" }
+                            th { "Session" }
+                            th { "Car Used" }
+                            th { "Race Position" }
+                            th { "Fastest Lap" }
+                            th { "Average Lap 5" }
+                            th { "Average Lap 10" }
+                            th { "Average Lap 15" }
+                            th { "Total Lap 5" }
+                            th { "Total Lap 10" }
+                            th { "Total Lap 15" }
+                            th { "Total Time" }
+                        }
+                    }
+                        tbody {
+                            @for race in &driver_profile.races {
+                            tr {
+                                td data-label="Track Name" { ( &race.track_name ) }
+                                td data-label="Date" { ( &race.day ) "/" ( &race.month ) "/" ( &race.year ) }
+                                td data-label="Session" { ( &race.session_id ) }
+                                @if let Some(car_used) = &race.car_used {
+                                    td data-label="Car Used" { ( car_used ) }
+                                }
+                                td data-label="Race Position" { ( &race.race_position ) }
+                                td data-label="Fastest Lap" { ( race.convert_to_race().get_fastest_lap() ) }
+
+                                @if let Some(average_5) = Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())).first() {
+                                    td data-label="Average Lap 5" { ( average_5.1 ) }
+                                }
+                                @else {
+                                    td data-label="Average Lap 5" { "N/A" }
+                                }
+
+                                @if let Some(average_10) = Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())).get(1) {
+                                    td data-label="Average Lap 10" { ( average_10.1 ) }
+                                }
+                                @else {
+                                    td data-label="Average Lap 10" { "N/A" }
+                                }
+
+                                @if let Some(average_15) = Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())).get(2) {
+                                    td data-label="Average Lap 15" { ( average_15.1 ) }
+                                }
+                                @else {
+                                    td data-label="Average Lap 15" { "N/A" }
+                                }
+
+                                @if let Some(total_5) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).first() {
+                                    td data-label="Total Lap 5" { ( total_5.1 ) }
+                                }
+                                @else {
+                                    td data-label="Total Lap 5" { "N/A" }
+                                }
+
+                                @if let Some(total_10) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).get(1) {
+                                    td data-label="Total Lap 10" { ( total_10.1 ) }
+                                }
+                                @else {
+                                    td data-label="Total Lap 10" { "N/A" }
+                                }
+
+                                @if let Some(total_15) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).get(2) {
+                                    td data-label="Total Lap 15" { ( total_15.1 ) }
+                                }
+                                @else {
+                                    td data-label="Total Lap 15" { "N/A" }
+                                }
+
+                                @if let Some(total) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).last() {
+                                    td data-label="Total Time" { ( total.1 ) }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 @for race in &driver_profile.races {
                     // Races
@@ -189,32 +268,9 @@ mod html_converter_should {
     };
 
     #[test]
-    fn convert() {
+    fn convert_profile_summary_table() {
         // Given
-        let driver_profile_file = DriverProfileFile {
-            name: "Derek".to_string(),
-            races: vec![RaceFile {
-                laptimes: vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
-                day: 24,
-                month: 12,
-                year: 2025,
-                track_name: "Three Brothers".to_string(),
-                session_id: 1,
-                race_position: 1,
-                session_type: Some("Race".to_string()),
-                track_conditions: Some("Dry".to_string()),
-                car_used: Some("Mercedes GT3".to_string()),
-                championship: Some("GT World Challenge".to_string()),
-                notes: Some("No comment".to_string()),
-            }],
-        };
+        let driver_profile_file = driver_profile_file_test_fixture();
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -230,47 +286,97 @@ mod html_converter_should {
             markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile_file.name.clone()))
         );
 
-        // Driver Profile Summary Table
+        // Profile Summary Table
         assert!(markdown_string.contains(&format!(
-            "<h2>{} Driver Profile Summary</h2>",
+            "<h2>{} Profile Summary</h2>",
             &driver_profile_file.name
         )));
+        assert!(markdown_string.contains("<th>Profile Summary</th><th>Driver Statistic</th>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Races</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Wins</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Podiums</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Top Fives</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Top Tens</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Unique Tracks</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Unique Cars</td>"));
+        assert!(markdown_string.contains("<td data-label=\"Driver Statistic\">1</td>"));
+    }
+
+    #[test]
+    fn convert_profile_races_summary_table() {
+        // Given
+        let driver_profile_file = driver_profile_file_test_fixture();
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        // Title
+        assert!(markdown_string.contains("<title>Race Results</title"));
+
+        // Profile Summary Table
         assert!(markdown_string.contains(&format!(
-            "<th>Profile Summary</th><th>Driver Statistic</th>"
+            "<h2>{} Race Summary</h2>",
+            &driver_profile_file.name
         )));
-        assert!(
-            markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Races</td>"))
-        );
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
-        assert!(markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Wins</td>")));
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
-        assert!(
-            markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Podiums</td>"))
-        );
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
-        assert!(markdown_string.contains(&format!(
-            "<td data-label=\"Profile Summary\">Top Fives</td>"
-        )));
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
-        assert!(
-            markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Top Tens</td>"))
-        );
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
-        assert!(markdown_string.contains(&format!(
-            "<td data-label=\"Profile Summary\">Unique Tracks</td>"
-        )));
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
-        assert!(markdown_string.contains(&format!(
-            "<td data-label=\"Profile Summary\">Unique Cars</td>"
-        )));
-        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+
+        assert!(markdown_string.contains("<th>Track Name</th><th>Date</th><th>Session</th><th>Car Used</th><th>Race Position</th><th>Fastest Lap</th><th>Average Lap 5</th><th>Average Lap 10</th><th>Average Lap 15</th><th>Total Lap 5</th><th>Total Lap 10</th><th>Total Lap 15</th><th>Total Time</th>"));
 
         for race in driver_profile_file.races {
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Track Name\">{}</td>",
+                &race.track_name
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Date\">{}/{}/{}</td>",
+                &race.day, &race.month, &race.year
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Session\">{}</td>",
+                &race.session_id
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Car Used\">{}</td>",
+                &race.car_used.unwrap_or_default()
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Race Position\">{}</td>",
+                &race.race_position
+            )));
+            assert!(markdown_string.contains("<td data-label=\"Fastest Lap\">5</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Average Lap 5\">15</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Average Lap 10\">17.5</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Average Lap 15\">N/A</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Lap 5\">75</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Lap 10\">105</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Lap 15\">N/A</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Time\">105</td>",));
+        }
+    }
+
+    #[test]
+    fn convert_race_summary_table() {
+        // Given
+        let driver_profile_file = driver_profile_file_test_fixture();
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        for _ in driver_profile_file.races {
             // Race Summary Table
             assert!(markdown_string.contains("<h3>Race Summary</h3>"));
-            assert!(
-                markdown_string.contains(&format!("<th>Race Summary</th><th>Race Statistic</th>"))
-            );
+            assert!(markdown_string.contains("<th>Race Summary</th><th>Race Statistic</th>"));
             assert!(markdown_string.contains("<td data-label=\"Race Summary\">Race position</td>"));
             assert!(markdown_string.contains("<td data-label=\"Race Statistic\">1</td>"));
 
@@ -286,26 +392,50 @@ mod html_converter_should {
                 markdown_string.contains("<td data-label=\"Race Summary\">Average lap (105%)</td>")
             );
             assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5</td>"));
+        }
+    }
 
+    #[test]
+    fn convert_race_pace_table() {
+        // Given
+        let driver_profile_file = driver_profile_file_test_fixture();
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        for _ in driver_profile_file.races {
             // Race Pace Table
             assert!(markdown_string.contains("<h3>Race Pace</h3>"));
-            assert!(markdown_string.contains(&format!("<th>Lap</th><th>Pace</th>")));
+            assert!(markdown_string.contains("<th>Lap</th><th>Pace</th>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 5</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 6</td>"));
 
             assert!(markdown_string.contains("<td data-label=\"Pace\">75</td>"));
             assert!(markdown_string.contains("<td data-label=\"Pace\">105</td>"));
 
-            assert!(
-                markdown_string.contains(&format!("<td data-label=\"Lap\">Average Time 5</td>"))
-            );
-            assert!(
-                markdown_string.contains(&format!("<td data-label=\"Lap\">Average Time 6</td>"))
-            );
+            assert!(markdown_string.contains("<td data-label=\"Lap\">Average Time 5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">Average Time 6</td>"));
 
-            assert!(markdown_string.contains(&format!("<td data-label=\"Pace\">15</td>")));
-            assert!(markdown_string.contains(&format!("<td data-label=\"Pace\">17.5</td>")));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">15</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">17.5</td>"));
+        }
+    }
 
+    #[test]
+    fn convert_laptime_table() {
+        // Given
+        let driver_profile_file = driver_profile_file_test_fixture();
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        for race in driver_profile_file.races {
             // Laptime Table
             assert!(
                 markdown_string.contains(
@@ -316,7 +446,7 @@ mod html_converter_should {
                     .clone(),
                 )
             );
-            assert!(markdown_string.contains(&format!("<th>Lap</th><th>Time</th>")));
+            assert!(markdown_string.contains("<th>Lap</th><th>Time</th>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">1</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">2</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">3</td>"));
@@ -347,10 +477,24 @@ mod html_converter_should {
                 "<td data-label=\"Time\">{}</td>",
                 race.laptimes[5].clone()
             )));
+        }
+    }
 
+    #[test]
+    fn convert_metadata_table() {
+        // Given
+        let driver_profile_file = driver_profile_file_test_fixture();
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        for race in driver_profile_file.races {
             // Race Metadata Table
             assert!(markdown_string.contains("<h3>Metadata</h3>"));
-            assert!(markdown_string.contains(&format!("<th>Metadata</th><th>Value</th>")));
+            assert!(markdown_string.contains("<th>Metadata</th><th>Value</th>"));
             assert!(markdown_string.contains("<td data-label=\"Metadata\">Session type</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Value\">{}</td>",
@@ -378,6 +522,33 @@ mod html_converter_should {
                 "<strong>Notes: </strong>{}",
                 &race.notes.unwrap_or_default()
             )));
+        }
+    }
+
+    fn driver_profile_file_test_fixture() -> DriverProfileFile {
+        DriverProfileFile {
+            name: "Derek".to_string(),
+            races: vec![RaceFile {
+                laptimes: vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                day: 24,
+                month: 12,
+                year: 2025,
+                track_name: "Three Brothers".to_string(),
+                session_id: 1,
+                race_position: 1,
+                session_type: Some("Race".to_string()),
+                track_conditions: Some("Dry".to_string()),
+                car_used: Some("Mercedes GT3".to_string()),
+                championship: Some("GT World Challenge".to_string()),
+                notes: Some("No comment".to_string()),
+            }],
         }
     }
 }
