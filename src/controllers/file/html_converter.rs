@@ -1,9 +1,21 @@
 use crate::{
-    data_models::driver_profile_file::DriverProfileFile, models::driver::race_result::Race,
+    data_models::driver_profile_file::DriverProfileFile,
+    models::{
+        application::{application_state::ApplicationState, karting_time::KartingTime},
+        driver::race_result::Race,
+    },
 };
 use maud::{DOCTYPE, Markup, html};
 
 pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
+    let karting_time = KartingTime {
+        application_state: ApplicationState {
+            filtered_races: driver_profile.convert_to_driver_profile().races,
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+
     html! {
         (DOCTYPE)
         html lang="en" {
@@ -11,116 +23,158 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                 link rel="stylesheet" href="https://cdn.simplecss.org/simple.css";
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width,initial-scale=1";
-                title { "Race results" }
+                title { "Race Results" }
             }
             body {
                 h1 { ( &driver_profile.name ) }
 
                 hr {}
 
-                @for race in &driver_profile.races {
-                    section {
-                        h2 {
-                            ( &race.track_name ) " Session: " ( &race.session_id ) " Date: " ( race.day ) "/" ( race.month ) "/" ( race.year )
-                        }
-                        h3 { "Race" }
-                        table {
-                            thead {
-                                tr { th { "Lap" } th { "Time" } }
-                            }
-                            tbody {
-                                @for (lap_number, lap_time) in race.laptimes.iter().enumerate() {
-                                    tr {
-                                        td data-label="Lap" { ( lap_number + 1 ) }
-                                        td data-label="Time" { ( lap_time ) }
-                                    }
-                                }
-                            }
-                        }
-                        h3 { "Summary" }
-                        table {
-                            thead {
-                                tr { th { "Summary" } th { "Value" } }
-                            }
-                            tbody {
-                                tr {
-                                    td data-label="Summary" { "Race position" }
-                                    td data-label="Value" { ( race.race_position ) }
-                                }
-                                tr {
-                                    td data-label="Summary" { "Number of laps" }
-                                    td data-label="Value" { ( race.convert_to_race().get_number_of_laps() ) }
-                                }
-                                tr {
-                                    td data-label="Summary" { "Fastest lap" }
-                                    td data-label="Value" { ( race.convert_to_race().get_fastest_lap() ) }
-                                }
-                                tr {
-                                    td data-label="Summary" { "Average lap (105%)" }
-                                    td data-label="Value" { ( race.convert_to_race().get_average_lap() ) }
-                                }
-                            }
-                        }
-                        h3 { "Race Pace" }
-                        table {
-                            thead {
-                                tr { th { "Race Pace" } th { "Value" } }
-                            }
-                            tbody {
-                                @for (total_time_key, total_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_total_times()) {
-                                    tr {
-                                        td data-label="Race Pace" { "Total Time " (total_time_key) }
-                                        td data-label="Value" { (total_time_value) }
-                                    }
-                                }
+                h2 { ( &driver_profile.name ) " Driver Profile Summary" }
 
-                                @for (average_time_key, average_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())) {
-                                    tr {
-                                        td data-label="Race Pace" { "Average Time " (average_time_key) }
-                                        td data-label="Value" { (average_time_value) }
-                                    }
-                                }
-                            }
-                        }
-                        h3 { "Metadata" }
-                        table {
-                            thead {
-                                tr { th { "Metadata" } th { "Value" } }
-                            }
-                            tbody {
-                                tr {
-                                    @if let Some(session_type) = &race.session_type {
-                                        td data-label="Metadata" { "Session type" }
-                                        td data-label="Value" { ( session_type ) }
-                                    }
-                                }
-                                tr {
-                                    @if let Some(track_conditions) = &race.track_conditions {
-                                         td data-label="Metadata" { "Track condition" }
-                                         td data-label="Value" { ( track_conditions ) }
-                                    }
-                                }
-                                tr {
-                                    @if let Some(car_used) = &race.car_used {
-                                        td data-label="Metadata" { "Car used" }
-                                        td data-label="Value" { ( car_used ) }
-                                    }
-                                }
-                                tr {
-                                    @if let Some(championship) = &race.championship {
-                                        td data-label="Metadata" { "Championship" }
-                                        td data-label="Value" { ( championship ) }
-                                    }
-                                }
-                            }
-                        }
-
-                        @if let Some(notes) = &race.notes {
-                            p { strong { "Notes: " } ( notes ) }
-                        }
-
-                        hr {}
+                // Driver Profile Summary
+                table {
+                    thead {
+                        tr { th { "Profile Summary" } th { "Driver Statistic" } }
                     }
+                    tbody {
+                        tr {
+                            td data-label="Profile Summary" { "Races" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_races() ) }
+                        }
+                        tr {
+                            td data-label="Profile Summary" { "Wins" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_wins() ) }
+                        }
+                        tr {
+                            td data-label="Profile Summary" { "Podiums" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_podiums() ) }
+                        }
+                        tr {
+                            td data-label="Profile Summary" { "Top Fives" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_top_fives() ) }
+                        }
+                        tr {
+                            td data-label="Profile Summary" { "Top Tens" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_top_tens() ) }
+                        }
+                        tr {
+                            td data-label="Profile Summary" { "Unique Tracks" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_unique_tracks() ) }
+                        }
+                        tr {
+                            td data-label="Profile Summary" { "Unique Cars" }
+                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_unique_cars() ) }
+                        }
+                    }
+                }
+
+                // Race Summary
+                table {}
+
+                @for race in &driver_profile.races {
+                    // Races
+                    h2 {
+                        ( &race.track_name ) " Session: " ( &race.session_id ) " Date: " ( race.day ) "/" ( race.month ) "/" ( race.year )
+                    }
+                    h3 { "Race" }
+                    table {
+                        thead {
+                            tr { th { "Lap" } th { "Time" } }
+                        }
+                        tbody {
+                            @for (lap_number, lap_time) in race.laptimes.iter().enumerate() {
+                                tr {
+                                    td data-label="Lap" { ( lap_number + 1 ) }
+                                    td data-label="Time" { ( lap_time ) }
+                                }
+                            }
+                        }
+                    }
+                    // Summary
+                    h3 { "Race Summary" }
+                    table {
+                        thead {
+                            tr { th { "Race Summary" } th { "Race Statistic" } }
+                        }
+                        tbody {
+                            tr {
+                                td data-label="Race Summary" { "Race position" }
+                                td data-label="Race Statistic" { ( race.race_position ) }
+                            }
+                            tr {
+                                td data-label="Race Summary" { "Number of laps" }
+                                td data-label="Race Statistic" { ( race.convert_to_race().get_number_of_laps() ) }
+                            }
+                            tr {
+                                td data-label="Race Summary" { "Fastest lap" }
+                                td data-label="Race Statistic" { ( race.convert_to_race().get_fastest_lap() ) }
+                            }
+                            tr {
+                                td data-label="Race Summary" { "Average lap (105%)" }
+                                td data-label="Race Statistic" { ( race.convert_to_race().get_average_lap() ) }
+                            }
+                        }
+                    }
+                    // Pace
+                    h3 { "Race Pace" }
+                    table {
+                        thead {
+                            tr { th { "Lap" } th { "Pace" } }
+                        }
+                        tbody {
+                            @for (total_time_key, total_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_total_times()) {
+                                tr {
+                                    td data-label="Lap" { "Total Time " (total_time_key) }
+                                    td data-label="Pace" { (total_time_value) }
+                                }
+                            }
+                            @for (average_time_key, average_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())) {
+                                tr {
+                                    td data-label="Lap" { "Average Time " (average_time_key) }
+                                    td data-label="Pace" { (average_time_value) }
+                                }
+                            }
+                        }
+                    }
+                    // Metadata
+                    h3 { "Metadata" }
+                    table {
+                        thead {
+                            tr { th { "Metadata" } th { "Value" } }
+                        }
+                        tbody {
+                            tr {
+                                @if let Some(session_type) = &race.session_type {
+                                    td data-label="Metadata" { "Session type" }
+                                    td data-label="Value" { ( session_type ) }
+                                }
+                            }
+                            tr {
+                                @if let Some(track_conditions) = &race.track_conditions {
+                                     td data-label="Metadata" { "Track condition" }
+                                     td data-label="Value" { ( track_conditions ) }
+                                }
+                            }
+                            tr {
+                                @if let Some(car_used) = &race.car_used {
+                                    td data-label="Metadata" { "Car used" }
+                                    td data-label="Value" { ( car_used ) }
+                                }
+                            }
+                            tr {
+                                @if let Some(championship) = &race.championship {
+                                    td data-label="Metadata" { "Championship" }
+                                    td data-label="Value" { ( championship ) }
+                                }
+                            }
+                        }
+                    }
+                    @if let Some(notes) = &race.notes {
+                            p { strong { "Notes: " } ( notes ) }
+                    }
+
+                    hr {}
                 }
             }
         }
@@ -169,15 +223,90 @@ mod html_converter_should {
         let markdown_string = markdown.into_string();
 
         // Title
-        assert!(markdown_string.contains("<title>Race results</title"));
+        assert!(markdown_string.contains("<title>Race Results</title"));
 
         // Driver Profile Heading
         assert!(
             markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile_file.name.clone()))
         );
 
+        // Driver Profile Summary Table
+        assert!(markdown_string.contains(&format!(
+            "<h2>{} Driver Profile Summary</h2>",
+            &driver_profile_file.name
+        )));
+        assert!(markdown_string.contains(&format!(
+            "<th>Profile Summary</th><th>Driver Statistic</th>"
+        )));
+        assert!(
+            markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Races</td>"))
+        );
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+        assert!(markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Wins</td>")));
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+        assert!(
+            markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Podiums</td>"))
+        );
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+        assert!(markdown_string.contains(&format!(
+            "<td data-label=\"Profile Summary\">Top Fives</td>"
+        )));
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+        assert!(
+            markdown_string.contains(&format!("<td data-label=\"Profile Summary\">Top Tens</td>"))
+        );
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+        assert!(markdown_string.contains(&format!(
+            "<td data-label=\"Profile Summary\">Unique Tracks</td>"
+        )));
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+        assert!(markdown_string.contains(&format!(
+            "<td data-label=\"Profile Summary\">Unique Cars</td>"
+        )));
+        assert!(markdown_string.contains(&format!("<td data-label=\"Driver Statistic\">1</td>")));
+
         for race in driver_profile_file.races {
-            // Race Heading
+            // Race Summary Table
+            assert!(markdown_string.contains("<h3>Race Summary</h3>"));
+            assert!(
+                markdown_string.contains(&format!("<th>Race Summary</th><th>Race Statistic</th>"))
+            );
+            assert!(markdown_string.contains("<td data-label=\"Race Summary\">Race position</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">1</td>"));
+
+            assert!(
+                markdown_string.contains("<td data-label=\"Race Summary\">Number of laps</td>")
+            );
+            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">6</td>"));
+
+            assert!(markdown_string.contains("<td data-label=\"Race Summary\">Fastest lap</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5</td>"));
+
+            assert!(
+                markdown_string.contains("<td data-label=\"Race Summary\">Average lap (105%)</td>")
+            );
+            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5</td>"));
+
+            // Race Pace Table
+            assert!(markdown_string.contains("<h3>Race Pace</h3>"));
+            assert!(markdown_string.contains(&format!("<th>Lap</th><th>Pace</th>")));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 6</td>"));
+
+            assert!(markdown_string.contains("<td data-label=\"Pace\">75</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">105</td>"));
+
+            assert!(
+                markdown_string.contains(&format!("<td data-label=\"Lap\">Average Time 5</td>"))
+            );
+            assert!(
+                markdown_string.contains(&format!("<td data-label=\"Lap\">Average Time 6</td>"))
+            );
+
+            assert!(markdown_string.contains(&format!("<td data-label=\"Pace\">15</td>")));
+            assert!(markdown_string.contains(&format!("<td data-label=\"Pace\">17.5</td>")));
+
+            // Laptime Table
             assert!(
                 markdown_string.contains(
                     &format!(
@@ -187,40 +316,7 @@ mod html_converter_should {
                     .clone(),
                 )
             );
-
-            // Race Summary Table
-            assert!(markdown_string.contains("<td data-label=\"Summary\">Race position</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Value\">1</td>"));
-
-            assert!(markdown_string.contains("<td data-label=\"Summary\">Number of laps</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Value\">6</td>"));
-
-            assert!(markdown_string.contains("<td data-label=\"Summary\">Fastest lap</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Value\">5</td>"));
-
-            assert!(markdown_string.contains("<td data-label=\"Summary\">Average lap (105%)</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Value\">5</td>"));
-
-            // Race Pace Table
-            assert!(markdown_string.contains("<td data-label=\"Race Pace\">Total Time 5</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Race Pace\">Total Time 6</td>"));
-
-            assert!(markdown_string.contains("<td data-label=\"Value\">75</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Value\">105</td>"));
-
-            assert!(
-                markdown_string
-                    .contains(&format!("<td data-label=\"Race Pace\">Average Time 5</td>"))
-            );
-            assert!(
-                markdown_string
-                    .contains(&format!("<td data-label=\"Race Pace\">Average Time 6</td>"))
-            );
-
-            assert!(markdown_string.contains(&format!("<td data-label=\"Value\">15</td>")));
-            assert!(markdown_string.contains(&format!("<td data-label=\"Value\">17.5</td>")));
-
-            // Laptime Table
+            assert!(markdown_string.contains(&format!("<th>Lap</th><th>Time</th>")));
             assert!(markdown_string.contains("<td data-label=\"Lap\">1</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">2</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">3</td>"));
@@ -253,6 +349,8 @@ mod html_converter_should {
             )));
 
             // Race Metadata Table
+            assert!(markdown_string.contains("<h3>Metadata</h3>"));
+            assert!(markdown_string.contains(&format!("<th>Metadata</th><th>Value</th>")));
             assert!(markdown_string.contains("<td data-label=\"Metadata\">Session type</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Value\">{}</td>",

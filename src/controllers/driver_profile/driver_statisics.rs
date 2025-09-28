@@ -2,11 +2,11 @@ use crate::models::application::karting_time::KartingTime;
 use std::collections::HashSet;
 
 impl KartingTime {
-    pub fn get_number_of_races(&self) -> u32 {
+    pub fn get_filtered_number_of_races(&self) -> u32 {
         self.application_state.filtered_races.len() as u32
     }
 
-    pub fn get_number_of_wins(&self) -> u32 {
+    pub fn get_filtered_number_of_wins(&self) -> u32 {
         self.application_state
             .filtered_races
             .iter()
@@ -14,7 +14,7 @@ impl KartingTime {
             .count() as u32
     }
 
-    pub fn get_number_of_podiums(&self) -> u32 {
+    pub fn get_filtered_number_of_podiums(&self) -> u32 {
         self.application_state
             .filtered_races
             .iter()
@@ -22,7 +22,7 @@ impl KartingTime {
             .count() as u32
     }
 
-    pub fn get_number_of_top_fives(&self) -> u32 {
+    pub fn get_filtered_number_of_top_fives(&self) -> u32 {
         self.application_state
             .filtered_races
             .iter()
@@ -30,7 +30,7 @@ impl KartingTime {
             .count() as u32
     }
 
-    pub fn get_number_of_top_tens(&self) -> u32 {
+    pub fn get_filtered_number_of_top_tens(&self) -> u32 {
         self.application_state
             .filtered_races
             .iter()
@@ -38,7 +38,7 @@ impl KartingTime {
             .count() as u32
     }
 
-    pub fn get_number_of_unique_tracks(&self) -> u32 {
+    pub fn get_filtered_number_of_unique_tracks(&self) -> u32 {
         let unique_tracks: HashSet<String> = self
             .application_state
             .filtered_races
@@ -55,7 +55,7 @@ impl KartingTime {
         unique_tracks.len() as u32
     }
 
-    pub fn get_number_of_unique_cars(&self) -> u32 {
+    pub fn get_filtered_number_of_unique_cars(&self) -> u32 {
         let unique_cars: HashSet<String> = self
             .application_state
             .filtered_races
@@ -101,7 +101,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_races = karting_time.get_number_of_races();
+        let number_of_races = karting_time.get_filtered_number_of_races();
 
         // Then
         assert_eq!(expected_number_of_races, number_of_races)
@@ -162,7 +162,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_wins = karting_time.get_number_of_wins();
+        let number_of_wins = karting_time.get_filtered_number_of_wins();
 
         // Then
         assert_eq!(expected_number_of_wins, number_of_wins)
@@ -223,7 +223,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_podiums = karting_time.get_number_of_podiums();
+        let number_of_podiums = karting_time.get_filtered_number_of_podiums();
 
         // Then
         assert_eq!(expected_number_of_podiums, number_of_podiums)
@@ -284,7 +284,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_top_fives = karting_time.get_number_of_top_fives();
+        let number_of_top_fives = karting_time.get_filtered_number_of_top_fives();
 
         // Then
         assert_eq!(expected_number_of_top_fives, number_of_top_fives)
@@ -345,7 +345,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_top_tens = karting_time.get_number_of_top_tens();
+        let number_of_top_tens = karting_time.get_filtered_number_of_top_tens();
 
         // Then
         assert_eq!(expected_number_of_top_fives, number_of_top_tens)
@@ -396,7 +396,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_unique_tracks = karting_time.get_number_of_unique_tracks();
+        let number_of_unique_tracks = karting_time.get_filtered_number_of_unique_tracks();
 
         // Then
         assert_eq!(expected_number_of_unique_tracks, number_of_unique_tracks)
@@ -447,7 +447,7 @@ mod driver_statistics_should {
         };
 
         // When
-        let number_of_unique_tracks = karting_time.get_number_of_unique_cars();
+        let number_of_unique_tracks = karting_time.get_filtered_number_of_unique_cars();
 
         // Then
         assert_eq!(expected_number_of_unique_tracks, number_of_unique_tracks)
