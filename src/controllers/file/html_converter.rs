@@ -42,24 +42,62 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 }
                             }
                         }
+                        h3 { "Summary" }
+                        table {
+                            thead {
+                                tr { th { "Summary" } th { "Value" } }
+                            }
+                            tbody {
+                                tr {
+                                    td data-label="Summary" { "Race position" }
+                                    td data-label="Value" { ( race.race_position ) }
+                                }
+                                tr {
+                                    td data-label="Summary" { "Number of laps" }
+                                    td data-label="Value" { ( race.convert_to_race().get_number_of_laps() ) }
+                                }
+                                tr {
+                                    td data-label="Summary" { "Fastest lap" }
+                                    td data-label="Value" { ( race.convert_to_race().get_fastest_lap() ) }
+                                }
+                                tr {
+                                    td data-label="Summary" { "Average lap (105%)" }
+                                    td data-label="Value" { ( race.convert_to_race().get_average_lap() ) }
+                                }                            
+                            }
+                        }
+                        h3 { "Race Pace" }
+                        table {
+                            thead {
+                                tr { th { "Race Statistic" } th { "Pace" } }
+                            }
+                            tbody {
+                                // tr { td data-label="Race position" { ( race.race_position ) } }
+                                // tr { td data-label="Number of laps" { ( race.convert_to_race().get_number_of_laps() ) } }
+                                // tr { td data-label="Fastest lap" { ( race.convert_to_race().get_fastest_lap() ) } }
+                                // tr { td data-label="Average lap (105%)" { ( race.convert_to_race().get_average_lap() ) } }
+                            }
+                        }
                     }
+
+                    h3 { "Metadata" }
                     section {
                         @if let Some(session_type) = &race.session_type {
                             p { strong { "Session type: " } ( session_type ) }
                         }
-                    
+
                         @if let Some(track_conditions) = &race.track_conditions {
                             p { strong { "Track condition: " } ( track_conditions ) }
                         }
-                    
+
                         @if let Some(car_used) = &race.car_used {
                             p { strong { "Car used: " } ( car_used ) }
                         }
-                    
+
                         @if let Some(championship) = &race.championship {
                             p { strong { "Championship: " } ( championship ) }
                         }
-                    
+
                         @if let Some(notes) = &race.notes {
                             p { strong { "Notes: " } ( notes ) }
                         }
