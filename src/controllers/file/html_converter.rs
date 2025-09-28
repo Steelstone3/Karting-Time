@@ -1,4 +1,6 @@
-use crate::data_models::driver_profile_file::DriverProfileFile;
+use crate::{
+    data_models::driver_profile_file::DriverProfileFile, models::driver::race_result::Race,
+};
 use maud::{DOCTYPE, Markup, html};
 
 pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
@@ -76,14 +78,14 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 tr { th { "Race Pace" } th { "Value" } }
                             }
                             tbody {
-                                @for (total_time_key, total_time_value) in &race.convert_to_race().calculate_total_times() {
+                                @for (total_time_key, total_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_total_times()) {
                                     tr {
                                         td data-label="Race Pace" { "Total Time " (total_time_key) }
                                         td data-label="Value" { (total_time_value) }
                                     }
                                 }
 
-                                @for (average_time_key, average_time_value) in &race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times()) {
+                                @for (average_time_key, average_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())) {
                                     tr {
                                         td data-label="Race Pace" { "Average Time " (average_time_key) }
                                         td data-label="Value" { (average_time_value) }
