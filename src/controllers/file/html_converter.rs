@@ -87,45 +87,45 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                     }
                                 }
                             }
-                            h3 { "Metadata" }
-                            table {
-                                thead {
-                                    tr { th { "Metadata" } th { "Value" } }
+                        }
+                        h3 { "Metadata" }
+                        table {
+                            thead {
+                                tr { th { "Metadata" } th { "Value" } }
+                            }
+                            tbody {
+                                tr {
+                                    @if let Some(session_type) = &race.session_type {
+                                        td data-label="Metadata" { "Session type" }
+                                        td data-label="Value" { ( session_type ) }
+                                    }
                                 }
-                                tbody {
-                                    tr {
-                                        @if let Some(session_type) = &race.session_type {
-                                            td data-label="Metadata" { "Session type" }
-                                            td data-label="Value" { ( session_type ) }
-                                        }
+                                tr {
+                                    @if let Some(track_conditions) = &race.track_conditions {
+                                         td data-label="Metadata" { "Track condition" }
+                                         td data-label="Value" { ( track_conditions ) }
                                     }
-                                    tr {
-                                        @if let Some(track_conditions) = &race.track_conditions {
-                                             td data-label="Metadata" { "Track condition" }
-                                             td data-label="Value" { ( track_conditions ) }
-                                        }
+                                }
+                                tr {
+                                    @if let Some(car_used) = &race.car_used {
+                                        td data-label="Metadata" { "Car used" }
+                                        td data-label="Value" { ( car_used ) }
                                     }
-                                    tr {
-                                        @if let Some(car_used) = &race.car_used {
-                                            td data-label="Metadata" { "Car used" }
-                                            td data-label="Value" { ( car_used ) }
-                                        }
-                                    }
-                                    tr {
-                                        @if let Some(championship) = &race.championship {
-                                            td data-label="Metadata" { "Championship" }
-                                            td data-label="Value" { ( championship ) }
-                                        }
+                                }
+                                tr {
+                                    @if let Some(championship) = &race.championship {
+                                        td data-label="Metadata" { "Championship" }
+                                        td data-label="Value" { ( championship ) }
                                     }
                                 }
                             }
                         }
 
-                    @if let Some(notes) = &race.notes {
-                        p { strong { "Notes: " } ( notes ) }
-                    }
+                        @if let Some(notes) = &race.notes {
+                            p { strong { "Notes: " } ( notes ) }
+                        }
 
-                    hr {}
+                        hr {}
                     }
                 }
             }
