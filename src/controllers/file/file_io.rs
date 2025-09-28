@@ -128,10 +128,11 @@ fn get_file_contents(file_name: &str) -> String {
 mod file_integration_should {
     use super::*;
     use crate::{
-        controllers::file::test_file_guard::TestFileGuard,
+        controllers::{driver_profile, file::test_file_guard::TestFileGuard},
+        data_models::driver_profile_file::DriverProfileFile,
         models::{
             date::Date,
-            driver::{race_information::RaceInformation, session::Session},
+            driver::{lap::Lap, race_information::RaceInformation, session::Session},
         },
     };
     use std::fs;
@@ -197,6 +198,91 @@ mod file_integration_should {
         let file_name = "./".to_string()
             + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
             + ".toml";
+        let _guard = TestFileGuard::new(&file_name);
+
+        assert!(fs::metadata(&file_name).is_ok());
+        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+    }
+
+    #[test]
+    fn upsert_races_html_test_failed_to_create_file() {
+        // Given
+        let file_location = "/";
+        let driver_profile = DriverProfile {
+            name: "Obi Wan Kenobi".to_string(),
+            races: vec![Race {
+                laptimes: vec![Lap {
+                    lap_number: 1,
+                    time: 20.0,
+                }],
+                race_information: RaceInformation {
+                    track_name: "Three Sisters".to_string(),
+                    date: Date {
+                        day: 14,
+                        month: 12,
+                        year: 2025,
+                    },
+                    session: Session {
+                        session_id: 1,
+                        session_type: "Race".to_string(),
+                        track_condition: "Wet".to_string(),
+                        race_position: 1,
+                    },
+                    car_used: "Ferrari".to_string(),
+                    championship: "Ferrari Challenge".to_string(),
+                    notes: "No notes".to_string(),
+                },
+                is_deleting: false,
+            }],
+        };
+
+        // When
+        upsert_html_races(file_location, &driver_profile);
+
+        // Then
+        let file_name = format!("/{}.html", driver_profile.name);
+        let _guard = TestFileGuard::new(&file_name);
+
+        assert!(fs::metadata(&file_name).is_err());
+    }
+
+    #[test]
+    fn upsert_races_html_test() {
+        // Given
+        let file_location = ".";
+        let driver_profile = DriverProfile {
+            name: "Obi Wan Kenobi".to_string(),
+            races: vec![Race {
+                laptimes: vec![Lap {
+                    lap_number: 1,
+                    time: 20.0,
+                }],
+                race_information: RaceInformation {
+                    track_name: "Three Sisters".to_string(),
+                    date: Date {
+                        day: 14,
+                        month: 12,
+                        year: 2025,
+                    },
+                    session: Session {
+                        session_id: 1,
+                        session_type: "Race".to_string(),
+                        track_condition: "Wet".to_string(),
+                        race_position: 1,
+                    },
+                    car_used: "Ferrari".to_string(),
+                    championship: "Ferrari Challenge".to_string(),
+                    notes: "No notes".to_string(),
+                },
+                is_deleting: false,
+            }],
+        };
+
+        // When
+        upsert_html_races(file_location, &driver_profile);
+
+        // Then
+        let file_name = format!("./{}.html", driver_profile.name);
         let _guard = TestFileGuard::new(&file_name);
 
         assert!(fs::metadata(&file_name).is_ok());
