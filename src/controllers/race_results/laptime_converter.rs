@@ -55,7 +55,6 @@ impl Race {
         total_times_string
     }
 
-    // TODO Test
     pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, f32)> {
         let mut sorted: Vec<(usize, f32)> = hash_map.into_iter().collect();
 
