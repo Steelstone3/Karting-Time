@@ -12,43 +12,43 @@ impl KartingTime {
                 row!()
                     .push(text("Races:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_races())),
+                    .push(text(self.get_filtered_number_of_races())),
             )
             .push(
                 row!()
                     .push(text("Wins:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_wins())),
+                    .push(text(self.get_filtered_number_of_wins())),
             )
             .push(
                 row!()
                     .push(text("Podiums:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_podiums())),
+                    .push(text(self.get_filtered_number_of_podiums())),
             )
             .push(
                 row!()
                     .push(text("Top Fives:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_top_fives())),
+                    .push(text(self.get_filtered_number_of_top_fives())),
             )
             .push(
                 row!()
                     .push(text("Top Tens:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_top_tens())),
+                    .push(text(self.get_filtered_number_of_top_tens())),
             )
             .push(
                 row!()
                     .push(text("Unique Tracks:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_unique_tracks())),
+                    .push(text(self.get_filtered_number_of_unique_tracks())),
             )
             .push(
                 row!()
                     .push(text("Unique Cars:"))
                     .spacing(10)
-                    .push(text(self.get_number_of_unique_cars())),
+                    .push(text(self.get_filtered_number_of_unique_cars())),
             );
 
         column!()
