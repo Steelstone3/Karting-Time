@@ -1,6 +1,9 @@
+use crate::controllers::file::html_converter::convert_to_html;
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
+use crate::models::driver::driver_profile::DriverProfile;
 use crate::models::driver::race_result::Race;
+use maud::Markup;
 use std::fs::File;
 use std::io::{Read, Write};
 
@@ -40,6 +43,28 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
                 println!("{WRITE_ERROR}");
                 return;
             }
+        }
+    }
+}
+
+// TODO Test
+pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
+    let markup: Markup = convert_to_html(&driver_profile.convert_to_driver_profile_file());
+
+    let file_name = format!("{}/{}.html", file_location, &driver_profile.name);
+
+    let mut file = match File::create(file_name) {
+        Ok(file) => file,
+        Err(_) => {
+            println!("{FILE_ERROR}");
+            return;
+        }
+    };
+
+    match write!(file, "{}", markup.into_string()) {
+        Ok(_) => (),
+        Err(_) => {
+            println!("{WRITE_ERROR}");
         }
     }
 }

@@ -18,6 +18,7 @@ impl KartingTime {
                 self.update_filtering();
             }
             Message::ExportRaces => self.export_races(&save_folder_location()),
+            Message::ExportHtmlRaces => self.export_html_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
