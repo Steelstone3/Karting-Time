@@ -182,6 +182,7 @@ mod html_converter_should {
         // Title
         assert!(markdown_string.contains("<title>Race results</title"));
 
+        // Driver Profile Heading
         assert!(
             markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile_file.name.clone()))
         );
