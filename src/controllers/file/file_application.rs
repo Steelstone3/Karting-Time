@@ -45,7 +45,7 @@ impl KartingTime {
 }
 
 #[cfg(test)]
-mod file_should {
+mod file_application_should {
     use super::*;
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
@@ -104,7 +104,7 @@ mod file_should {
         };
 
         // When
-        karting_time.export_races(file_location);
+        karting_time.export_html_races(file_location);
 
         // Then
         let file_name = format!("./{}.html", &karting_time.driver_profile.name);
