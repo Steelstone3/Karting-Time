@@ -143,7 +143,6 @@ mod html_converter_should {
     use crate::{
         controllers::file::html_converter::convert_to_html,
         data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
-        models::driver::race_result::Race,
     };
 
     #[test]
@@ -180,60 +179,112 @@ mod html_converter_should {
         // Then
         let markdown_string = markdown.into_string();
 
-        assert!(markdown_string.contains(&driver_profile_file.name.clone()));
+        assert!(
+            markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile_file.name.clone()))
+        );
 
         for race in driver_profile_file.races {
             assert!(
                 markdown_string.contains(
                     &format!(
-                        "{} Session: {} Date: {}/{}/{}",
+                        "<h2>{} Session: {} Date: {}/{}/{}</h2>",
                         race.track_name, race.session_id, race.day, race.month, race.year
                     )
                     .clone(),
                 )
             );
-            assert!(markdown_string.contains(&race.race_position.to_string()));
 
-            // TODO Ideally a known expected value
+            // Race Summary Table
+            assert!(markdown_string.contains("<td data-label=\"Summary\">Race position</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Value\">1</td>"));
+
+            assert!(markdown_string.contains("<td data-label=\"Summary\">Number of laps</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Value\">6</td>"));
+
+            assert!(markdown_string.contains("<td data-label=\"Summary\">Fastest lap</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Value\">5</td>"));
+
+            assert!(markdown_string.contains("<td data-label=\"Summary\">Average lap (105%)</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Value\">5</td>"));
+
+            // Race Pace Table
+            assert!(markdown_string.contains("<td data-label=\"Race Pace\">Total Time 5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Race Pace\">Total Time 6</td>"));
+
+            assert!(markdown_string.contains("<td data-label=\"Value\">75</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Value\">105</td>"));
+
             assert!(
-                markdown_string.contains(&race.convert_to_race().get_number_of_laps().to_string())
+                markdown_string
+                    .contains(&format!("<td data-label=\"Race Pace\">Average Time 5</td>"))
             );
-            // TODO Ideally a known expected value
             assert!(
-                markdown_string.contains(&race.convert_to_race().get_fastest_lap().to_string())
+                markdown_string
+                    .contains(&format!("<td data-label=\"Race Pace\">Average Time 6</td>"))
             );
-            // TODO Ideally a known expected value
-            assert!(
-                markdown_string.contains(&race.convert_to_race().get_average_lap().to_string())
-            );
+            assert!(markdown_string.contains(&format!("<td data-label=\"Value\">15</td>")));
+            assert!(markdown_string.contains(&format!("<td data-label=\"Value\">17.5</td>")));
 
-            // TODO Ideally a known expected value
-            for (total_time_key, total_time_value) in
-                Race::convert_hash_map(race.convert_to_race().calculate_total_times())
-            {
-                assert!(markdown_string.contains(&total_time_key.to_string()));
-                assert!(markdown_string.contains(&total_time_value.to_string()));
-            }
+            // Laptime Table
+            assert!(markdown_string.contains("<td data-label=\"Lap\">1</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">2</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">3</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">4</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Lap\">6</td>"));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Time\">{}</td>",
+                race.laptimes[0].clone()
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Time\">{}</td>",
+                race.laptimes[1].clone()
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Time\">{}</td>",
+                race.laptimes[2].clone()
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Time\">{}</td>",
+                race.laptimes[3].clone()
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Time\">{}</td>",
+                race.laptimes[4].clone()
+            )));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Time\">{}</td>",
+                race.laptimes[5].clone()
+            )));
 
-            // TODO Ideally a known expected value
-            for (average_time_key, average_time_value) in Race::convert_hash_map(
-                race.convert_to_race()
-                    .calculate_average_total_times(&race.convert_to_race().calculate_total_times()),
-            ) {
-                assert!(markdown_string.contains(&average_time_key.to_string()));
-                assert!(markdown_string.contains(&average_time_value.to_string()));
-            }
+            // Race Metadata Table
+            assert!(markdown_string.contains("<td data-label=\"Metadata\">Session type</td>"));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Value\">{}</td>",
+                &race.session_type.unwrap_or_default()
+            )));
+            assert!(markdown_string.contains("<td data-label=\"Metadata\">Track condition</td>"));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Value\">{}</td>",
+                &race.track_conditions.unwrap_or_default()
+            )));
 
-            for laptime in race.laptimes {
-                assert!(markdown_string.contains(&laptime.clone()));
-            }
+            assert!(markdown_string.contains("<td data-label=\"Metadata\">Car used</td>"));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Value\">{}</td>",
+                &race.car_used.unwrap_or_default()
+            )));
 
-            assert!(markdown_string.contains(&race.session_type.unwrap_or_default()));
-            assert!(markdown_string.contains(&race.track_conditions.unwrap_or_default()));
-            assert!(markdown_string.contains(&race.car_used.unwrap_or_default()));
-            assert!(markdown_string.contains(&race.championship.unwrap_or_default()));
+            assert!(markdown_string.contains("<td data-label=\"Metadata\">Championship</td>"));
+            assert!(markdown_string.contains(&format!(
+                "<td data-label=\"Value\">{}</td>",
+                &race.championship.unwrap_or_default()
+            )));
 
-            assert!(markdown_string.contains(&format!("<strong>Notes: </strong>{}", &race.notes.unwrap_or_default())));
+            assert!(markdown_string.contains(&format!(
+                "<strong>Notes: </strong>{}",
+                &race.notes.unwrap_or_default()
+            )));
         }
     }
 }
