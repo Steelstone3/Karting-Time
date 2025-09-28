@@ -15,7 +15,6 @@ impl KartingTime {
         upsert_races(file_location, &self.driver_profile.races);
     }
 
-    // TODO Test
     pub fn export_html_races(&self, file_location: &str) {
         upsert_html_races(file_location, &self.driver_profile);
     }
@@ -62,7 +61,7 @@ mod file_should {
     use std::fs;
 
     #[test]
-    fn export_race_test() {
+    fn export_races_test() {
         // Given
         let file_location = ".";
         let karting_time = KartingTime {
@@ -93,6 +92,25 @@ mod file_should {
         assert!(fs::metadata(&file_name_1).unwrap().len() != 0);
         assert!(fs::metadata(&file_name_2).is_ok());
         assert!(fs::metadata(&file_name_2).unwrap().len() != 0);
+    }
+
+    #[test]
+    fn export_races_hmtl_test() {
+        // Given
+        let file_location = ".";
+        let karting_time = KartingTime {
+            driver_profile: driver_profile_test_fixture(),
+            ..Default::default()
+        };
+
+        // When
+        karting_time.export_races(file_location);
+
+        // Then
+        let file_name = format!("./{}.html", &karting_time.driver_profile.name);
+        let _guard = TestFileGuard::new(&file_name);
+        assert!(fs::metadata(&file_name).is_ok());
+        assert!(fs::metadata(&file_name).unwrap().len() != 0);
     }
 
     #[test]

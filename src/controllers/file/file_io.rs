@@ -47,7 +47,6 @@ pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
     }
 }
 
-// TODO Test
 pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
     let markup: Markup = convert_to_html(&driver_profile.convert_to_driver_profile_file());
 
