@@ -15,7 +15,8 @@ impl KartingTime {
         upsert_races(file_location, &self.driver_profile.races);
     }
 
-    pub(crate) fn export_html_races(&self, file_location: &str) {
+    // TODO Test
+    pub fn export_html_races(&self, file_location: &str) {
         upsert_html_races(file_location, &self.driver_profile);
     }
 
