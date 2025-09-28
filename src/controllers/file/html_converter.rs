@@ -184,6 +184,7 @@ mod html_converter_should {
         );
 
         for race in driver_profile_file.races {
+            // Race Heading
             assert!(
                 markdown_string.contains(
                     &format!(
