@@ -1,4 +1,10 @@
+use crate::models::driver::session_information::lap::Lap;
+
 pub fn format_laptime(time_in_seconds: f32) -> String {
+    if time_in_seconds == 0.0 {
+        return "".to_string();
+    }
+
     if time_in_seconds < 60.0 {
         return format!("{:.2}", time_in_seconds);
     }
@@ -19,6 +25,16 @@ pub fn format_laptime(time_in_seconds: f32) -> String {
         "{}:{:02}:{:02}.{:02}",
         hours, remaining_minutes, seconds, total_milliseconds
     )
+}
+
+pub fn format_laptimes(laptimes: Vec<Lap>) -> Vec<String> {
+    let mut formatted_laptimes: Vec<String> = vec![];
+
+    for laptime in laptimes {
+        formatted_laptimes.push(format_laptime(laptime.time));
+    }
+
+    formatted_laptimes
 }
 
 #[cfg(test)]
@@ -53,6 +69,6 @@ mod format_laptime_should {
         let formatted_time = format_laptime(time_in_seconds);
 
         // Then
-        assert_eq!(expected_formatted_time, formatted_time);
+        pretty_assertions::assert_eq!(expected_formatted_time, formatted_time);
     }
 }

@@ -1,9 +1,8 @@
 use crate::{
     commands::messages::Message,
-    controllers::driver_profile::time_parser::format_laptime,
     models::{
         application::karting_time::KartingTime,
-        driver::{race_information::RaceInformation, race_result::Race},
+        driver::session_information::race_result::RaceResult,
     },
     table::Table,
 };
@@ -34,7 +33,7 @@ impl KartingTime {
     fn read_only_result_cards(&self) -> Vec<Card<'_, Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
-        for race in self.application_state.filtered_races.iter() {
+        for race in self.driver_profile.filter.filtered_races.iter() {
             let header = format!(
                 "{} Session: {} Date: {}",
                 race.race_information.track_name,
@@ -42,30 +41,30 @@ impl KartingTime {
                 race.race_information.date
             );
 
-            let notes_line = if !race.race_information.notes.is_empty() {
-                format!("\n\nNotes: {}", race.race_information.notes)
+            let notes_line = if !race.race_metadata.notes.is_empty() {
+                format!("\n\nNotes: {}", race.race_metadata.notes)
             } else {
                 String::from("")
             };
 
-            let championship_line = if !race.race_information.championship.is_empty() {
-                format!("\nChampionship: {}", race.race_information.championship)
+            let championship_line = if !race.race_metadata.championship.is_empty() {
+                format!("\nChampionship: {}", race.race_metadata.championship)
             } else {
                 String::from("")
             };
 
             let race_summary = format!(
                 "Session Type: {}\nTrack Conditions: {}\nCar Used: {}{}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}{}",
-                race.race_information.session.session_type,
-                race.race_information.session.track_condition,
-                race.race_information.car_used,
+                race.race_metadata.session_type,
+                race.race_metadata.track_conditions,
+                race.race_metadata.car_used,
                 championship_line,
                 race.race_information.session.race_position,
-                race.get_number_of_laps(),
-                format_laptime(race.get_fastest_lap()),
-                format_laptime(race.get_average_lap()),
-                race.convert_total_times_to_string(),
-                race.convert_average_total_times_to_string(),
+                race.race_statistics.number_of_laps,
+                race.race_statistics.fastest_lap,
+                race.race_statistics.average_105_lap,
+                race.race_statistics.total_times_summary,
+                race.race_statistics.average_times_summary,
                 notes_line
             )
             .to_string();
@@ -78,16 +77,12 @@ impl KartingTime {
                     .push(
                         row!()
                             .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
-                                RaceInformation::get_unique_race_information_identifier(
-                                    &race.race_information,
-                                ),
+                                race.race_information.unique_race_identifier.clone(),
                             )))
                             .spacing(10)
                             .padding(10)
                             .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
-                                RaceInformation::get_unique_race_information_identifier(
-                                    &race.race_information,
-                                ),
+                                race.race_information.unique_race_identifier.clone(),
                             )))
                             .spacing(10)
                             .padding(10),
@@ -99,16 +94,12 @@ impl KartingTime {
                     .push(
                         row!()
                             .push(button("Replace").on_press(Message::ReplacePressed(
-                                RaceInformation::get_unique_race_information_identifier(
-                                    &race.race_information,
-                                ),
+                                race.race_information.unique_race_identifier.clone(),
                             )))
                             .spacing(10)
                             .padding(10)
                             .push(button("Delete").on_press(Message::DeletePressed(
-                                RaceInformation::get_unique_race_information_identifier(
-                                    &race.race_information,
-                                ),
+                                race.race_information.unique_race_identifier.clone(),
                             )))
                             .spacing(10)
                             .padding(10),
@@ -121,16 +112,17 @@ impl KartingTime {
         result_cards
     }
 
-    fn race_result_table(&self, race: &Race) -> Element<'_, Message> {
+    fn race_result_table(&self, race: &RaceResult) -> Element<'_, Message> {
         let mut table = Table::default();
 
         table.add_headers(vec!["Lap".to_string(), "Time (s)".to_string()]);
 
-        for laptime in &race.laptimes {
-            table.add_row(vec![
-                laptime.lap_number.to_string(),
-                format_laptime(laptime.time),
-            ]);
+        let mut lap_number = 1;
+
+        for time in &race.race_statistics.formatted_laps {
+            table.add_row(vec![lap_number.to_string(), time.to_string()]);
+
+            lap_number += 1;
         }
 
         Table::build(table, self.theme().palette().text, Some(200.0))

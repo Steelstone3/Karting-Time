@@ -2,10 +2,10 @@ use std::{cmp::Ordering, collections::HashMap};
 
 use crate::{
     controllers::driver_profile::time_parser::format_laptime,
-    models::driver::{lap::Lap, race_result::Race},
+    models::driver::session_information::{lap::Lap, race_result::RaceResult},
 };
 
-impl Race {
+impl RaceResult {
     pub fn calculate_total_times(&self) -> HashMap<usize, f32> {
         let mut total_times = HashMap::new();
         let mut current_sum = 0.0;
@@ -25,9 +25,24 @@ impl Race {
         total_times
     }
 
-    pub fn get_total_time(total_times: &HashMap<usize, f32>, key: &usize) -> String {
+    pub fn get_total_time_by_key(total_times: &HashMap<usize, f32>, key: &usize) -> String {
         match total_times.get(key) {
             Some(total_time) => format_laptime(*total_time),
+            None => "N/A".to_string(),
+        }
+    }
+
+    pub fn get_last_total_time(total_times: &HashMap<usize, f32>) -> String {
+        let max_key = total_times.keys().max();
+
+        match max_key {
+            Some(key) => {
+                if let Some(total_time) = total_times.get(key) {
+                    format_laptime(*total_time)
+                } else {
+                    "N/A".to_string()
+                }
+            }
             None => "N/A".to_string(),
         }
     }
@@ -50,7 +65,7 @@ impl Race {
         average_times
     }
 
-    pub fn get_average_time(average_times: &HashMap<usize, f32>, key: &usize) -> String {
+    pub fn get_average_time_by_key(average_times: &HashMap<usize, f32>, key: &usize) -> String {
         match average_times.get(key) {
             Some(average_time) => format_laptime(*average_time),
             None => "N/A".to_string(),
@@ -66,38 +81,23 @@ impl Race {
 
 #[cfg(test)]
 mod calculate_race_time_summaries_should {
+    use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
     use std::collections::HashMap;
-
-    use crate::models::driver::{lap::Lap, race_result::Race};
 
     #[test]
     fn calculate_total_times() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 12.4,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 12.5,
-                },
-                Lap {
-                    lap_number: 3,
-                    time: 12.7,
-                },
-                Lap {
-                    lap_number: 4,
-                    time: 12.8,
-                },
-                Lap {
-                    lap_number: 5,
-                    time: 12.9,
-                },
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![
+                Lap::new(1, 12.4),
+                Lap::new(2, 12.5),
+                Lap::new(3, 12.7),
+                Lap::new(4, 12.8),
+                Lap::new(5, 12.9),
             ],
-            ..Default::default()
-        };
+        );
 
         // When
         let total_times = race.calculate_total_times();
@@ -105,41 +105,24 @@ mod calculate_race_time_summaries_should {
         // Then
         let total_5_laps = *total_times.get(&5).unwrap();
 
-        assert_eq!(63.299995, total_5_laps);
+        pretty_assertions::assert_eq!(63.299995, total_5_laps);
     }
 
     #[test]
     fn calculate_total_times_last_lap() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 12.4,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 12.5,
-                },
-                Lap {
-                    lap_number: 3,
-                    time: 12.7,
-                },
-                Lap {
-                    lap_number: 4,
-                    time: 12.8,
-                },
-                Lap {
-                    lap_number: 5,
-                    time: 12.9,
-                },
-                Lap {
-                    lap_number: 6,
-                    time: 20.0,
-                },
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![
+                Lap::new(1, 12.4),
+                Lap::new(2, 12.5),
+                Lap::new(3, 12.7),
+                Lap::new(4, 12.8),
+                Lap::new(5, 12.9),
+                Lap::new(6, 20.0),
             ],
-            ..Default::default()
-        };
+        );
 
         // When
         let total_times = race.calculate_total_times();
@@ -148,8 +131,8 @@ mod calculate_race_time_summaries_should {
         let total_5_laps = *total_times.get(&5).unwrap();
         let total_6_laps = *total_times.get(&6).unwrap();
 
-        assert_eq!(63.299995, total_5_laps);
-        assert_eq!(83.299995, total_6_laps);
+        pretty_assertions::assert_eq!(63.299995, total_5_laps);
+        pretty_assertions::assert_eq!(83.299995, total_6_laps);
     }
 
     #[test]
@@ -161,39 +144,34 @@ mod calculate_race_time_summaries_should {
         total_times.insert(15, 300.0);
 
         // Then
-        assert_eq!("1:40.00", Race::get_total_time(&total_times, &5));
-        assert_eq!("3:20.00", Race::get_total_time(&total_times, &10));
-        assert_eq!("5:00.00", Race::get_total_time(&total_times, &15));
+        pretty_assertions::assert_eq!(
+            "1:40.00",
+            RaceResult::get_total_time_by_key(&total_times, &5)
+        );
+        pretty_assertions::assert_eq!(
+            "3:20.00",
+            RaceResult::get_total_time_by_key(&total_times, &10)
+        );
+        pretty_assertions::assert_eq!(
+            "5:00.00",
+            RaceResult::get_total_time_by_key(&total_times, &15)
+        );
     }
 
     #[test]
     fn calculate_average_total_times() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 45.5,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 67.9,
-                },
-                Lap {
-                    lap_number: 3,
-                    time: 50.3,
-                },
-                Lap {
-                    lap_number: 4,
-                    time: 34.6,
-                },
-                Lap {
-                    lap_number: 5,
-                    time: 34.2,
-                },
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![
+                Lap::new(1, 45.5),
+                Lap::new(2, 67.9),
+                Lap::new(3, 50.3),
+                Lap::new(4, 34.6),
+                Lap::new(5, 34.2),
             ],
-            ..Default::default()
-        };
+        );
 
         // When
         let total_times = race.calculate_total_times();
@@ -202,7 +180,7 @@ mod calculate_race_time_summaries_should {
         // Then
         let average_5_laps = *total_times.get(&5).unwrap();
 
-        assert_eq!(46.5, average_5_laps);
+        pretty_assertions::assert_eq!(46.5, average_5_laps);
     }
 
     #[test]
@@ -214,48 +192,32 @@ mod calculate_race_time_summaries_should {
         average_times.insert(15, 300.0);
 
         // Then
-        assert_eq!("1:40.00", Race::get_total_time(&average_times, &5));
-        assert_eq!("3:20.00", Race::get_total_time(&average_times, &10));
-        assert_eq!("5:00.00", Race::get_total_time(&average_times, &15));
+        pretty_assertions::assert_eq!(
+            "1:40.00",
+            RaceResult::get_total_time_by_key(&average_times, &5)
+        );
+        pretty_assertions::assert_eq!(
+            "3:20.00",
+            RaceResult::get_total_time_by_key(&average_times, &10)
+        );
+        pretty_assertions::assert_eq!(
+            "5:00.00",
+            RaceResult::get_total_time_by_key(&average_times, &15)
+        );
     }
 
     #[test]
     fn order_by_fastest_lap() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 21.67,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 22.56,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 20.34,
-                },
-            ],
-            ..Default::default()
-        };
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![Lap::new(1, 21.67), Lap::new(2, 22.56), Lap::new(3, 20.34)],
+        );
 
         // Then
-        assert_eq!(
-            vec![
-                Lap {
-                    lap_number: 1,
-                    time: 20.34,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 21.67,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 22.56,
-                },
-            ],
+        pretty_assertions::assert_eq!(
+            vec![Lap::new(3, 20.34), Lap::new(1, 21.67), Lap::new(2, 22.56),],
             race.order_by_fastest_lap()
         )
     }

@@ -94,8 +94,7 @@ impl KartingTime {
                     &self
                         .application_state
                         .new_race
-                        .race_information
-                        .session
+                        .race_metadata
                         .session_type
                         .to_string(),
                 )
@@ -110,9 +109,8 @@ impl KartingTime {
                     &self
                         .application_state
                         .new_race
-                        .race_information
-                        .session
-                        .track_condition
+                        .race_metadata
+                        .track_conditions
                         .to_string(),
                 )
                 .on_input(Message::TrackConditionsChanged),
@@ -142,7 +140,7 @@ impl KartingTime {
                     &self
                         .application_state
                         .new_race
-                        .race_information
+                        .race_metadata
                         .car_used
                         .to_string(),
                 )
@@ -157,7 +155,7 @@ impl KartingTime {
                     &self
                         .application_state
                         .new_race
-                        .race_information
+                        .race_metadata
                         .championship
                         .to_string(),
                 )
@@ -169,7 +167,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "(Optional) Notes about the session",
-                    &self.application_state.new_race.race_information.notes,
+                    &self.application_state.new_race.race_metadata.notes,
                 )
                 .on_input(Message::NotesChanged),
             )

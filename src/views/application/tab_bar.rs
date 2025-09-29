@@ -30,7 +30,7 @@ impl KartingTime {
 
                 let contents = Scrollable::new(column!().push(self.overview_driver_profile_view()));
 
-                match self.application_state.is_filter_visible {
+                match self.driver_profile.filter.is_filter_visible {
                     true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
                     false => column!(self.menu_bar_view(), tab_bar, contents),
                 }
@@ -45,7 +45,7 @@ impl KartingTime {
 
                 let contents = Scrollable::new(column!().push(self.overview_race_results_view()));
 
-                match self.application_state.is_filter_visible {
+                match self.driver_profile.filter.is_filter_visible {
                     true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
                     false => column!(self.menu_bar_view(), tab_bar, contents),
                 }
@@ -60,7 +60,7 @@ impl KartingTime {
 
                 let contents = Scrollable::new(column!().push(self.race_results_view()));
 
-                match self.application_state.is_filter_visible {
+                match self.driver_profile.filter.is_filter_visible {
                     true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
                     false => column!(self.menu_bar_view(), tab_bar, contents),
                 }

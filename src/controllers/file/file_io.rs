@@ -2,7 +2,7 @@ use crate::controllers::file::html_converter::convert_to_html;
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
 use crate::models::driver::driver_profile::DriverProfile;
-use crate::models::driver::race_result::Race;
+use crate::models::driver::session_information::race_result::RaceResult;
 use maud::Markup;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -11,14 +11,13 @@ const FILE_ERROR: &str = "failed to create file";
 const CONVERT_ERROR: &str = "failed to convert to toml";
 const WRITE_ERROR: &str = "failed to write to file";
 
-pub fn upsert_races(file_location: &str, races: &Vec<Race>) {
+pub fn upsert_races(file_location: &str, races: &Vec<RaceResult>) {
     for race in races {
         let race_file = race.convert_to_race_file();
 
         let file_name = format!(
             "{}/{}.toml",
-            file_location,
-            RaceFile::get_unique_race_information_file_identifier(&race_file)
+            file_location, race.race_information.unique_race_identifier
         );
 
         let mut file = match File::create(file_name) {
@@ -129,8 +128,11 @@ mod file_integration_should {
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
         models::{
-            date::Date,
-            driver::{lap::Lap, race_information::RaceInformation, session::Session},
+            date::RaceDate,
+            driver::session_information::{
+                lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
+                session::Session,
+            },
         },
     };
     use std::fs;
@@ -139,30 +141,28 @@ mod file_integration_should {
     fn upsert_races_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        let races = vec![Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 1,
-                    month: 1,
-                    year: 2025,
-                },
-                session: Session {
-                    session_id: 1,
-                    ..Default::default()
-                },
-                ..Default::default()
-            },
-            ..Default::default()
-        }];
+        let races = vec![RaceResult::new(
+            RaceInformation::new(
+                "Three Sisters",
+                RaceDate::new(1, 1, 2025),
+                Session::new(1, 1),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+            ),
+            Default::default(),
+        )];
 
         // When
         upsert_races(file_location, &races);
 
         // Then
-        let file_name = "/".to_string()
-            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
-            + ".toml";
+        let file_name =
+            "/".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
         let _guard = TestFileGuard::new(&file_name);
 
         assert!(fs::metadata(&file_name).is_err());
@@ -172,30 +172,38 @@ mod file_integration_should {
     fn upsert_races_test() {
         // Given
         let file_location = ".";
-        let races = vec![Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 1,
-                    month: 1,
-                    year: 2025,
-                },
-                session: Session {
-                    session_id: 1,
-                    ..Default::default()
-                },
-                ..Default::default()
-            },
-            ..Default::default()
-        }];
+        let races = vec![RaceResult::new(
+            RaceInformation::new(
+                "Three Sisters",
+                RaceDate::new(1, 1, 2025),
+                Session::new(1, 1),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+            ),
+            Default::default(),
+        )];
+
+        vec![RaceResult::new(
+            RaceInformation::new(
+                "Three Sisters",
+                RaceDate::new(1, 1, 2025),
+                Session::new(1, Default::default()),
+            ),
+            RaceMetadata::default(),
+            Default::default(),
+        )];
 
         // When
         upsert_races(file_location, &races);
 
         // Then
-        let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
-            + ".toml";
+        let file_name =
+            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
         let _guard = TestFileGuard::new(&file_name);
 
         assert!(fs::metadata(&file_name).is_ok());
@@ -206,33 +214,18 @@ mod file_integration_should {
     fn upsert_races_html_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        let driver_profile = DriverProfile {
-            name: "Obi Wan Kenobi".to_string(),
-            races: vec![Race {
-                laptimes: vec![Lap {
-                    lap_number: 1,
-                    time: 20.0,
-                }],
-                race_information: RaceInformation {
-                    track_name: "Three Sisters".to_string(),
-                    date: Date {
-                        day: 14,
-                        month: 12,
-                        year: 2025,
-                    },
-                    session: Session {
-                        session_id: 1,
-                        session_type: "Race".to_string(),
-                        track_condition: "Wet".to_string(),
-                        race_position: 1,
-                    },
-                    car_used: "Ferrari".to_string(),
-                    championship: "Ferrari Challenge".to_string(),
-                    notes: "No notes".to_string(),
-                },
-                is_deleting: false,
-            }],
-        };
+        let driver_profile = DriverProfile::new(
+            "Obi Wan Kenobi",
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Sisters",
+                    RaceDate::new(14, 12, 2025),
+                    Session::new(1, 1),
+                ),
+                RaceMetadata::new("Race", "Wet", "Ferrari", "Ferrari Challenge", "No notes"),
+                vec![Lap::new(1, 20.0)],
+            )],
+        );
 
         // When
         upsert_html_races(file_location, &driver_profile);
@@ -248,33 +241,18 @@ mod file_integration_should {
     fn upsert_races_html_test() {
         // Given
         let file_location = ".";
-        let driver_profile = DriverProfile {
-            name: "Obi Wan Kenobi".to_string(),
-            races: vec![Race {
-                laptimes: vec![Lap {
-                    lap_number: 1,
-                    time: 20.0,
-                }],
-                race_information: RaceInformation {
-                    track_name: "Three Sisters".to_string(),
-                    date: Date {
-                        day: 14,
-                        month: 12,
-                        year: 2025,
-                    },
-                    session: Session {
-                        session_id: 1,
-                        session_type: "Race".to_string(),
-                        track_condition: "Wet".to_string(),
-                        race_position: 1,
-                    },
-                    car_used: "Ferrari".to_string(),
-                    championship: "Ferrari Challenge".to_string(),
-                    notes: "No notes".to_string(),
-                },
-                is_deleting: false,
-            }],
-        };
+        let driver_profile = DriverProfile::new(
+            "Obi Wan Kenobi",
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Sisters",
+                    RaceDate::new(14, 12, 2025),
+                    Session::new(1, 1),
+                ),
+                RaceMetadata::new("Race", "Wet", "Ferrari", "Ferrari Challenge", "No notes"),
+                vec![Lap::new(1, 20.0)],
+            )],
+        );
 
         // When
         upsert_html_races(file_location, &driver_profile);
@@ -296,116 +274,100 @@ mod file_integration_should {
         let race_file = read_race_file("");
 
         // Then
-        assert_eq!(expected_race_file, race_file);
+        pretty_assertions::assert_eq!(expected_race_file, race_file);
     }
 
     #[test]
     fn read_race_file_test() {
         // Given
         let file_location = "./";
-        let races = vec![Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 17,
-                    month: 5,
-                    year: 2026,
-                },
-                session: Session {
-                    session_id: 1,
-                    session_type: "N/A".to_string(),
-                    track_condition: "N/A".to_string(),
-                    race_position: 1,
-                    ..Default::default()
-                },
-                car_used: "Kart".to_string(),
-                championship: "Championship".to_string(),
-                notes: "Notes".to_string(),
-            },
-            ..Default::default()
-        }];
-        let expected_race_file = RaceFile {
-            track_name: "Three Sisters".to_string(),
-
-            day: 17,
-            month: 5,
-            year: 2026,
-
-            session_id: 1,
-            race_position: 1,
-            car_used: Some("Kart".to_string()),
-            notes: Some("Notes".to_string()),
-            championship: Some("Championship".to_string()),
-            session_type: Some("N/A".to_string()),
-            track_conditions: Some("N/A".to_string()),
-            ..Default::default()
-        };
+        let races = vec![RaceResult::new(
+            RaceInformation::new(
+                "Three Sisters",
+                RaceDate::new(17, 5, 2026),
+                Session::new(1, 1),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                "Championship",
+                "Notes",
+            ),
+            Default::default(),
+        )];
+        let expected_race_file = RaceFile::new(
+            "Three Sisters",
+            Default::default(),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                "Championship",
+                "Notes",
+            ),
+            Session::new(1, 1),
+            RaceDate::new(17, 5, 2026),
+        );
 
         // When
         upsert_races(file_location, &races);
-        let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
-            + ".toml";
+        let file_name =
+            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
 
         let _guard = TestFileGuard::new(&file_name);
 
         let race_file = read_race_file(&file_name);
 
         // Then
-        assert_eq!(expected_race_file, race_file);
+        pretty_assertions::assert_eq!(expected_race_file, race_file);
     }
 
     #[test]
     fn read_race_file_test_no_session_type_or_session_conditions_or_car_used_or_notes() {
         // Given
         let file_location = "./";
-        let races = vec![Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 27,
-                    month: 5,
-                    year: 2026,
-                },
-                session: Session {
-                    session_id: 1,
-                    session_type: "".to_string(),
-                    track_condition: "".to_string(),
-                    race_position: 1,
-                    ..Default::default()
-                },
-                car_used: "".to_string(),
-                championship: "".to_string(),
-                notes: "".to_string(),
-            },
-            ..Default::default()
-        }];
-        let expected_race_file = RaceFile {
-            track_name: "Three Sisters".to_string(),
-            day: 27,
-            month: 5,
-            year: 2026,
-            session_id: 1,
-            race_position: 1,
-            car_used: None,
-            notes: None,
-            session_type: None,
-            track_conditions: None,
-            ..Default::default()
-        };
+        let races = vec![RaceResult::new(
+            RaceInformation::new(
+                "Three Sisters",
+                RaceDate::new(27, 5, 2026),
+                Session::new(1, 1),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+            ),
+            Default::default(),
+        )];
+
+        let expected_race_file = RaceFile::new(
+            "Three Sisters",
+            Default::default(),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+            ),
+            Session::new(1, 1),
+            RaceDate::new(27, 5, 2026),
+        );
 
         // When
         upsert_races(file_location, &races);
-        let file_name = "./".to_string()
-            + &RaceInformation::get_unique_race_information_identifier(&races[0].race_information)
-            + ".toml";
+        let file_name =
+            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
 
         let _guard = TestFileGuard::new(&file_name);
 
         let race_file = read_race_file(&file_name);
 
         // Then
-        assert_eq!(expected_race_file, race_file);
+        pretty_assertions::assert_eq!(expected_race_file, race_file);
     }
 
     #[test]
@@ -420,7 +382,7 @@ mod file_integration_should {
         let karting_time = read_application_state(file_name);
 
         // Then
-        assert_eq!(expected_application, karting_time);
+        pretty_assertions::assert_eq!(expected_application, karting_time);
     }
 
     #[test]
@@ -467,6 +429,6 @@ mod file_integration_should {
         let karting_time = read_application_state(file_name);
 
         // Then
-        assert_eq!(expected_karting_time, karting_time);
+        pretty_assertions::assert_eq!(expected_karting_time, karting_time);
     }
 }

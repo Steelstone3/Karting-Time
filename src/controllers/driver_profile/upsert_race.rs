@@ -29,16 +29,11 @@ impl KartingTime {
         if self
             .application_state
             .new_race
-            .race_information
-            .session
+            .race_metadata
             .session_type
             .is_empty()
         {
-            self.application_state
-                .new_race
-                .race_information
-                .session
-                .session_type = "N/A".to_string();
+            self.application_state.new_race.race_metadata.session_type = "N/A".to_string();
         }
     }
 
@@ -46,16 +41,14 @@ impl KartingTime {
         if self
             .application_state
             .new_race
-            .race_information
-            .session
-            .track_condition
+            .race_metadata
+            .track_conditions
             .is_empty()
         {
             self.application_state
                 .new_race
-                .race_information
-                .session
-                .track_condition = "N/A".to_string();
+                .race_metadata
+                .track_conditions = "N/A".to_string();
         }
     }
 
@@ -63,11 +56,11 @@ impl KartingTime {
         if self
             .application_state
             .new_race
-            .race_information
+            .race_metadata
             .car_used
             .is_empty()
         {
-            self.application_state.new_race.race_information.car_used = "N/A".to_string();
+            self.application_state.new_race.race_metadata.car_used = "N/A".to_string();
         }
     }
 }
@@ -76,71 +69,48 @@ impl KartingTime {
 mod upsert_race_should {
     use crate::models::{
         application::{application_state::ApplicationState, karting_time::KartingTime},
-        date::Date,
+        date::RaceDate,
         driver::{
-            driver_profile::DriverProfile, race_information::RaceInformation, race_result::Race,
-            session::Session,
+            driver_profile::DriverProfile,
+            session_information::{
+                race_information::RaceInformation, race_metadata::RaceMetadata,
+                race_result::RaceResult, session::Session,
+            },
         },
     };
 
     #[test]
     fn upsert_race_no_session_type_or_track_condition_or_car_used() {
         // Given
-        let expected_race = Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 12,
-                    month: 11,
-                    year: 2023,
-                },
-                session: Session {
-                    session_id: 2,
-                    session_type: "N/A".to_string(),
-                    track_condition: "N/A".to_string(),
-                    race_position: 12,
-                },
-                car_used: "N/A".to_string(),
-                championship: "".to_string(),
-                notes: "".to_string(),
-            },
-            ..Default::default()
-        };
+        let race_information = RaceInformation::new(
+            "Three Sisters",
+            RaceDate::new(12, 11, 2023),
+            Session::new(2, 12),
+        );
+        let race_metadata = RaceMetadata::default();
+        let expected_race = RaceResult::new(race_information, race_metadata, Default::default());
+
         let mut karting_time = KartingTime {
             application_state: ApplicationState {
-                new_race: Race {
-                    race_information: RaceInformation {
-                        track_name: "Three Sisters".to_string(),
-                        date: Date {
-                            day: 12,
-                            month: 11,
-                            year: 2023,
-                        },
-                        session: Session {
-                            session_id: 2,
-                            session_type: "".to_string(),
-                            track_condition: "".to_string(),
-                            race_position: 12,
-                        },
-                        car_used: "".to_string(),
-                        championship: "".to_string(),
-                        notes: "".to_string(),
-                    },
-                    ..Default::default()
-                },
+                new_race: RaceResult::new(
+                    RaceInformation::new(
+                        "Three Sisters",
+                        RaceDate::new(12, 11, 2023),
+                        Session::new(2, 12),
+                    ),
+                    RaceMetadata::default(),
+                    Default::default(),
+                ),
                 ..Default::default()
             },
-            driver_profile: DriverProfile {
-                races: Default::default(),
-                ..Default::default()
-            },
+            driver_profile: DriverProfile::new(Default::default(), Default::default()),
         };
 
         // When
         karting_time.upsert_race();
 
         // Then
-        assert_eq!(
+        pretty_assertions::assert_eq!(
             expected_race.race_information,
             karting_time.driver_profile.races[0].race_information
         )
@@ -149,143 +119,60 @@ mod upsert_race_should {
     #[test]
     fn upsert_race() {
         // Given
-        let expected_race = Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 12,
-                    month: 11,
-                    year: 2023,
-                },
-                session: Session {
-                    session_id: 2,
-                    session_type: "Race".to_string(),
-                    track_condition: "Dry".to_string(),
-                    race_position: 12,
-                },
-                car_used: "Kart Type 1".to_string(),
-                championship: "Championship".to_string(),
-                notes: "Some notes".to_string(),
-            },
-            ..Default::default()
-        };
+        let race_information = RaceInformation::new(
+            "Three Sisters",
+            RaceDate::new(12, 11, 2023),
+            Session::new(2, 12),
+        );
+        let race_metadata =
+            RaceMetadata::new("Race", "Dry", "Kart Type 1", "Championship", "Some notes");
+        let race = RaceResult::new(race_information, race_metadata, Default::default());
+
         let mut karting_time = KartingTime {
             application_state: ApplicationState {
-                new_race: Race {
-                    race_information: RaceInformation {
-                        track_name: "Three Sisters".to_string(),
-                        date: Date {
-                            day: 12,
-                            month: 11,
-                            year: 2023,
-                        },
-                        session: Session {
-                            session_id: 2,
-                            session_type: "Race".to_string(),
-                            track_condition: "Dry".to_string(),
-                            race_position: 12,
-                        },
-                        car_used: "Kart Type 1".to_string(),
-                        championship: "Championship".to_string(),
-                        notes: "Some notes".to_string(),
-                    },
-                    ..Default::default()
-                },
+                new_race: race.clone(),
                 ..Default::default()
             },
-            driver_profile: DriverProfile {
-                races: Default::default(),
-                ..Default::default()
-            },
+            driver_profile: DriverProfile::new(Default::default(), Default::default()),
         };
 
         // When
         karting_time.upsert_race();
 
         // Then
-        assert_eq!(
-            expected_race.race_information,
-            karting_time.driver_profile.races[0].race_information
-        )
+        pretty_assertions::assert_eq!(race, karting_time.driver_profile.races[0])
     }
 
     #[test]
     fn upsert_race_match_and_update_existing() {
         // Given
-        let expected_race = Race {
-            race_information: RaceInformation {
-                track_name: "Three Sisters".to_string(),
-                date: Date {
-                    day: 12,
-                    month: 11,
-                    year: 2023,
-                },
-                session: Session {
-                    session_id: 2,
-                    session_type: "Practise".to_string(),
-                    track_condition: "Wet".to_string(),
-                    race_position: 8,
-                },
-                car_used: "Kart Type 2".to_string(),
-                championship: "Championship".to_string(),
-                notes: "Some different notes".to_string(),
-            },
-            ..Default::default()
-        };
+        let race_information = RaceInformation::new(
+            "Three Sisters",
+            RaceDate::new(12, 11, 2023),
+            Session::new(2, 8),
+        );
+        let race_metadata = RaceMetadata::new(
+            "Practise",
+            "Wet",
+            "Kart Type 2",
+            "Championship",
+            "Some different notes",
+        );
+        let expected_race = RaceResult::new(race_information, race_metadata, Default::default());
+
         let mut karting_time = KartingTime {
             application_state: ApplicationState {
-                new_race: Race {
-                    race_information: RaceInformation {
-                        track_name: "Three Sisters".to_string(),
-                        date: Date {
-                            day: 12,
-                            month: 11,
-                            year: 2023,
-                        },
-                        session: Session {
-                            session_id: 2,
-                            session_type: "Practise".to_string(),
-                            track_condition: "Wet".to_string(),
-                            race_position: 8,
-                        },
-                        car_used: "Kart Type 2".to_string(),
-                        championship: "Championship".to_string(),
-                        notes: "Some different notes".to_string(),
-                    },
-                    ..Default::default()
-                },
+                new_race: expected_race.clone(),
                 ..Default::default()
             },
-            driver_profile: DriverProfile {
-                races: vec![Race {
-                    race_information: RaceInformation {
-                        track_name: "Three Sisters".to_string(),
-                        date: Date {
-                            day: 12,
-                            month: 11,
-                            year: 2023,
-                        },
-                        session: Session {
-                            session_id: 2,
-                            session_type: "Race".to_string(),
-                            track_condition: "Dry".to_string(),
-                            race_position: 12,
-                        },
-                        car_used: "Kart Type 1".to_string(),
-                        championship: "Championship".to_string(),
-                        notes: "Some notes".to_string(),
-                    },
-                    ..Default::default()
-                }],
-                ..Default::default()
-            },
+            driver_profile: DriverProfile::new(Default::default(), vec![expected_race.clone()]),
         };
 
         // When
         karting_time.upsert_race();
 
         // Then
-        assert_eq!(1, karting_time.driver_profile.races.len());
-        assert_eq!(expected_race, karting_time.driver_profile.races[0])
+        pretty_assertions::assert_eq!(1, karting_time.driver_profile.races.len());
+        pretty_assertions::assert_eq!(expected_race, karting_time.driver_profile.races[0])
     }
 }

@@ -27,7 +27,6 @@ impl KartingTime {
     }
 
     pub fn theme(&self) -> Theme {
-        // Theme::GruvboxDark
         match self.application_state.is_light_theme {
             true => Theme::Light,
             false => Theme::Dark,
@@ -42,9 +41,9 @@ impl KartingTime {
     }
 
     pub fn toggle_filter(&mut self) {
-        match self.application_state.is_filter_visible {
-            true => self.application_state.is_filter_visible = false,
-            false => self.application_state.is_filter_visible = true,
+        match self.driver_profile.filter.is_filter_visible {
+            true => self.driver_profile.filter.is_filter_visible = false,
+            false => self.driver_profile.filter.is_filter_visible = true,
         }
     }
 }
