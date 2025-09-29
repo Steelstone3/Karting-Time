@@ -1,7 +1,9 @@
 use crate::{
     commands::messages::Message,
-    controllers::driver_profile::time_parser::format_laptime,
-    models::{application::karting_time::KartingTime, driver::race_result::Race},
+    models::{
+        application::karting_time::KartingTime,
+        driver::session_information::race_result::RaceResult,
+    },
     table::Table,
 };
 use iced::{
@@ -23,7 +25,7 @@ impl KartingTime {
             column = column
                 .push(Card::new(
                     text("Results Overview"),
-                    self.race_results_overview_table(&self.application_state.filtered_races),
+                    self.race_results_overview_table(&self.driver_profile.filter.filtered_races),
                 ))
                 .padding(10)
                 .spacing(10);
@@ -32,7 +34,7 @@ impl KartingTime {
         }
     }
 
-    fn race_results_overview_table(&self, races: &Vec<Race>) -> Element<'_, Message> {
+    fn race_results_overview_table(&self, races: &Vec<RaceResult>) -> Element<'_, Message> {
         let mut table = Table::default();
 
         table.add_headers(vec![
@@ -52,23 +54,20 @@ impl KartingTime {
         ]);
 
         for race in races {
-            let total_times = race.calculate_total_times();
-            let average_times = race.calculate_average_total_times(&total_times);
-
             table.add_row(vec![
                 race.race_information.track_name.to_string(),
                 race.race_information.date.to_string(),
                 race.race_information.session.session_id.to_string(),
-                race.race_information.car_used.to_string(),
+                race.race_metadata.car_used.to_string(),
                 race.race_information.session.race_position.to_string(),
-                format_laptime(race.get_fastest_lap()),
-                Race::get_average_time(&average_times, &5),
-                Race::get_average_time(&average_times, &10),
-                Race::get_average_time(&average_times, &15),
-                Race::get_total_time(&total_times, &5),
-                Race::get_total_time(&total_times, &10),
-                Race::get_total_time(&total_times, &15),
-                Race::get_total_time(&total_times, &race.laptimes.len()),
+                race.race_statistics.fastest_lap.clone(),
+                race.race_statistics.average_5.clone(),
+                race.race_statistics.average_10.clone(),
+                race.race_statistics.average_15.clone(),
+                race.race_statistics.total_5.clone(),
+                race.race_statistics.total_10.clone(),
+                race.race_statistics.total_15.clone(),
+                race.race_statistics.total_time.clone(),
             ]);
         }
 

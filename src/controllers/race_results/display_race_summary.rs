@@ -1,8 +1,8 @@
 use std::cmp::Ordering;
 
-use crate::models::driver::{lap::Lap, race_result::Race};
+use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
 
-impl Race {
+impl RaceResult {
     pub fn get_number_of_laps(&self) -> u32 {
         self.laptimes.len() as u32
     }
@@ -40,104 +40,62 @@ impl Race {
 
 #[cfg(test)]
 mod display_race_summary_should {
-    use crate::models::driver::{lap::Lap, race_result::Race};
+    use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
 
     #[test]
     fn get_number_of_laps() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 23.34,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 23.34,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 23.34,
-                },
-            ],
-            ..Default::default()
-        };
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![Lap::new(1, 23.34), Lap::new(1, 23.34), Lap::new(1, 23.34)],
+        );
 
         // Then
-        assert_eq!(3, race.get_number_of_laps())
+        pretty_assertions::assert_eq!(3, race.get_number_of_laps())
     }
 
     #[test]
     fn get_no_fastest_lap() {
         // Given
-        let race = Race {
-            laptimes: vec![],
-            ..Default::default()
-        };
+        let race = RaceResult::new(Default::default(), Default::default(), Default::default());
 
         // Then
-        assert_eq!(0.0, race.get_fastest_lap())
+        pretty_assertions::assert_eq!(0.0, race.get_fastest_lap())
     }
 
     #[test]
     fn get_fastest_lap() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 21.67,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 22.56,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 20.34,
-                },
-            ],
-            ..Default::default()
-        };
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![Lap::new(1, 21.67), Lap::new(1, 22.56), Lap::new(1, 20.34)],
+        );
 
         // Then
-        assert_eq!(20.34, race.get_fastest_lap())
+        pretty_assertions::assert_eq!(20.34, race.get_fastest_lap())
     }
 
     #[test]
     fn get_no_average_lap() {
         // Given
-        let race = Race {
-            laptimes: vec![],
-            ..Default::default()
-        };
+        let race = RaceResult::new(Default::default(), Default::default(), Default::default());
 
         // Then
-        assert_eq!(0.0, race.get_average_lap())
+        pretty_assertions::assert_eq!(0.0, race.get_average_lap())
     }
 
     #[test]
     fn get_average_lap() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 21.67,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 22.56,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 20.34,
-                },
-            ],
-            ..Default::default()
-        };
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![Lap::new(1, 21.67), Lap::new(1, 22.56), Lap::new(1, 20.34)],
+        );
 
         // Then
-        assert_eq!(20.34, race.get_average_lap())
+        pretty_assertions::assert_eq!(20.34, race.get_average_lap())
     }
 }

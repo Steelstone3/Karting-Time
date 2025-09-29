@@ -1,22 +1,24 @@
+use super::application_state::ApplicationState;
 use crate::{
     data_models::karting_time_file::KartingTimeFile, models::driver::driver_profile::DriverProfile,
 };
 
-use super::application_state::ApplicationState;
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Default, PartialEq)]
 pub struct KartingTime {
-    #[serde(skip)]
     pub application_state: ApplicationState,
     pub driver_profile: DriverProfile,
 }
 
 impl KartingTime {
-    pub fn convert_to_karting_time_file(&self) -> KartingTimeFile {
-        KartingTimeFile {
-            driver_profile: self.driver_profile.convert_to_driver_profile_file(),
+    pub fn new(driver_profile: DriverProfile) -> Self {
+        Self {
+            driver_profile,
+            application_state: Default::default(),
         }
+    }
+
+    pub fn convert_to_karting_time_file(&self) -> KartingTimeFile {
+        KartingTimeFile::new(self.driver_profile.convert_to_driver_profile_file())
     }
 }
 
@@ -25,9 +27,10 @@ mod karting_time_should {
     use crate::{
         data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
         models::{
-            date::Date,
-            driver::{
-                lap::Lap, race_information::RaceInformation, race_result::Race, session::Session,
+            date::RaceDate,
+            driver::session_information::{
+                lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
+                race_result::RaceResult, session::Session,
             },
         },
     };
@@ -37,60 +40,42 @@ mod karting_time_should {
     #[test]
     fn convert_to_karting_time_file() {
         // Given
-        let expected_karting_time_file = KartingTimeFile {
-            driver_profile: DriverProfileFile {
-                name: "Karl Chadwick".to_string(),
-                races: vec![RaceFile {
-                    track_name: "Three Ponies".to_string(),
-                    day: 15,
-                    month: 10,
-                    year: 2024,
-                    session_id: 1,
-                    race_position: 2,
-                    car_used: Some("Kart".to_string()),
-                    notes: Some("Notes".to_string()),
-                    championship: Some("Championship".to_string()),
-                    session_type: Some("N/A".to_string()),
-                    track_conditions: Some("N/A".to_string()),
-                    laptimes: vec!["50.662".to_string(), "51.877".to_string()],
-                }],
-            },
-        };
+        let expected_karting_time_file = KartingTimeFile::new(DriverProfileFile::new(
+            "Karl Chadwick",
+            vec![RaceFile::new(
+                "Three Ponies",
+                vec!["50.662".to_string(), "51.877".to_string()],
+                RaceMetadata::new(
+                    Default::default(),
+                    Default::default(),
+                    "Kart",
+                    "Championship",
+                    "Notes",
+                ),
+                Session::new(1, 2),
+                RaceDate::new(15, 10, 2024),
+            )],
+        ));
 
         let karting_time = KartingTime {
-            driver_profile: DriverProfile {
-                name: "Karl Chadwick".to_string(),
-                races: vec![Race {
-                    race_information: RaceInformation {
-                        track_name: "Three Ponies".to_string(),
-                        date: Date {
-                            day: 15,
-                            month: 10,
-                            year: 2024,
-                        },
-                        session: Session {
-                            session_id: 1,
-                            session_type: "N/A".to_string(),
-                            track_condition: "N/A".to_string(),
-                            race_position: 2,
-                        },
-                        car_used: "Kart".to_string(),
-                        championship: "Championship".to_string(),
-                        notes: "Notes".to_string(),
-                    },
-                    laptimes: vec![
-                        Lap {
-                            lap_number: 1,
-                            time: 50.662,
-                        },
-                        Lap {
-                            lap_number: 2,
-                            time: 51.877,
-                        },
-                    ],
-                    ..Default::default()
-                }],
-            },
+            driver_profile: DriverProfile::new(
+                "Karl Chadwick",
+                vec![RaceResult::new(
+                    RaceInformation::new(
+                        "Three Ponies",
+                        RaceDate::new(15, 10, 2024),
+                        Session::new(1, 2),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        "Notes",
+                    ),
+                    vec![Lap::new(1, 50.662), Lap::new(2, 51.877)],
+                )],
+            ),
             application_state: Default::default(),
         };
 
@@ -98,6 +83,6 @@ mod karting_time_should {
         let karting_time_file = karting_time.convert_to_karting_time_file();
 
         // Then
-        assert_eq!(expected_karting_time_file, karting_time_file)
+        pretty_assertions::assert_eq!(expected_karting_time_file, karting_time_file)
     }
 }

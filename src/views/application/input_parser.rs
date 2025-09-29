@@ -29,7 +29,7 @@ mod input_parser_should {
         let number = parse_input_f32(30.to_string(), 0.0, 50.0);
 
         // Then
-        assert_eq!(30.0, number);
+        pretty_assertions::assert_eq!(30.0, number);
     }
 
     #[test]
@@ -38,7 +38,7 @@ mod input_parser_should {
         let number = parse_input_f32("Jeff".to_string(), 5.0, 200.0);
 
         // Then
-        assert_eq!(5.0, number);
+        pretty_assertions::assert_eq!(5.0, number);
     }
 
     #[test]
@@ -47,7 +47,7 @@ mod input_parser_should {
         let number = parse_input_f32("2222".to_string(), 5.0, 200.0);
 
         // Then
-        assert_eq!(200.0, number);
+        pretty_assertions::assert_eq!(200.0, number);
     }
 
     #[test]
@@ -56,7 +56,7 @@ mod input_parser_should {
         let number = parse_input_u32(30.to_string(), 0, 50);
 
         // Then
-        assert_eq!(30, number);
+        pretty_assertions::assert_eq!(30, number);
     }
 
     #[test]
@@ -65,7 +65,7 @@ mod input_parser_should {
         let number = parse_input_u32("Jeff".to_string(), 5, 200);
 
         // Then
-        assert_eq!(5, number);
+        pretty_assertions::assert_eq!(5, number);
     }
 
     #[test]
@@ -74,6 +74,6 @@ mod input_parser_should {
         let number = parse_input_u32("2222".to_string(), 5, 200);
 
         // Then
-        assert_eq!(200, number);
+        pretty_assertions::assert_eq!(200, number);
     }
 }
