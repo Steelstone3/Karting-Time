@@ -32,7 +32,12 @@ impl KartingTime {
             }
             Message::DriverNameChanged(name) => self.driver_profile.name = name,
             Message::TrackNameChanged(track_name) => {
-                self.driver_profile.new_race.race_information.track_name = track_name
+                self.driver_profile.new_race.race_information.track_name = track_name;
+
+                self.driver_profile
+                    .new_race
+                    .race_information
+                    .update_unique_identifier();
             }
             Message::DayChanged(day) => {
                 self.driver_profile
@@ -40,6 +45,11 @@ impl KartingTime {
                     .race_information
                     .date
                     .set_day(day);
+
+                self.driver_profile
+                    .new_race
+                    .race_information
+                    .update_unique_identifier();
             }
             Message::MonthChanged(month) => {
                 self.driver_profile
@@ -47,6 +57,11 @@ impl KartingTime {
                     .race_information
                     .date
                     .set_month(month);
+
+                self.driver_profile
+                    .new_race
+                    .race_information
+                    .update_unique_identifier();
             }
             Message::YearChanged(year) => {
                 self.driver_profile
@@ -54,6 +69,11 @@ impl KartingTime {
                     .race_information
                     .date
                     .set_year(year);
+
+                self.driver_profile
+                    .new_race
+                    .race_information
+                    .update_unique_identifier();
             }
             Message::SessionIdChanged(session_id) => {
                 self.driver_profile
@@ -61,6 +81,11 @@ impl KartingTime {
                     .race_information
                     .session
                     .set_session_id(session_id);
+
+                self.driver_profile
+                    .new_race
+                    .race_information
+                    .update_unique_identifier();
             }
             Message::SessionTypeChanged(session_type) => {
                 self.driver_profile.new_race.race_metadata.session_type = session_type;

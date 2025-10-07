@@ -32,6 +32,13 @@ impl RaceInformation {
 
         race_information
     }
+
+    pub fn update_unique_identifier(&mut self) {
+        self.unique_race_identifier = format!(
+            "Date_{}_Track_{}_Session_{}",
+            self.date, self.track_name, self.session.session_id
+        );
+    }
 }
 
 #[cfg(test)]
