@@ -21,7 +21,7 @@ impl RaceResult {
             if self.race_information.unique_race_identifier
                 == updated_races[i].race_information.unique_race_identifier
             {
-                updated_races[i] = self.clone();
+                updated_races[i] = RaceResult::new_from_self(self.clone());
                 return updated_races;
             }
         }
