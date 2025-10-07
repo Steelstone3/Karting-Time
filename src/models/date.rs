@@ -1,18 +1,22 @@
+use crate::views::application::input_parser::parse_input_u32;
+use chrono::NaiveDate;
 use std::{cmp::Ordering, fmt::Display};
 
-use chrono::NaiveDate;
-use serde::{Deserialize, Serialize};
-
-use crate::views::application::input_parser::parse_input_u32;
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq)]
-pub struct Date {
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RaceDate {
     pub day: u32,
     pub month: u32,
     pub year: i32,
 }
 
-impl Default for Date {
+impl RaceDate {
+    #[allow(dead_code)]
+    pub fn new(day: u32, month: u32, year: i32) -> Self {
+        Self { day, month, year }
+    }
+}
+
+impl Default for RaceDate {
     fn default() -> Self {
         Self {
             day: 1,
@@ -22,13 +26,13 @@ impl Default for Date {
     }
 }
 
-impl Display for Date {
+impl Display for RaceDate {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}-{}-{}", self.year, self.month, self.day)
     }
 }
 
-impl Ord for Date {
+impl Ord for RaceDate {
     fn cmp(&self, other: &Self) -> Ordering {
         let year_ordering = self.year.cmp(&other.year);
         if year_ordering != Ordering::Equal {
@@ -44,13 +48,13 @@ impl Ord for Date {
     }
 }
 
-impl PartialOrd for Date {
+impl PartialOrd for RaceDate {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Date {
+impl RaceDate {
     pub fn set_day(&mut self, day: String) {
         let day = parse_input_u32(day, u32::MIN, u32::MAX);
 
@@ -80,34 +84,34 @@ impl Date {
 
 #[cfg(test)]
 mod date_should {
-    use super::Date;
+    use super::RaceDate;
     use rstest::rstest;
     use std::cmp::Ordering;
 
     #[test]
     fn create_date() {
         // Given
-        let expected_date = Date {
+        let expected_date = RaceDate {
             day: 1,
             month: 1,
             year: 2000,
         };
 
         // Then
-        assert_eq!(expected_date, Date::default());
+        pretty_assertions::assert_eq!(expected_date, RaceDate::default());
     }
 
     #[rstest]
-    #[case(Date{ day: 21, month: 11, year: 2025 }, Ordering::Equal)]
-    #[case(Date{ day: 20, month: 11, year: 2025 }, Ordering::Greater)]
-    #[case(Date{ day: 21, month: 10, year: 2025 }, Ordering::Greater)]
-    #[case(Date{ day: 21, month: 11, year: 2024 }, Ordering::Greater)]
-    #[case(Date{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
-    #[case(Date{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
-    #[case(Date{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
-    fn ordering(#[case] comparison_date: Date, #[case] expected_ordering: Ordering) {
+    #[case(RaceDate{ day: 21, month: 11, year: 2025 }, Ordering::Equal)]
+    #[case(RaceDate{ day: 20, month: 11, year: 2025 }, Ordering::Greater)]
+    #[case(RaceDate{ day: 21, month: 10, year: 2025 }, Ordering::Greater)]
+    #[case(RaceDate{ day: 21, month: 11, year: 2024 }, Ordering::Greater)]
+    #[case(RaceDate{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
+    #[case(RaceDate{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
+    #[case(RaceDate{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
+    fn ordering(#[case] comparison_date: RaceDate, #[case] expected_ordering: Ordering) {
         // Given
-        let date = Date {
+        let date = RaceDate {
             day: 21,
             month: 11,
             year: 2025,
@@ -117,20 +121,20 @@ mod date_should {
         let ordering = date.cmp(&comparison_date);
 
         // Then
-        assert_eq!(expected_ordering, ordering)
+        pretty_assertions::assert_eq!(expected_ordering, ordering)
     }
 
     #[rstest]
-    #[case(Date{ day: 21, month: 11, year: 2025 }, Ordering::Equal)]
-    #[case(Date{ day: 20, month: 11, year: 2025 }, Ordering::Greater)]
-    #[case(Date{ day: 21, month: 10, year: 2025 }, Ordering::Greater)]
-    #[case(Date{ day: 21, month: 11, year: 2024 }, Ordering::Greater)]
-    #[case(Date{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
-    #[case(Date{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
-    #[case(Date{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
-    fn partial_ordering(#[case] comparison_date: Date, #[case] expected_ordering: Ordering) {
+    #[case(RaceDate{ day: 21, month: 11, year: 2025 }, Ordering::Equal)]
+    #[case(RaceDate{ day: 20, month: 11, year: 2025 }, Ordering::Greater)]
+    #[case(RaceDate{ day: 21, month: 10, year: 2025 }, Ordering::Greater)]
+    #[case(RaceDate{ day: 21, month: 11, year: 2024 }, Ordering::Greater)]
+    #[case(RaceDate{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
+    #[case(RaceDate{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
+    #[case(RaceDate{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
+    fn partial_ordering(#[case] comparison_date: RaceDate, #[case] expected_ordering: Ordering) {
         // Given
-        let date = Date {
+        let date = RaceDate {
             day: 21,
             month: 11,
             year: 2025,
@@ -140,13 +144,13 @@ mod date_should {
         let ordering = date.partial_cmp(&comparison_date);
 
         // Then
-        assert_eq!(expected_ordering, ordering.unwrap())
+        pretty_assertions::assert_eq!(expected_ordering, ordering.unwrap())
     }
 
     #[test]
     fn display() {
         // Given
-        let date = Date {
+        let date = RaceDate {
             day: 15,
             month: 12,
             year: 2000,
@@ -156,13 +160,13 @@ mod date_should {
         let date_string = date.to_string();
 
         // Then
-        assert_eq!("2000-12-15", date_string)
+        pretty_assertions::assert_eq!("2000-12-15", date_string)
     }
 
     #[test]
     fn set_day() {
         // Given
-        let mut date = Date {
+        let mut date = RaceDate {
             day: 1,
             month: 1,
             year: 2000,
@@ -172,13 +176,13 @@ mod date_should {
         date.set_day("15".to_string());
 
         // Then
-        assert_eq!(15, date.day)
+        pretty_assertions::assert_eq!(15, date.day)
     }
 
     #[test]
     fn set_month() {
         // Given
-        let mut date = Date {
+        let mut date = RaceDate {
             day: 1,
             month: 1,
             year: 2000,
@@ -188,13 +192,13 @@ mod date_should {
         date.set_month("11".to_string());
 
         // Then
-        assert_eq!(11, date.month)
+        pretty_assertions::assert_eq!(11, date.month)
     }
 
     #[test]
     fn set_year() {
         // Given
-        let mut date = Date {
+        let mut date = RaceDate {
             day: 1,
             month: 1,
             year: 2000,
@@ -204,6 +208,6 @@ mod date_should {
         date.set_year("2020".to_string());
 
         // Then
-        assert_eq!(2020, date.year)
+        pretty_assertions::assert_eq!(2020, date.year)
     }
 }

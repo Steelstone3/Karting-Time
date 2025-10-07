@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "0.14.4"
+version = "0.14.5"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2024"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -27,6 +27,7 @@ opt-level = 3
 
 [dev-dependencies]
 rstest = "0"
+pretty_assertions = "1"
 
 [dependencies]
 # Fixed Version

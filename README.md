@@ -80,10 +80,10 @@ notes = "Private race event"
 #### Driver Profile
 
 ```toml
-[driver_profile]
+[driver_profile_file]
 name = "Jack Jackson"
 
-[[driver_profile.races]]
+[[driver_profile_file.races]]
 laptimes = [
     "88.886",
     "53.356",

@@ -11,8 +11,11 @@ impl KartingTime {
             .padding(10)
             .spacing(10)
             .push(
-                text_input("Enter track filter", &self.application_state.track_query)
-                    .on_input(Message::TrackFilterChanged),
+                text_input(
+                    "Enter track filter",
+                    &self.driver_profile.filter.track_query,
+                )
+                .on_input(Message::TrackFilterChanged),
             )
             .padding(10)
             .spacing(10)
@@ -20,7 +23,7 @@ impl KartingTime {
             .padding(10)
             .spacing(10)
             .push(
-                text_input("Enter date filter", &self.application_state.date_query)
+                text_input("Enter date filter", &self.driver_profile.filter.date_query)
                     .on_input(Message::DateFilterChanged),
             )
             .padding(10)
@@ -31,7 +34,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Enter car used filter",
-                    &self.application_state.car_used_query,
+                    &self.driver_profile.filter.car_used_query,
                 )
                 .on_input(Message::CarUsedFilterChanged),
             )
@@ -43,7 +46,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Enter championship filter",
-                    &self.application_state.championship_query,
+                    &self.driver_profile.filter.championship_query,
                 )
                 .on_input(Message::ChampionshipFilterChanged),
             )
@@ -55,7 +58,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Enter session type filter",
-                    &self.application_state.session_type_query,
+                    &self.driver_profile.filter.session_type_query,
                 )
                 .on_input(Message::SessionTypeFilterChanged),
             )

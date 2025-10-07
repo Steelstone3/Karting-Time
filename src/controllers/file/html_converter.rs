@@ -1,21 +1,7 @@
-use crate::{
-    data_models::driver_profile_file::DriverProfileFile,
-    models::{
-        application::{application_state::ApplicationState, karting_time::KartingTime},
-        driver::race_result::Race,
-    },
-};
+use crate::data_models::driver_profile_file::DriverProfileFile;
 use maud::{DOCTYPE, Markup, html};
 
 pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
-    let karting_time = KartingTime {
-        application_state: ApplicationState {
-            filtered_races: driver_profile.convert_to_driver_profile().races,
-            ..Default::default()
-        },
-        ..Default::default()
-    };
-
     html! {
         (DOCTYPE)
         html lang="en" {
@@ -40,31 +26,31 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                     tbody {
                         tr {
                             td data-label="Profile Summary" { "Races" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_races() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.races ) }
                         }
                         tr {
                             td data-label="Profile Summary" { "Wins" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_wins() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.wins ) }
                         }
                         tr {
                             td data-label="Profile Summary" { "Podiums" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_podiums() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.podiums ) }
                         }
                         tr {
                             td data-label="Profile Summary" { "Top Fives" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_top_fives() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.top_5 ) }
                         }
                         tr {
                             td data-label="Profile Summary" { "Top Tens" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_top_tens() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.top_10 ) }
                         }
                         tr {
                             td data-label="Profile Summary" { "Unique Tracks" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_unique_tracks() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.unique_tracks ) }
                         }
                         tr {
                             td data-label="Profile Summary" { "Unique Cars" }
-                            td data-label="Driver Statistic" { ( karting_time.get_filtered_number_of_unique_cars() ) }
+                            td data-label="Driver Statistic" { ( driver_profile.profile_statistics.unique_cars ) }
                         }
                     }
                 }
@@ -99,53 +85,16 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                     td data-label="Car Used" { ( car_used ) }
                                 }
                                 td data-label="Race Position" { ( &race.race_position ) }
-                                td data-label="Fastest Lap" { ( race.convert_to_race().get_fastest_lap() ) }
+                                td data-label="Fastest Lap" { ( race.race_statistics.fastest_lap ) }
 
-                                @if let Some(average_5) = Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())).first() {
-                                    td data-label="Average Lap 5" { ( average_5.1 ) }
-                                }
-                                @else {
-                                    td data-label="Average Lap 5" { "N/A" }
-                                }
+                                td data-label="Average Lap 5" { ( race.race_statistics.average_5 ) }
+                                td data-label="Average Lap 10" { ( race.race_statistics.average_10 ) }
+                                td data-label="Average Lap 15" { ( race.race_statistics.average_15 ) }
 
-                                @if let Some(average_10) = Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())).get(1) {
-                                    td data-label="Average Lap 10" { ( average_10.1 ) }
-                                }
-                                @else {
-                                    td data-label="Average Lap 10" { "N/A" }
-                                }
-
-                                @if let Some(average_15) = Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())).get(2) {
-                                    td data-label="Average Lap 15" { ( average_15.1 ) }
-                                }
-                                @else {
-                                    td data-label="Average Lap 15" { "N/A" }
-                                }
-
-                                @if let Some(total_5) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).first() {
-                                    td data-label="Total Lap 5" { ( total_5.1 ) }
-                                }
-                                @else {
-                                    td data-label="Total Lap 5" { "N/A" }
-                                }
-
-                                @if let Some(total_10) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).get(1) {
-                                    td data-label="Total Lap 10" { ( total_10.1 ) }
-                                }
-                                @else {
-                                    td data-label="Total Lap 10" { "N/A" }
-                                }
-
-                                @if let Some(total_15) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).get(2) {
-                                    td data-label="Total Lap 15" { ( total_15.1 ) }
-                                }
-                                @else {
-                                    td data-label="Total Lap 15" { "N/A" }
-                                }
-
-                                @if let Some(total) = Race::convert_hash_map(race.convert_to_race().calculate_total_times()).last() {
-                                    td data-label="Total Time" { ( total.1 ) }
-                                }
+                                td data-label="Total Lap 5" { ( race.race_statistics.total_5 ) }
+                                td data-label="Total Lap 10" { ( race.race_statistics.total_10 ) }
+                                td data-label="Total Lap 15" { ( race.race_statistics.total_15 ) }
+                                td data-label="Total Time" { ( race.race_statistics.total_time ) }
                             }
                         }
                     }
@@ -183,15 +132,15 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                             }
                             tr {
                                 td data-label="Race Summary" { "Number of laps" }
-                                td data-label="Race Statistic" { ( race.convert_to_race().get_number_of_laps() ) }
+                                td data-label="Race Statistic" { ( race.race_statistics.number_of_laps ) }
                             }
                             tr {
                                 td data-label="Race Summary" { "Fastest lap" }
-                                td data-label="Race Statistic" { ( race.convert_to_race().get_fastest_lap() ) }
+                                td data-label="Race Statistic" { ( race.race_statistics.fastest_lap ) }
                             }
                             tr {
                                 td data-label="Race Summary" { "Average lap (105%)" }
-                                td data-label="Race Statistic" { ( race.convert_to_race().get_average_lap() ) }
+                                td data-label="Race Statistic" { ( race.race_statistics.average_105_lap ) }
                             }
                         }
                     }
@@ -202,13 +151,13 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                             tr { th { "Lap" } th { "Pace" } }
                         }
                         tbody {
-                            @for (total_time_key, total_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_total_times()) {
+                            @for (total_time_key, total_time_value) in &race.race_statistics.total_times_table {
                                 tr {
                                     td data-label="Lap" { "Total Time " (total_time_key) }
                                     td data-label="Pace" { (total_time_value) }
                                 }
                             }
-                            @for (average_time_key, average_time_value) in Race::convert_hash_map(race.convert_to_race().calculate_average_total_times(&race.convert_to_race().calculate_total_times())) {
+                            @for (average_time_key, average_time_value) in &race.race_statistics.average_times_table {
                                 tr {
                                     td data-label="Lap" { "Average Time " (average_time_key) }
                                     td data-label="Pace" { (average_time_value) }
@@ -265,6 +214,10 @@ mod html_converter_should {
     use crate::{
         controllers::file::html_converter::convert_to_html,
         data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
+        models::{
+            date::RaceDate,
+            driver::session_information::{race_metadata::RaceMetadata, session::Session},
+        },
     };
 
     #[test]
@@ -351,14 +304,14 @@ mod html_converter_should {
                 "<td data-label=\"Race Position\">{}</td>",
                 &race.race_position
             )));
-            assert!(markdown_string.contains("<td data-label=\"Fastest Lap\">5</td>",));
-            assert!(markdown_string.contains("<td data-label=\"Average Lap 5\">15</td>",));
-            assert!(markdown_string.contains("<td data-label=\"Average Lap 10\">17.5</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Fastest Lap\">5.00</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Average Lap 5\">15.00</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Average Lap 10\">N/A</td>",));
             assert!(markdown_string.contains("<td data-label=\"Average Lap 15\">N/A</td>",));
-            assert!(markdown_string.contains("<td data-label=\"Total Lap 5\">75</td>",));
-            assert!(markdown_string.contains("<td data-label=\"Total Lap 10\">105</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Lap 5\">1:15.00</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Lap 10\">N/A</td>",));
             assert!(markdown_string.contains("<td data-label=\"Total Lap 15\">N/A</td>",));
-            assert!(markdown_string.contains("<td data-label=\"Total Time\">105</td>",));
+            assert!(markdown_string.contains("<td data-label=\"Total Time\">1:45.00</td>",));
         }
     }
 
@@ -386,12 +339,12 @@ mod html_converter_should {
             assert!(markdown_string.contains("<td data-label=\"Race Statistic\">6</td>"));
 
             assert!(markdown_string.contains("<td data-label=\"Race Summary\">Fastest lap</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5.00</td>"));
 
             assert!(
                 markdown_string.contains("<td data-label=\"Race Summary\">Average lap (105%)</td>")
             );
-            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Race Statistic\">5.00</td>"));
         }
     }
 
@@ -526,10 +479,11 @@ mod html_converter_should {
     }
 
     fn driver_profile_file_test_fixture() -> DriverProfileFile {
-        DriverProfileFile {
-            name: "Derek".to_string(),
-            races: vec![RaceFile {
-                laptimes: vec![
+        DriverProfileFile::new(
+            "Derek",
+            vec![RaceFile::new(
+                "Three Brothers",
+                vec![
                     "5.0".to_string(),
                     "10.0".to_string(),
                     "15.0".to_string(),
@@ -537,18 +491,16 @@ mod html_converter_should {
                     "25.0".to_string(),
                     "30.0".to_string(),
                 ],
-                day: 24,
-                month: 12,
-                year: 2025,
-                track_name: "Three Brothers".to_string(),
-                session_id: 1,
-                race_position: 1,
-                session_type: Some("Race".to_string()),
-                track_conditions: Some("Dry".to_string()),
-                car_used: Some("Mercedes GT3".to_string()),
-                championship: Some("GT World Challenge".to_string()),
-                notes: Some("No comment".to_string()),
-            }],
-        }
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        )
     }
 }

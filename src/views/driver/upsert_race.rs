@@ -11,7 +11,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "Track Name: e.g Spa",
-                    &self.application_state.new_race.race_information.track_name,
+                    &self.driver_profile.new_race.race_information.track_name,
                 )
                 .on_input(Message::TrackNameChanged),
             )
@@ -22,7 +22,7 @@ impl KartingTime {
                 text_input(
                     "Day of the Month",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
                         .race_information
                         .date
@@ -40,7 +40,7 @@ impl KartingTime {
                 text_input(
                     "Month of the Year",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
                         .race_information
                         .date
@@ -58,7 +58,7 @@ impl KartingTime {
                 text_input(
                     "Year",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
                         .race_information
                         .date
@@ -76,7 +76,7 @@ impl KartingTime {
                 text_input(
                     "Session Number",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
                         .race_information
                         .session
@@ -92,10 +92,9 @@ impl KartingTime {
                 text_input(
                     "(Optional) Session Type: e.g Qualifying, Race, Free Practise",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
-                        .race_information
-                        .session
+                        .race_metadata
                         .session_type
                         .to_string(),
                 )
@@ -108,11 +107,10 @@ impl KartingTime {
                 text_input(
                     "(Optional) Track Conditions: e.g Dry, Wet etc.",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
-                        .race_information
-                        .session
-                        .track_condition
+                        .race_metadata
+                        .track_conditions
                         .to_string(),
                 )
                 .on_input(Message::TrackConditionsChanged),
@@ -124,7 +122,7 @@ impl KartingTime {
                 text_input(
                     "Race Position",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
                         .race_information
                         .session
@@ -140,9 +138,9 @@ impl KartingTime {
                 text_input(
                     "(Optional) Car Used: e.g Ferrari 296 GTB",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
-                        .race_information
+                        .race_metadata
                         .car_used
                         .to_string(),
                 )
@@ -155,9 +153,9 @@ impl KartingTime {
                 text_input(
                     "(Optional) Championship: e.g GT World Challenge",
                     &self
-                        .application_state
+                        .driver_profile
                         .new_race
-                        .race_information
+                        .race_metadata
                         .championship
                         .to_string(),
                 )
@@ -169,7 +167,7 @@ impl KartingTime {
             .push(
                 text_input(
                     "(Optional) Notes about the session",
-                    &self.application_state.new_race.race_information.notes,
+                    &self.driver_profile.new_race.race_metadata.notes,
                 )
                 .on_input(Message::NotesChanged),
             )
@@ -198,11 +196,11 @@ impl KartingTime {
         let add_race_button = column!();
 
         if self
-            .application_state
+            .driver_profile
             .new_race
             .is_unique_identifer(&self.driver_profile.races)
             && !self
-                .application_state
+                .driver_profile
                 .new_race
                 .race_information
                 .track_name
@@ -216,7 +214,7 @@ impl KartingTime {
                 .spacing(10)
                 .padding(10)
         } else if self
-            .application_state
+            .driver_profile
             .new_race
             .race_information
             .track_name
