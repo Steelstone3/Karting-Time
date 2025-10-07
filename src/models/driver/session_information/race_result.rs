@@ -29,7 +29,21 @@ impl RaceResult {
             is_deleting: false,
         };
 
-        race_result.with_race_statistics(RaceStatistics::new(&race_result));
+        race_result.race_statistics = RaceStatistics::new(&race_result);
+
+        race_result
+    }
+
+    pub fn new_from_self(race_result: RaceResult) -> Self {
+        let mut race_result = Self {
+            race_information: race_result.race_information,
+            race_metadata: race_result.race_metadata,
+            race_statistics: Default::default(),
+            laptimes: race_result.laptimes,
+            is_deleting: false,
+        };
+
+        race_result.race_statistics = RaceStatistics::new(&race_result);
 
         race_result
     }
@@ -51,10 +65,6 @@ impl RaceResult {
             ),
             self.race_information.date.clone(),
         )
-    }
-
-    fn with_race_statistics(&mut self, race_statistics: RaceStatistics) {
-        self.race_statistics = race_statistics;
     }
 
     fn convert_laps_to_laptimes(&self) -> Vec<String> {
@@ -107,7 +117,7 @@ mod race_result_should {
         let laptimes = vec![Lap::new(1, 54.2), Lap::new(2, 55.6)];
         let mut race = RaceResult::new(race_information, race_metadata, laptimes.clone());
         let race_statistics = RaceStatistics::new(&race);
-        race.with_race_statistics(race_statistics);
+        race.race_statistics = race_statistics;
 
         // When
         let race_file = race.convert_to_race_file();

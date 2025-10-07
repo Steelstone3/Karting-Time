@@ -19,15 +19,10 @@ impl DriverProfileFile {
             profile_statistics: Default::default(),
         };
 
-        driver_profile_file.with_profile_statistics(ProfileStatistics::new(
-            RaceFile::convert_to_race_results(races.clone()),
-        ));
+        driver_profile_file.profile_statistics =
+            ProfileStatistics::new(RaceFile::convert_to_race_results(races.clone()));
 
         driver_profile_file
-    }
-
-    pub fn with_profile_statistics(&mut self, profile_statisics: ProfileStatistics) {
-        self.profile_statistics = profile_statisics;
     }
 
     pub fn convert_to_driver_profile(&self) -> DriverProfile {
