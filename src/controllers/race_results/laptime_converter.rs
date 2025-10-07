@@ -1,11 +1,10 @@
-use std::collections::HashMap;
-
 use crate::{
     controllers::driver_profile::time_parser::format_laptime,
-    models::driver::{lap::Lap, race_result::Race},
+    models::driver::session_information::{lap::Lap, race_result::RaceResult},
 };
+use std::collections::HashMap;
 
-impl Race {
+impl RaceResult {
     pub fn convert_to_laps(&mut self, laptime_editor_string: String) {
         let laptimes = self.convert_string_to_laps(laptime_editor_string);
 
@@ -105,156 +104,83 @@ impl Race {
 
 #[cfg(test)]
 mod laptime_converter_should {
+    use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
     use std::collections::HashMap;
-
-    use crate::models::driver::{lap::Lap, race_result::Race};
 
     #[test]
     fn convert_to_laps() {
         // Given
         let race_editor = "2:45.6\n3:boop\n53.2\n52.9\n54\n:45.6\nboop";
-        let mut race = Race {
-            laptimes: vec![],
-            ..Default::default()
-        };
+        let mut race = RaceResult::default();
         let expected_laps = vec![
-            Lap {
-                lap_number: 1,
-                time: 165.6,
-            },
-            Lap {
-                lap_number: 2,
-                time: 53.2,
-            },
-            Lap {
-                lap_number: 3,
-                time: 52.9,
-            },
-            Lap {
-                lap_number: 4,
-                time: 54.0,
-            },
+            Lap::new(1, 165.6),
+            Lap::new(2, 53.2),
+            Lap::new(3, 52.9),
+            Lap::new(4, 54.0),
         ];
 
         // When
         race.convert_to_laps(race_editor.to_string());
 
         // Then
-        assert_eq!(expected_laps, race.laptimes)
+        pretty_assertions::assert_eq!(expected_laps, race.laptimes)
     }
 
     #[test]
     fn convert_total_times_to_string() {
         // Given
         let expected_total_times = "\nTotal Time 5: 2:04.27\nTotal Time 10: 4:14.42".to_string();
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 25.555,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.657,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.585,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.475,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.899,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.345,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.123,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.879,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.341,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.563,
-                },
+
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![
+                Lap::new(1, 25.555),
+                Lap::new(1, 26.657),
+                Lap::new(1, 24.585),
+                Lap::new(1, 25.475),
+                Lap::new(1, 24.899),
+                Lap::new(1, 25.345),
+                Lap::new(1, 26.123),
+                Lap::new(1, 24.879),
+                Lap::new(1, 26.341),
+                Lap::new(1, 24.563),
             ],
-            ..Default::default()
-        };
+        );
 
         // When
         let total_times = race.convert_total_times_to_string();
 
         // Then
-        assert_eq!(expected_total_times, total_times)
+        pretty_assertions::assert_eq!(expected_total_times, total_times)
     }
 
     #[test]
     pub fn convert_average_total_times_to_string() {
         // Given
         let expected_average_laps = "\nAverage Time 5: 24.85\nAverage Time 10: 25.44".to_string();
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 25.555,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.657,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.585,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.475,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.899,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.345,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.123,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.879,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.341,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.563,
-                },
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![
+                Lap::new(1, 25.555),
+                Lap::new(1, 26.657),
+                Lap::new(1, 24.585),
+                Lap::new(1, 25.475),
+                Lap::new(1, 24.899),
+                Lap::new(1, 25.345),
+                Lap::new(1, 26.123),
+                Lap::new(1, 24.879),
+                Lap::new(1, 26.341),
+                Lap::new(1, 24.563),
             ],
-            ..Default::default()
-        };
+        );
 
         // When
         let average_laps = race.convert_average_total_times_to_string();
 
         // Then
-        assert_eq!(expected_average_laps, average_laps)
+        pretty_assertions::assert_eq!(expected_average_laps, average_laps)
     }
 
     #[test]
@@ -267,10 +193,10 @@ mod laptime_converter_should {
         races_hash_map.insert(10, 550.0);
 
         // When
-        let sorted_races = Race::convert_hash_map(races_hash_map);
+        let sorted_races = RaceResult::convert_hash_map(races_hash_map);
 
         // Then
-        assert_eq!(expected_sorted_races, sorted_races);
+        pretty_assertions::assert_eq!(expected_sorted_races, sorted_races);
     }
 
     #[test]
@@ -279,56 +205,27 @@ mod laptime_converter_should {
         let expected_laps =
             "25.555\n26.657\n24.585\n25.475\n24.899\n25.345\n26.123\n24.879\n26.341\n24.563\n"
                 .to_string();
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 25.555,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.657,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.585,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.475,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.899,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 25.345,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.123,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.879,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 26.341,
-                },
-                Lap {
-                    lap_number: 1,
-                    time: 24.563,
-                },
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![
+                Lap::new(1, 25.555),
+                Lap::new(1, 26.657),
+                Lap::new(1, 24.585),
+                Lap::new(1, 25.475),
+                Lap::new(1, 24.899),
+                Lap::new(1, 25.345),
+                Lap::new(1, 26.123),
+                Lap::new(1, 24.879),
+                Lap::new(1, 26.341),
+                Lap::new(1, 24.563),
             ],
-            ..Default::default()
-        };
+        );
 
         // When
         let laps = race.convert_laps_to_string();
 
         // Then
-        assert_eq!(expected_laps, laps)
+        pretty_assertions::assert_eq!(expected_laps, laps)
     }
 }

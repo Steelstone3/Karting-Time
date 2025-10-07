@@ -1,6 +1,9 @@
 use crate::models::{
-    date::Date,
-    driver::{lap::Lap, race_information::RaceInformation, race_result::Race, session::Session},
+    date::RaceDate,
+    driver::session_information::{
+        lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
+        race_result::RaceResult, race_statistics::RaceStatistics, session::Session,
+    },
 };
 use serde::{Deserialize, Serialize};
 use std::f32;
@@ -19,27 +22,79 @@ pub struct RaceFile {
     pub car_used: Option<String>,
     pub championship: Option<String>,
     pub notes: Option<String>,
+    #[serde(skip)]
+    pub race_statistics: RaceStatistics,
 }
 
 impl RaceFile {
-    pub fn convert_to_race(&self) -> Race {
-        Race {
-            race_information: self.convert_to_race_information(),
-            laptimes: self.convert_laptimes_to_laps(),
-            is_deleting: Default::default(),
+    pub fn new(
+        track_name: &str,
+        laptimes: Vec<String>,
+        race_metadata: RaceMetadata,
+        session: Session,
+        date: RaceDate,
+    ) -> Self {
+        let mut session_type: Option<String> = None;
+        if !race_metadata.session_type.is_empty() {
+            session_type = Some(race_metadata.session_type)
         }
+
+        let mut track_conditions: Option<String> = None;
+        if !race_metadata.track_conditions.is_empty() {
+            track_conditions = Some(race_metadata.track_conditions)
+        }
+
+        let mut car_used: Option<String> = None;
+        if !race_metadata.car_used.is_empty() {
+            car_used = Some(race_metadata.car_used)
+        }
+
+        let mut championship: Option<String> = None;
+        if !race_metadata.championship.is_empty() {
+            championship = Some(race_metadata.championship)
+        }
+
+        let mut notes: Option<String> = None;
+        if !race_metadata.notes.is_empty() {
+            notes = Some(race_metadata.notes)
+        }
+
+        let mut race_file = Self {
+            laptimes,
+            day: date.day,
+            month: date.month,
+            year: date.year,
+            track_name: track_name.to_string(),
+            session_id: session.session_id,
+            race_position: session.race_position,
+            session_type,
+            track_conditions,
+            car_used,
+            championship,
+            notes,
+            race_statistics: Default::default(),
+        };
+
+        race_file.race_statistics = RaceStatistics::new(&race_file.convert_to_race_result());
+
+        race_file
     }
 
-    pub fn get_unique_race_information_file_identifier(race_file: &RaceFile) -> String {
-        format!(
-            "Date_{}_Track_{}_Session_{}",
-            Date {
-                day: race_file.day,
-                month: race_file.month,
-                year: race_file.year
-            },
-            race_file.track_name,
-            race_file.session_id
+    pub fn convert_to_race_results(race_files: Vec<RaceFile>) -> Vec<RaceResult> {
+        let mut race_results = vec![];
+
+        for race_file in race_files {
+            race_results.push(race_file.convert_to_race_result());
+        }
+
+        race_results
+    }
+
+    pub fn convert_to_race_result(&self) -> RaceResult {
+        RaceResult::new(
+            self.convert_to_race_information(),
+            self.convert_to_race_metadata(),
+            self.convert_laptimes_to_laps(),
         )
     }
 
@@ -48,16 +103,6 @@ impl RaceFile {
         if session_id == 0 {
             session_id = 1
         }
-
-        let session_type = match &self.session_type {
-            Some(session_type) => session_type,
-            None => "N/A",
-        };
-
-        let session_conditions = match &self.track_conditions {
-            Some(session_conditions) => session_conditions,
-            None => "N/A",
-        };
 
         let mut race_position = self.race_position;
         if race_position == 0 {
@@ -79,31 +124,14 @@ impl RaceFile {
             year = 2000
         }
 
-        RaceInformation {
-            track_name: self.track_name.clone(),
-            session: Session {
+        RaceInformation::new(
+            &self.track_name.clone(),
+            RaceDate { day, month, year },
+            Session {
                 session_id,
-                session_type: session_type.to_string(),
-                track_condition: session_conditions.to_string(),
                 race_position,
             },
-            car_used: match &self.car_used {
-                Some(car_used) => car_used,
-                None => "N/A",
-            }
-            .to_string(),
-            championship: match &self.championship {
-                Some(championship) => championship,
-                None => "",
-            }
-            .to_string(),
-            notes: match &self.notes {
-                Some(notes) => notes,
-                None => "",
-            }
-            .to_string(),
-            date: Date { day, month, year },
-        }
+        )
     }
 
     fn convert_laptimes_to_laps(&self) -> Vec<Lap> {
@@ -122,69 +150,90 @@ impl RaceFile {
 
         laps
     }
+
+    fn convert_to_race_metadata(&self) -> RaceMetadata {
+        let session_type = match &self.session_type {
+            Some(session_type) => session_type,
+            None => "N/A",
+        }
+        .to_string();
+
+        let track_conditions = match &self.track_conditions {
+            Some(session_conditions) => session_conditions,
+            None => "N/A",
+        }
+        .to_string();
+
+        let car_used = match &self.car_used {
+            Some(car_used) => car_used,
+            None => "N/A",
+        }
+        .to_string();
+
+        let championship = match &self.championship {
+            Some(championship) => championship,
+            None => "",
+        }
+        .to_string();
+
+        let notes = match &self.notes {
+            Some(notes) => notes,
+            None => "",
+        }
+        .to_string();
+
+        RaceMetadata {
+            session_type,
+            track_conditions,
+            car_used,
+            notes,
+            championship,
+        }
+    }
 }
 
 #[cfg(test)]
 mod race_file_should {
     use super::*;
-    use crate::{
-        data_models::race_file::RaceFile,
-        models::{date::Date, driver::race_information::RaceInformation},
-    };
+    use crate::{data_models::race_file::RaceFile, models::date::RaceDate};
 
     #[test]
     fn convert_to_race() {
         // Given
-        let expected_race = Race {
-            race_information: RaceInformation {
-                track_name: "Three Ponies".to_string(),
-                date: Date {
-                    day: 15,
-                    month: 10,
-                    year: 2024,
-                },
-                session: Session {
-                    session_id: 1,
-                    session_type: "N/A".to_string(),
-                    track_condition: "N/A".to_string(),
-                    race_position: 2,
-                },
-                car_used: "Kart".to_string(),
-                championship: "Championship".to_string(),
-                notes: "Notes".to_string(),
-            },
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 50.662,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 51.877,
-                },
-            ],
-            ..Default::default()
-        };
+        let expected_race = RaceResult::new(
+            RaceInformation::new(
+                "Three Ponies",
+                RaceDate::new(15, 10, 2024),
+                Session::new(1, 2),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                "Championship",
+                "Notes",
+            ),
+            vec![Lap::new(1, 50.662), Lap::new(2, 51.877)],
+        );
 
-        let race_file = RaceFile {
-            track_name: "Three Ponies".to_string(),
-            day: 15,
-            month: 10,
-            year: 2024,
-            session_id: 1,
-            race_position: 2,
-            car_used: Some("Kart".to_string()),
-            notes: Some("Notes".to_string()),
-            session_type: Some("N/A".to_string()),
-            track_conditions: Some("N/A".to_string()),
-            laptimes: vec!["50.662".to_string(), "51.877".to_string()],
-            championship: Some("Championship".to_string()),
-        };
+        let race_file = RaceFile::new(
+            "Three Ponies",
+            vec!["50.662".to_string(), "51.877".to_string()],
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                "Championship",
+                "Notes",
+            ),
+            Session::new(1, 2),
+            RaceDate::new(15, 10, 2024),
+        );
 
         // When
-        let race = race_file.convert_to_race();
+        let race = race_file.convert_to_race_result();
 
         // Then
-        assert_eq!(expected_race, race)
+        pretty_assertions::assert_eq!(expected_race, race)
     }
 }

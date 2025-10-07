@@ -24,123 +24,78 @@ impl DriverProfile {
 #[cfg(test)]
 mod sort_races_should {
     use crate::models::{
-        date::Date,
+        date::RaceDate,
         driver::{
-            driver_profile::DriverProfile, lap::Lap, race_information::RaceInformation,
-            race_result::Race, session::Session,
+            driver_profile::DriverProfile,
+            session_information::{
+                lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
+                race_result::RaceResult, session::Session,
+            },
         },
     };
 
     #[test]
     fn sort_races() {
         // Given
-        let race_1 = Race {
-            race_information: RaceInformation {
-                track_name: "Three Ponies".to_string(),
-                date: Date {
-                    day: 15,
-                    month: 10,
-                    year: 2024,
-                },
-                session: Session {
-                    session_id: 1,
-                    session_type: "N/A".to_string(),
-                    track_condition: "N/A".to_string(),
-                    race_position: 2,
-                    ..Default::default()
-                },
-                car_used: "Kart".to_string(),
-                championship: "Championship".to_string(),
-                notes: Default::default(),
-            },
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 50.662,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 51.877,
-                },
-            ],
-            ..Default::default()
-        };
+        let race_1 = RaceResult::new(
+            RaceInformation::new(
+                "Three Ponies",
+                RaceDate::new(15, 10, 2024),
+                Session::new(1, 2),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                "Championship",
+                Default::default(),
+            ),
+            vec![Lap::new(1, 50.662), Lap::new(2, 51.877)],
+        );
 
-        let race_2 = Race {
-            race_information: RaceInformation {
-                track_name: "Three Ponies".to_string(),
-                date: Date {
-                    day: 15,
-                    month: 10,
-                    year: 2024,
-                },
-                session: Session {
-                    session_id: 2,
-                    session_type: "N/A".to_string(),
-                    track_condition: "N/A".to_string(),
-                    race_position: 1,
-                    ..Default::default()
-                },
-                car_used: "Kart".to_string(),
-                championship: "Championship".to_string(),
-                notes: Default::default(),
-            },
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 50.723,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 51.956,
-                },
-            ],
-            ..Default::default()
-        };
+        let race_2 = RaceResult::new(
+            RaceInformation::new(
+                "Three Ponies",
+                RaceDate::new(15, 10, 2024),
+                Session::new(2, 1),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                "Championship",
+                Default::default(),
+            ),
+            vec![Lap::new(1, 50.723), Lap::new(2, 51.956)],
+        );
 
-        let race_3 = Race {
-            race_information: RaceInformation {
-                track_name: "Trafford Stadium".to_string(),
-                date: Date {
-                    day: 17,
-                    month: 10,
-                    year: 2024,
-                },
-                session: Session {
-                    session_id: 1,
-                    session_type: "N/A".to_string(),
-                    track_condition: "N/A".to_string(),
-                    race_position: 1,
-                    ..Default::default()
-                },
-                car_used: "Kart".to_string(),
-                championship: Default::default(),
-                notes: Default::default(),
-            },
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 30.723,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 31.956,
-                },
-            ],
-            ..Default::default()
-        };
+        let race_3 = RaceResult::new(
+            RaceInformation::new(
+                "Trafford Stadium",
+                RaceDate::new(17, 10, 2024),
+                Session::new(1, 1),
+            ),
+            RaceMetadata::new(
+                Default::default(),
+                Default::default(),
+                "Kart",
+                Default::default(),
+                Default::default(),
+            ),
+            vec![Lap::new(1, 30.723), Lap::new(2, 31.956)],
+        );
 
-        let mut driver_profile = DriverProfile {
-            name: "Karl Chadwick".to_string(),
-            races: vec![race_1.clone(), race_2.clone(), race_3.clone()],
-        };
+        let mut driver_profile = DriverProfile::new(
+            "Karl Chadwick",
+            vec![race_1.clone(), race_2.clone(), race_3.clone()],
+        );
 
         // When
         driver_profile.sort_races();
 
         // Then
-        assert_eq!(race_3.clone(), driver_profile.races[0]);
-        assert_eq!(race_1.clone(), driver_profile.races[1]);
-        assert_eq!(race_2.clone(), driver_profile.races[2]);
+        pretty_assertions::assert_eq!(race_3.clone(), driver_profile.races[0]);
+        pretty_assertions::assert_eq!(race_1.clone(), driver_profile.races[1]);
+        pretty_assertions::assert_eq!(race_2.clone(), driver_profile.races[2]);
     }
 }

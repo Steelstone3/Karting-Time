@@ -1,10 +1,8 @@
-use crate::models::driver::race_result::Race;
+use crate::models::driver::session_information::race_result::RaceResult;
 use iced::widget::text_editor::{self, Action, Edit};
-use serde::{Deserialize, Serialize};
 
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Default, Debug)]
 pub struct RaceEditor {
-    #[serde(skip)]
     pub text_editor: text_editor::Content,
 }
 
@@ -34,7 +32,7 @@ impl RaceEditor {
             .perform(Action::Edit(Edit::Paste("".to_string().into())));
     }
 
-    pub fn paste_laptimes(&mut self, race: &Race) {
+    pub fn paste_laptimes(&mut self, race: &RaceResult) {
         self.text_editor.perform(Action::Edit(Edit::Paste(
             race.convert_laps_to_string().into(),
         )));
@@ -43,8 +41,9 @@ impl RaceEditor {
 
 #[cfg(test)]
 mod race_editor_should {
+    use crate::models::driver::session_information::lap::Lap;
+
     use super::*;
-    use crate::models::driver::lap::Lap;
 
     #[test]
     fn clone() {
@@ -57,7 +56,7 @@ mod race_editor_should {
         let race_editor = expected_race_editor.clone();
 
         // Then
-        assert_eq!(expected_race_editor, race_editor)
+        pretty_assertions::assert_eq!(expected_race_editor, race_editor)
     }
 
     #[test]
@@ -75,7 +74,7 @@ mod race_editor_should {
         let text = race_editor.get_text_from_text_editor();
 
         // Then
-        assert_eq!(expected_text + "\n", text)
+        pretty_assertions::assert_eq!(expected_text + "\n", text)
     }
 
     #[test]
@@ -93,25 +92,17 @@ mod race_editor_should {
         race_editor.clear_text_editor();
 
         // Then
-        assert_eq!(expected_text, race_editor.text_editor.text())
+        pretty_assertions::assert_eq!(expected_text, race_editor.text_editor.text())
     }
 
     #[test]
     fn paste_laptimes() {
         // Given
-        let race = Race {
-            laptimes: vec![
-                Lap {
-                    lap_number: 1,
-                    time: 40.965,
-                },
-                Lap {
-                    lap_number: 2,
-                    time: 41.875,
-                },
-            ],
-            ..Default::default()
-        };
+        let race = RaceResult::new(
+            Default::default(),
+            Default::default(),
+            vec![Lap::new(1, 40.965), Lap::new(2, 41.875)],
+        );
 
         let mut race_editor = RaceEditor {
             text_editor: Default::default(),
@@ -120,6 +111,6 @@ mod race_editor_should {
         race_editor.paste_laptimes(&race);
 
         // Then
-        assert_eq!("40.965\n41.875\n", race_editor.text_editor.text())
+        pretty_assertions::assert_eq!("40.965\n41.875\n", race_editor.text_editor.text())
     }
 }
