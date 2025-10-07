@@ -27,7 +27,6 @@ pub struct RaceFile {
 }
 
 impl RaceFile {
-    #[allow(dead_code)]
     pub fn new(
         track_name: &str,
         laptimes: Vec<String>,
@@ -76,15 +75,9 @@ impl RaceFile {
             race_statistics: Default::default(),
         };
 
-        race_file.with_race_statistics();
+        race_file.race_statistics = RaceStatistics::new(&race_file.convert_to_race_result());
 
         race_file
-    }
-
-    pub fn with_race_statistics(&mut self) {
-        let race_result = self.convert_to_race_result();
-
-        self.race_statistics = RaceStatistics::new(&race_result);
     }
 
     pub fn convert_to_race_results(race_files: Vec<RaceFile>) -> Vec<RaceResult> {
