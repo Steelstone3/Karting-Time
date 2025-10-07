@@ -3,7 +3,7 @@ use crate::{
     controllers::file::file_picker::{
         save_file_location, save_folder_location, select_file_to_load, select_files_to_load,
     },
-    models::application::karting_time::KartingTime,
+    models::{application::karting_time::KartingTime, driver::driver_profile::DriverProfile},
 };
 
 impl KartingTime {
@@ -13,7 +13,8 @@ impl KartingTime {
             Message::SelectedTabChanged(tab_identifier) => self.switch_tab(tab_identifier),
             Message::FileNew => self.file_new(),
             Message::ImportRaces => {
-                self.import_race(select_files_to_load());
+                self.import_races(select_files_to_load());
+                DriverProfile::new_from_self(self.driver_profile.clone());
                 self.driver_profile.sort_races();
                 self.driver_profile.update_filtering();
             }
@@ -22,6 +23,7 @@ impl KartingTime {
             Message::SaveApplication => self.save_application(&save_file_location()),
             Message::LoadApplication => {
                 self.load_application(&select_file_to_load());
+                DriverProfile::new_from_self(self.driver_profile.clone());
                 self.driver_profile.sort_races();
                 self.driver_profile.update_filtering();
             }

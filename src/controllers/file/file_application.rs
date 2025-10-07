@@ -2,7 +2,7 @@ use super::file_io::{
     read_application_state, read_race_file, upsert_application_state, upsert_races,
 };
 use crate::{
-    controllers::file::file_io::upsert_html_races, models::application::karting_time::KartingTime,
+    controllers::file::file_io::upsert_html_races, models::{application::karting_time::KartingTime, driver::session_information::race_result::RaceResult},
 };
 
 impl KartingTime {
@@ -18,14 +18,14 @@ impl KartingTime {
         upsert_html_races(file_location, &self.driver_profile);
     }
 
-    pub fn import_race(&mut self, file_names: Vec<String>) {
+    pub fn import_races(&mut self, file_names: Vec<String>) {
         for file_name in file_names {
             let race_file = read_race_file(&file_name);
 
             let race = race_file.convert_to_race_result();
 
             if race.is_unique_identifer(&self.driver_profile.races) {
-                self.driver_profile.races.push(race);
+                self.driver_profile.races.push(RaceResult::new_from_self(race));
             }
         }
     }
@@ -115,7 +115,7 @@ mod file_application_should {
         let mut karting_time = KartingTime::default();
 
         // When
-        karting_time.import_race(vec!["".to_string()]);
+        karting_time.import_races(vec!["".to_string()]);
 
         // Then
         pretty_assertions::assert_eq!(expected_race, karting_time.driver_profile.races[0]);
@@ -150,7 +150,7 @@ mod file_application_should {
 
         upsert_races(file_location, &races);
 
-        karting_time.import_race(vec![file_name]);
+        karting_time.import_races(vec![file_name]);
 
         // Then
         pretty_assertions::assert_eq!(races[0], karting_time.driver_profile.races[0]);

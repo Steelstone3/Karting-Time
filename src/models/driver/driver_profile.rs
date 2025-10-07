@@ -17,13 +17,31 @@ pub struct DriverProfile {
 
 impl DriverProfile {
     pub fn new(name: &str, races: Vec<RaceResult>) -> Self {
-        Self {
+        let mut driver_profile = Self {
             name: name.to_string(),
             new_race: Default::default(),
             races: races.clone(),
             filter: Filter::new_initial_state(races.clone()),
-            profile_statistics: ProfileStatistics::new(races.clone()),
-        }
+            profile_statistics: Default::default(),
+        };
+
+        driver_profile.profile_statistics = ProfileStatistics::new(races.clone());
+
+        driver_profile
+    }
+
+    pub fn new_from_self(driver_profile: DriverProfile) -> Self {
+        let mut driver_profile = Self {
+            name: driver_profile.name,
+            new_race: Default::default(),
+            races: driver_profile.races.clone(),
+            filter: Filter::new_initial_state(driver_profile.races.clone()),
+            profile_statistics: Default::default(),
+        };
+        
+        driver_profile.profile_statistics = ProfileStatistics::new(driver_profile.races.clone());
+        
+        driver_profile
     }
 
     #[allow(dead_code)]
@@ -33,16 +51,6 @@ impl DriverProfile {
 
         driver_profile
     }
-
-    // pub fn new_from_self(driver_profile: DriverProfile) -> Self {
-    //     Self {
-    //         name: driver_profile.name,
-    //         new_race: Default::default(),
-    //         races: driver_profile.races.clone(),
-    //         filter: Filter::new_initial_state(driver_profile.races.clone()),
-    //         profile_statistics: ProfileStatistics::new(driver_profile.races.clone()),
-    //     }
-    // }
 
     pub fn convert_to_driver_profile_file(&self) -> DriverProfileFile {
         let mut race_files = vec![];
