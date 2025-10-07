@@ -2,7 +2,11 @@ use super::file_io::{
     read_application_state, read_race_file, upsert_application_state, upsert_races,
 };
 use crate::{
-    controllers::file::file_io::upsert_html_races, models::{application::karting_time::KartingTime, driver::session_information::race_result::RaceResult},
+    controllers::file::file_io::upsert_html_races,
+    models::{
+        application::karting_time::KartingTime,
+        driver::session_information::race_result::RaceResult,
+    },
 };
 
 impl KartingTime {
@@ -25,7 +29,9 @@ impl KartingTime {
             let race = race_file.convert_to_race_result();
 
             if race.is_unique_identifer(&self.driver_profile.races) {
-                self.driver_profile.races.push(RaceResult::new_from_self(race));
+                self.driver_profile
+                    .races
+                    .push(RaceResult::new_from_self(race));
             }
         }
     }

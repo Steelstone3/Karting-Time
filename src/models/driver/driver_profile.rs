@@ -38,9 +38,9 @@ impl DriverProfile {
             filter: Filter::new_initial_state(driver_profile.races.clone()),
             profile_statistics: Default::default(),
         };
-        
+
         driver_profile.profile_statistics = ProfileStatistics::new(driver_profile.races.clone());
-        
+
         driver_profile
     }
 
