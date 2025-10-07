@@ -4,8 +4,7 @@ use super::file_io::{
 use crate::{
     controllers::file::file_io::upsert_html_races,
     models::{
-        application::karting_time::KartingTime,
-        driver::session_information::race_result::RaceResult,
+        application::karting_time::KartingTime, driver::driver_profile::DriverProfile,
     },
 };
 
@@ -31,9 +30,11 @@ impl KartingTime {
             if race.is_unique_identifer(&self.driver_profile.races) {
                 self.driver_profile
                     .races
-                    .push(RaceResult::new_from_self(race));
+                    .push(race);
             }
         }
+
+        self.driver_profile = DriverProfile::new_from_self(self.driver_profile.clone());
     }
 
     pub fn save_application(&self, file_name: &str) {
