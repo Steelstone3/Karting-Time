@@ -2,8 +2,7 @@ use super::file_io::{
     read_application_state, read_race_file, upsert_application_state, upsert_races,
 };
 use crate::{
-    controllers::file::file_io::upsert_html_races,
-    models::application::karting_time::KartingTime,
+    controllers::file::file_io::upsert_html_races, models::application::karting_time::KartingTime,
 };
 
 impl KartingTime {
