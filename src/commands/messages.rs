@@ -5,7 +5,8 @@ use iced::widget::text_editor;
 pub enum Message {
     MenuBar,
     FileNew,
-    ImportRaces,
+    ImportRacesRequested,
+    // ImportRacesCompleted(Option<Vec<String>>),
     ExportRaces,
     ExportHtmlRaces,
     SaveApplication,

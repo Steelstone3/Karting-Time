@@ -14,14 +14,15 @@ impl RaceResult {
         true
     }
 
-    pub fn replace_existing_race(&self, races: &[RaceResult]) -> Vec<RaceResult> {
+    pub fn replace_existing_race(&mut self, races: &[RaceResult]) -> Vec<RaceResult> {
         let mut updated_races = races.to_owned();
 
         for i in 0..updated_races.len() {
             if self.race_information.unique_race_identifier
                 == updated_races[i].race_information.unique_race_identifier
             {
-                updated_races[i] = RaceResult::new_from_self(self.clone());
+                self.update_race_result();
+                updated_races[i] = self.clone();
                 return updated_races;
             }
         }
@@ -88,7 +89,7 @@ mod update_existing_race {
     #[test]
     fn replace_existing_race() {
         // Given
-        let updated_race = RaceResult::new(
+        let mut updated_race = RaceResult::new(
             RaceInformation::new(
                 "Trafford Park",
                 RaceDate::new(15, 11, 2025),

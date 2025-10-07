@@ -1,6 +1,4 @@
-use crate::models::driver::{
-    driver_profile::DriverProfile, session_information::race_result::RaceResult,
-};
+use crate::models::driver::driver_profile::DriverProfile;
 
 impl DriverProfile {
     pub fn upsert_race(&mut self) {
@@ -9,9 +7,9 @@ impl DriverProfile {
                 self.session_type_default();
                 self.track_condition_default();
                 self.car_used_default();
+                self.new_race.update_race_result();
 
-                self.races
-                    .push(RaceResult::new_from_self(self.new_race.clone()));
+                self.races.push(self.new_race.clone());
             }
             false => {
                 self.races = self.new_race.replace_existing_race(&self.races);

@@ -12,11 +12,17 @@ impl KartingTime {
             Message::MenuBar => {}
             Message::SelectedTabChanged(tab_identifier) => self.switch_tab(tab_identifier),
             Message::FileNew => self.file_new(),
-            Message::ImportRaces => {
+            Message::ImportRacesRequested => {
                 self.import_races(select_files_to_load());
                 self.driver_profile.sort_races();
                 self.driver_profile.update_filtering();
             }
+            // Message::ImportRacesCompleted(file_paths) => {
+            //     match file_paths {
+            //         Some(_) => {}
+            //         None => {}
+            //     }
+            // }
             Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::ExportHtmlRaces => self.export_html_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
