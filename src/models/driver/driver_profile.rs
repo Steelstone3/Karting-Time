@@ -34,15 +34,15 @@ impl DriverProfile {
         driver_profile
     }
 
-    pub fn new_from_self(driver_profile: DriverProfile) -> Self {
-        Self {
-            name: driver_profile.name,
-            new_race: Default::default(),
-            races: driver_profile.races.clone(),
-            filter: Filter::new_initial_state(driver_profile.races.clone()),
-            profile_statistics: ProfileStatistics::new(driver_profile.races.clone()),
-        }
-    }
+    // pub fn new_from_self(driver_profile: DriverProfile) -> Self {
+    //     Self {
+    //         name: driver_profile.name,
+    //         new_race: Default::default(),
+    //         races: driver_profile.races.clone(),
+    //         filter: Filter::new_initial_state(driver_profile.races.clone()),
+    //         profile_statistics: ProfileStatistics::new(driver_profile.races.clone()),
+    //     }
+    // }
 
     pub fn convert_to_driver_profile_file(&self) -> DriverProfileFile {
         let mut race_files = vec![];
