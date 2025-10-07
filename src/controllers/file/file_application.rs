@@ -3,7 +3,7 @@ use super::file_io::{
 };
 use crate::{
     controllers::file::file_io::upsert_html_races,
-    models::{application::karting_time::KartingTime, driver::driver_profile::DriverProfile},
+    models::application::karting_time::KartingTime,
 };
 
 impl KartingTime {
@@ -30,7 +30,7 @@ impl KartingTime {
             }
         }
 
-        self.driver_profile = DriverProfile::new_from_self(self.driver_profile.clone());
+        self.driver_profile.update_driver_profile();
     }
 
     pub fn save_application(&self, file_name: &str) {

@@ -31,19 +31,9 @@ impl DriverProfile {
         driver_profile
     }
 
-    pub fn new_from_self(driver_profile: DriverProfile) -> Self {
-        let mut driver_profile = Self {
-            name: driver_profile.name,
-            new_race: driver_profile.new_race,
-            races: driver_profile.races.clone(),
-            filter: Default::default(),
-            profile_statistics: Default::default(),
-        };
-
-        driver_profile.filter = Filter::new_initial_state(driver_profile.races.clone());
-        driver_profile.profile_statistics = ProfileStatistics::new(driver_profile.races.clone());
-
-        driver_profile
+    pub fn update_driver_profile(&mut self) {
+        self.filter = Filter::new_initial_state(self.races.clone());
+        self.profile_statistics = ProfileStatistics::new(self.races.clone());
     }
 
     #[allow(dead_code)]
