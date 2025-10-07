@@ -3,9 +3,7 @@ use super::file_io::{
 };
 use crate::{
     controllers::file::file_io::upsert_html_races,
-    models::{
-        application::karting_time::KartingTime, driver::driver_profile::DriverProfile,
-    },
+    models::{application::karting_time::KartingTime, driver::driver_profile::DriverProfile},
 };
 
 impl KartingTime {
@@ -28,9 +26,7 @@ impl KartingTime {
             let race = race_file.convert_to_race_result();
 
             if race.is_unique_identifer(&self.driver_profile.races) {
-                self.driver_profile
-                    .races
-                    .push(race);
+                self.driver_profile.races.push(race);
             }
         }
 
