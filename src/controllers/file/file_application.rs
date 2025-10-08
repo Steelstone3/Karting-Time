@@ -10,12 +10,12 @@ impl KartingTime {
         *self = KartingTime::default();
     }
 
-    pub fn export_races(&self, file_location: &str) {
-        upsert_races(file_location, &self.driver_profile.races);
+    pub fn export_races(&self, folder_location: &str) {
+        upsert_races(folder_location, &self.driver_profile.races);
     }
 
-    pub fn export_html_races(&self, file_location: &str) {
-        upsert_html_races(file_location, &self.driver_profile);
+    pub fn export_html_races(&self, folder_location: &str) {
+        upsert_html_races(folder_location, &self.driver_profile);
     }
 
     pub fn import_races(&mut self, file_names: Vec<String>) {
@@ -32,10 +32,10 @@ impl KartingTime {
         self.driver_profile.update_driver_profile();
     }
 
-    pub fn save_application(&self, file_name: &str) {
+    pub fn save_application(&self, file_path: &str) {
         let karting_time_file = self.convert_to_karting_time_file();
 
-        upsert_application_state(file_name, &karting_time_file);
+        upsert_application_state(file_path, &karting_time_file);
     }
 
     pub fn load_application(&mut self, file_name: &str) {

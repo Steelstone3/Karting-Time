@@ -1,5 +1,5 @@
 use iced::Task;
-use rfd::{AsyncFileDialog, FileDialog};
+use rfd::AsyncFileDialog;
 
 pub fn select_file_to_load() -> Task<Option<String>> {
     Task::future(async {
@@ -27,26 +27,45 @@ pub fn select_files_to_load() -> Task<Option<Vec<String>>> {
     })
 }
 
-pub fn save_file_location() -> String {
-    let file = FileDialog::new().add_filter("toml", &["toml"]).save_file();
+// pub fn save_file_location() -> String {
+//     let file = FileDialog::new().add_filter("toml", &["toml"]).save_file();
 
-    match file {
-        Some(path_buf) => match path_buf.into_os_string().into_string() {
-            Ok(file_path) => file_path.to_string(),
-            Err(_) => "".to_string(),
-        },
-        None => "".to_string(),
-    }
+//     match file {
+//         Some(path_buf) => match path_buf.into_os_string().into_string() {
+//             Ok(file_path) => file_path.to_string(),
+//             Err(_) => "".to_string(),
+//         },
+//         None => "".to_string(),
+//     }
+// }
+
+pub fn save_file_location() -> Task<Option<String>> {
+    Task::future(async {
+        let file = AsyncFileDialog::new()
+            .add_filter("toml", &["toml"])
+            .save_file()
+            .await;
+
+        file.and_then(|handle| handle.path().to_str().map(|s| s.to_string()))
+    })
 }
 
-pub fn save_folder_location() -> String {
-    let file = FileDialog::new().pick_folder();
+// pub fn save_folder_location() -> String {
+//     let file = FileDialog::new().pick_folder();
 
-    match file {
-        Some(path_buf) => match path_buf.into_os_string().into_string() {
-            Ok(file_path) => file_path.to_string(),
-            Err(_) => "".to_string(),
-        },
-        None => "".to_string(),
-    }
+//     match file {
+//         Some(path_buf) => match path_buf.into_os_string().into_string() {
+//             Ok(file_path) => file_path.to_string(),
+//             Err(_) => "".to_string(),
+//         },
+//         None => "".to_string(),
+//     }
+// }
+
+pub fn save_folder_location() -> Task<Option<String>> {
+    Task::future(async {
+        let folder = AsyncFileDialog::new().pick_folder().await;
+
+        folder.and_then(|handle| handle.path().to_str().map(|s| s.to_string()))
+    })
 }

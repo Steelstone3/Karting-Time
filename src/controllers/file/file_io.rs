@@ -9,13 +9,13 @@ use std::io::{Read, Write};
 
 const FILE_ERROR: &str = "failed to create file";
 
-pub fn upsert_races(file_location: &str, races: &Vec<RaceResult>) {
+pub fn upsert_races(folder_location: &str, races: &Vec<RaceResult>) {
     for race in races {
         let race_file = race.convert_to_race_file();
 
         let file_name = format!(
             "{}/{}.toml",
-            file_location, race.race_information.unique_race_identifier
+            folder_location, race.race_information.unique_race_identifier
         );
 
         let mut file = match File::create(file_name) {
@@ -32,10 +32,10 @@ pub fn upsert_races(file_location: &str, races: &Vec<RaceResult>) {
     }
 }
 
-pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
+pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) {
     let markup: Markup = convert_to_html(&driver_profile.convert_to_driver_profile_file());
 
-    let file_name = format!("{}/{}.html", file_location, &driver_profile.name);
+    let file_name = format!("{}/{}.html", folder_location, &driver_profile.name);
 
     let mut file = match File::create(file_name) {
         Ok(file) => file,
@@ -58,8 +58,8 @@ pub fn read_race_file(file_name: &str) -> RaceFile {
     toml::from_str(&contents).unwrap_or_default()
 }
 
-pub fn upsert_application_state(file_name: &str, karting_time: &KartingTimeFile) {
-    let mut file = match File::create(file_name) {
+pub fn upsert_application_state(file_path: &str, karting_time: &KartingTimeFile) {
+    let mut file = match File::create(file_path) {
         Ok(file) => file,
         Err(_) => {
             println!("{FILE_ERROR}");

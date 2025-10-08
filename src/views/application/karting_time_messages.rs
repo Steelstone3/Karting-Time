@@ -31,16 +31,32 @@ impl KartingTime {
                 }
                 Task::none()
             }
-            Message::ExportRaces => {
-                self.export_races(&save_folder_location());
+            Message::ExportRacesRequested => {
+                save_folder_location().map(Message::ExportRacesCompleted)
+            }
+            Message::ExportRacesCompleted(folder_location) => {
+                if let Some(folder_location) = folder_location {
+                    self.export_races(&folder_location)
+                }
                 Task::none()
             }
-            Message::ExportHtmlRaces => {
-                self.export_html_races(&save_folder_location());
+            Message::ExportHtmlRacesRequested => {
+                save_folder_location().map(Message::ExportHtmlRacesCompleted)
+            }
+            Message::ExportHtmlRacesCompleted(folder_location) => {
+                match folder_location {
+                    Some(folder_location) => self.export_html_races(&folder_location),
+                    None => todo!(),
+                }
                 Task::none()
             }
-            Message::SaveApplication => {
-                self.save_application(&save_file_location());
+            Message::SaveApplicationRequested => {
+                save_file_location().map(Message::SaveApplicationCompleted)
+            }
+            Message::SaveApplicationCompleted(file_path) => {
+                if let Some(file_path) = file_path {
+                    self.save_application(&file_path);
+                }
                 Task::none()
             }
             Message::LoadApplicationRequested => {
