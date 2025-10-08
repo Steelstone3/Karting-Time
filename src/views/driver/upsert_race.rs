@@ -198,7 +198,7 @@ impl KartingTime {
         if self
             .driver_profile
             .new_race
-            .is_unique_identifer(&self.driver_profile.races)
+            .is_unique_identifier(&self.driver_profile.races)
             && !self
                 .driver_profile
                 .new_race

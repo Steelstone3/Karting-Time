@@ -131,6 +131,7 @@ mod laptime_converter_should {
         // Given
         let expected_total_times = "\nTotal Time 5: 2:04.27\nTotal Time 10: 4:14.42".to_string();
 
+        // TODO AH Make a test fixture
         let race = RaceResult::new(
             Default::default(),
             Default::default(),
@@ -159,6 +160,7 @@ mod laptime_converter_should {
     pub fn convert_average_total_times_to_string() {
         // Given
         let expected_average_laps = "\nAverage Time 5: 24.85\nAverage Time 10: 25.44".to_string();
+        // TODO AH Make a test fixture
         let race = RaceResult::new(
             Default::default(),
             Default::default(),
@@ -184,7 +186,7 @@ mod laptime_converter_should {
     }
 
     #[test]
-    fn convet_hash_map() {
+    fn convert_hash_map() {
         // Given
         let expected_sorted_races = vec![(5, 230.0), (10, 550.0), (15, 770.0)];
         let mut races_hash_map = HashMap::new();
@@ -205,6 +207,7 @@ mod laptime_converter_should {
         let expected_laps =
             "25.555\n26.657\n24.585\n25.475\n24.899\n25.345\n26.123\n24.879\n26.341\n24.563\n"
                 .to_string();
+        // TODO AH make a test fixture
         let race = RaceResult::new(
             Default::default(),
             Default::default(),

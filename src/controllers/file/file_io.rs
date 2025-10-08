@@ -8,16 +8,14 @@ use std::fs::File;
 use std::io::{Read, Write};
 
 const FILE_ERROR: &str = "failed to create file";
-const CONVERT_ERROR: &str = "failed to convert to toml";
-const WRITE_ERROR: &str = "failed to write to file";
 
-pub fn upsert_races(file_location: &str, races: &Vec<RaceResult>) {
+pub fn upsert_races(folder_location: &str, races: &Vec<RaceResult>) {
     for race in races {
         let race_file = race.convert_to_race_file();
 
         let file_name = format!(
             "{}/{}.toml",
-            file_location, race.race_information.unique_race_identifier
+            folder_location, race.race_information.unique_race_identifier
         );
 
         let mut file = match File::create(file_name) {
@@ -28,28 +26,16 @@ pub fn upsert_races(file_location: &str, races: &Vec<RaceResult>) {
             }
         };
 
-        let toml = match toml::to_string_pretty(&race_file) {
-            Ok(toml) => toml,
-            Err(_) => {
-                println!("{CONVERT_ERROR}");
-                return;
-            }
-        };
+        let toml = toml::to_string_pretty(&race_file).unwrap_or_default();
 
-        match write!(file, "{toml}") {
-            Ok(_) => (),
-            Err(_) => {
-                println!("{WRITE_ERROR}");
-                return;
-            }
-        }
+        write!(file, "{toml}").unwrap_or_default()
     }
 }
 
-pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
+pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) {
     let markup: Markup = convert_to_html(&driver_profile.convert_to_driver_profile_file());
 
-    let file_name = format!("{}/{}.html", file_location, &driver_profile.name);
+    let file_name = format!("{}/{}.html", folder_location, &driver_profile.name);
 
     let mut file = match File::create(file_name) {
         Ok(file) => file,
@@ -59,12 +45,7 @@ pub fn upsert_html_races(file_location: &str, driver_profile: &DriverProfile) {
         }
     };
 
-    match write!(file, "{}", markup.into_string()) {
-        Ok(_) => (),
-        Err(_) => {
-            println!("{WRITE_ERROR}");
-        }
-    }
+    write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
 pub fn read_race_file(file_name: &str) -> RaceFile {
@@ -77,8 +58,8 @@ pub fn read_race_file(file_name: &str) -> RaceFile {
     toml::from_str(&contents).unwrap_or_default()
 }
 
-pub fn upsert_application_state(file_name: &str, karting_time: &KartingTimeFile) {
-    let mut file = match File::create(file_name) {
+pub fn upsert_application_state(file_path: &str, karting_time: &KartingTimeFile) {
+    let mut file = match File::create(file_path) {
         Ok(file) => file,
         Err(_) => {
             println!("{FILE_ERROR}");
@@ -86,20 +67,9 @@ pub fn upsert_application_state(file_name: &str, karting_time: &KartingTimeFile)
         }
     };
 
-    let toml = match toml::to_string_pretty(&karting_time) {
-        Ok(toml) => toml,
-        Err(_) => {
-            println!("{CONVERT_ERROR}");
-            "".to_string()
-        }
-    };
+    let toml = toml::to_string_pretty(&karting_time).unwrap_or_default();
 
-    match write!(file, "{toml}") {
-        Ok(file) => file,
-        Err(_) => {
-            println!("{WRITE_ERROR}");
-        }
-    }
+    write!(file, "{toml}").unwrap_or_default()
 }
 
 pub fn read_application_state(file_name: &str) -> KartingTimeFile {
@@ -141,6 +111,7 @@ mod file_integration_should {
     fn upsert_races_test_failed_to_create_file() {
         // Given
         let file_location = "/";
+        // TODO AH make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -156,15 +127,20 @@ mod file_integration_should {
             ),
             Default::default(),
         )];
+        let mut path = std::env::temp_dir();
+        path.push(
+            "nonexistent_dir/".to_string()
+                + &races[0].race_information.unique_race_identifier
+                + ".toml",
+        );
+        let file_name = path.to_str().unwrap();
 
         // When
+        let _guard = TestFileGuard::new(&file_name);
+
         upsert_races(file_location, &races);
 
         // Then
-        let file_name =
-            "/".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
-        let _guard = TestFileGuard::new(&file_name);
-
         assert!(fs::metadata(&file_name).is_err());
     }
 
@@ -172,6 +148,7 @@ mod file_integration_should {
     fn upsert_races_test() {
         // Given
         let file_location = ".";
+        // TODO AH Make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -207,13 +184,14 @@ mod file_integration_should {
         let _guard = TestFileGuard::new(&file_name);
 
         assert!(fs::metadata(&file_name).is_ok());
-        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+        assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
     }
 
     #[test]
     fn upsert_races_html_test_failed_to_create_file() {
         // Given
         let file_location = "/";
+        // TODO AH Make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -226,14 +204,16 @@ mod file_integration_should {
                 vec![Lap::new(1, 20.0)],
             )],
         );
+        let mut path = std::env::temp_dir();
+        path.push("nonexistent_dir/".to_string() + &format!("/{}.html", driver_profile.name));
+        let file_name = path.to_str().unwrap();
 
         // When
+        let _guard = TestFileGuard::new(&file_name);
+
         upsert_html_races(file_location, &driver_profile);
 
         // Then
-        let file_name = format!("/{}.html", driver_profile.name);
-        let _guard = TestFileGuard::new(&file_name);
-
         assert!(fs::metadata(&file_name).is_err());
     }
 
@@ -241,6 +221,7 @@ mod file_integration_should {
     fn upsert_races_html_test() {
         // Given
         let file_location = ".";
+        // TODO AH make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -253,20 +234,20 @@ mod file_integration_should {
                 vec![Lap::new(1, 20.0)],
             )],
         );
+        let file_name = format!("./{}.html", driver_profile.name);
 
         // When
+        let _guard = TestFileGuard::new(&file_name);
+
         upsert_html_races(file_location, &driver_profile);
 
         // Then
-        let file_name = format!("./{}.html", driver_profile.name);
-        let _guard = TestFileGuard::new(&file_name);
-
         assert!(fs::metadata(&file_name).is_ok());
-        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+        assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
     }
 
     #[test]
-    fn read_non_existant_race_file_test() {
+    fn read_non_existent_race_file_test() {
         // Given
         let expected_race_file = RaceFile::default();
 
@@ -373,7 +354,7 @@ mod file_integration_should {
     #[test]
     fn read_application_state_empty() {
         // Given
-        let file_name = "non_existant_file.toml";
+        let file_name = "non_existent_file.toml";
         let expected_application = KartingTimeFile::default();
 
         // When
@@ -388,7 +369,9 @@ mod file_integration_should {
     #[test]
     fn upsert_application_state_failed_to_create_file() {
         // Given
-        let file_name = "/karting_time_test_file_1.toml";
+        let mut path = std::env::temp_dir();
+        path.push("nonexistent_dir/".to_string() + "karting_time_test_file_1.toml");
+        let file_name = path.to_str().unwrap();
         let karting_time_file = KartingTimeFile::default();
 
         // When
@@ -413,7 +396,7 @@ mod file_integration_should {
 
         // Then
         assert!(fs::metadata(file_name).is_ok());
-        assert!(fs::metadata(file_name).unwrap().len() != 0);
+        assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
     }
 
     #[test]

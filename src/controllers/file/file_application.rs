@@ -10,12 +10,12 @@ impl KartingTime {
         *self = KartingTime::default();
     }
 
-    pub fn export_races(&self, file_location: &str) {
-        upsert_races(file_location, &self.driver_profile.races);
+    pub fn export_races(&self, folder_location: &str) {
+        upsert_races(folder_location, &self.driver_profile.races);
     }
 
-    pub fn export_html_races(&self, file_location: &str) {
-        upsert_html_races(file_location, &self.driver_profile);
+    pub fn export_html_races(&self, folder_location: &str) {
+        upsert_html_races(folder_location, &self.driver_profile);
     }
 
     pub fn import_races(&mut self, file_names: Vec<String>) {
@@ -24,7 +24,7 @@ impl KartingTime {
 
             let race = race_file.convert_to_race_result();
 
-            if race.is_unique_identifer(&self.driver_profile.races) {
+            if race.is_unique_identifier(&self.driver_profile.races) {
                 self.driver_profile.races.push(race);
             }
         }
@@ -32,10 +32,10 @@ impl KartingTime {
         self.driver_profile.update_driver_profile();
     }
 
-    pub fn save_application(&self, file_name: &str) {
+    pub fn save_application(&self, file_path: &str) {
         let karting_time_file = self.convert_to_karting_time_file();
 
-        upsert_application_state(file_name, &karting_time_file);
+        upsert_application_state(file_path, &karting_time_file);
     }
 
     pub fn load_application(&mut self, file_name: &str) {
@@ -95,7 +95,7 @@ mod file_application_should {
     }
 
     #[test]
-    fn export_races_hmtl_test() {
+    fn export_races_html_test() {
         // Given
         let file_location = ".";
         let karting_time = KartingTime::new(driver_profile_test_fixture());
@@ -107,11 +107,11 @@ mod file_application_should {
         let file_name = format!("./{}.html", &karting_time.driver_profile.name);
         let _guard = TestFileGuard::new(&file_name);
         assert!(fs::metadata(&file_name).is_ok());
-        assert!(fs::metadata(&file_name).unwrap().len() != 0);
+        assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
     }
 
     #[test]
-    fn import_non_existant_race_test() {
+    fn import_non_existent_race_test() {
         // Given
         let expected_race = RaceResult::default();
         let mut karting_time = KartingTime::default();
@@ -196,7 +196,7 @@ mod file_application_should {
             vec![
                 RaceResult::new(
                     RaceInformation::new(
-                        "Three Siters",
+                        "Three Sisters",
                         RaceDate::new(12, 12, 2025),
                         Session::new(1, 1),
                     ),

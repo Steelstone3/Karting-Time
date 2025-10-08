@@ -32,8 +32,16 @@ impl DriverProfile {
     }
 
     pub fn update_driver_profile(&mut self) {
-        self.filter = Filter::new_initial_state(self.races.clone());
-        self.profile_statistics = ProfileStatistics::new(self.races.clone());
+        self.filter = Filter::new(
+            self.filter.is_filter_visible,
+            &self.filter.track_query,
+            &self.filter.date_query,
+            &self.filter.car_used_query,
+            &self.filter.championship_query,
+            &self.filter.session_type_query,
+            self.filter.filtered_races.clone(),
+        );
+        self.profile_statistics = ProfileStatistics::new(self.filter.filtered_races.clone());
     }
 
     #[allow(dead_code)]
