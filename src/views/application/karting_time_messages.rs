@@ -17,20 +17,30 @@ impl KartingTime {
                 self.driver_profile.sort_races();
                 self.driver_profile.update_filtering();
             }
-            // Message::ImportRacesCompleted(file_paths) => {
-            //     match file_paths {
-            //         Some(_) => {}
-            //         None => {}
-            //     }
-            // }
+            Message::ImportRacesCompleted(file_paths) => match file_paths {
+                Some(file_paths) => {
+                    self.import_races(file_paths);
+                    self.driver_profile.sort_races();
+                    self.driver_profile.update_filtering();
+                }
+                None => {}
+            },
             Message::ExportRaces => self.export_races(&save_folder_location()),
             Message::ExportHtmlRaces => self.export_html_races(&save_folder_location()),
             Message::SaveApplication => self.save_application(&save_file_location()),
-            Message::LoadApplication => {
+            Message::LoadApplicationRequested => {
                 self.load_application(&select_file_to_load());
                 self.driver_profile.sort_races();
                 self.driver_profile.update_filtering();
             }
+            Message::LoadApplicationCompleted(file_path) => match file_path {
+                Some(file_path) => {
+                    self.load_application(&file_path);
+                    self.driver_profile.sort_races();
+                    self.driver_profile.update_filtering();
+                }
+                None => {}
+            },
             Message::ViewToggleTheme => self.switch_theme(),
             Message::ViewToggleFilter => {
                 self.toggle_filter();

@@ -20,7 +20,7 @@ impl KartingTime {
             )(
                 button("Load Driver Profile")
                     .width(Length::Fill)
-                    .on_press(Message::LoadApplication)
+                    .on_press(Message::LoadApplicationRequested)
             )(
                 button("Import Race")
                     .width(Length::Fill)
