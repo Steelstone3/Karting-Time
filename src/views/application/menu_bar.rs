@@ -16,23 +16,23 @@ impl KartingTime {
                 .on_press(Message::FileNew))(
                 button("Save Driver Profile")
                     .width(Length::Fill)
-                    .on_press(Message::SaveApplication)
+                    .on_press(Message::SaveApplicationRequested)
             )(
                 button("Load Driver Profile")
                     .width(Length::Fill)
-                    .on_press(Message::LoadApplication)
+                    .on_press(Message::LoadApplicationRequested)
             )(
                 button("Import Race")
                     .width(Length::Fill)
-                    .on_press(Message::ImportRaces)
+                    .on_press(Message::ImportRacesRequested)
             )(
                 button("Export Races")
                     .width(Length::Fill)
-                    .on_press(Message::ExportRaces)
+                    .on_press(Message::ExportRacesRequested)
             )(
                 button("Export HTML Races")
                     .width(Length::Fill)
-                    .on_press(Message::ExportHtmlRaces)
+                    .on_press(Message::ExportHtmlRacesRequested)
             )))
         )(
             button("View").on_press(Message::MenuBar),

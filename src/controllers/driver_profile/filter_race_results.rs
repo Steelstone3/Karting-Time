@@ -6,6 +6,8 @@ impl DriverProfile {
             true => self.apply_filters(),
             false => self.filter.filtered_races = self.races.clone(),
         }
+
+        self.update_driver_profile()
     }
 
     fn apply_filters(&mut self) {

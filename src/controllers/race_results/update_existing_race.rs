@@ -1,7 +1,7 @@
 use crate::models::driver::session_information::race_result::RaceResult;
 
 impl RaceResult {
-    pub fn is_unique_identifer(&self, races: &Vec<RaceResult>) -> bool {
+    pub fn is_unique_identifier(&self, races: &Vec<RaceResult>) -> bool {
         for race in races {
             if self.race_information.unique_race_identifier
                 == race.race_information.unique_race_identifier
@@ -14,14 +14,15 @@ impl RaceResult {
         true
     }
 
-    pub fn replace_existing_race(&self, races: &[RaceResult]) -> Vec<RaceResult> {
+    pub fn replace_existing_race(&mut self, races: &[RaceResult]) -> Vec<RaceResult> {
         let mut updated_races = races.to_owned();
 
         for i in 0..updated_races.len() {
             if self.race_information.unique_race_identifier
                 == updated_races[i].race_information.unique_race_identifier
             {
-                updated_races[i] = RaceResult::new_from_self(self.clone());
+                self.update_race_result();
+                updated_races[i] = self.clone();
                 return updated_races;
             }
         }
@@ -47,7 +48,7 @@ mod update_existing_race {
     #[case("Three Sisters", "Four Sisters", "Five Sisters", RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, 1, 1, 1, true)]
     #[case("Three Sisters", "Three Sisters", "Three Sisters", RaceDate{day:15,month:11,year:2025}, RaceDate{day:16,month:11,year:2025}, RaceDate{day:17,month:11,year:2025}, 1, 1, 1, true)]
     #[case("Three Sisters", "Three Sisters", "Three Sisters", RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, 1, 2, 3, true)]
-    fn is_unique_identifer(
+    fn is_unique_identifier(
         #[case] track_1: String,
         #[case] track_2: String,
         #[case] track_3: String,
@@ -79,7 +80,7 @@ mod update_existing_race {
         let races = vec![race_2, race_3];
 
         // When
-        let is_unique = race_1.is_unique_identifer(&races);
+        let is_unique = race_1.is_unique_identifier(&races);
 
         // Then
         pretty_assertions::assert_eq!(expected_is_unique, is_unique)
@@ -88,7 +89,7 @@ mod update_existing_race {
     #[test]
     fn replace_existing_race() {
         // Given
-        let updated_race = RaceResult::new(
+        let mut updated_race = RaceResult::new(
             RaceInformation::new(
                 "Trafford Park",
                 RaceDate::new(15, 11, 2025),

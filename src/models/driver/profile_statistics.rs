@@ -1,5 +1,5 @@
 use crate::{
-    controllers::driver_profile::profile_statisics::{
+    controllers::driver_profile::profile_statistics::{
         get_filtered_number_of_podiums, get_filtered_number_of_races,
         get_filtered_number_of_top_fives, get_filtered_number_of_top_tens,
         get_filtered_number_of_unique_cars, get_filtered_number_of_unique_tracks,
