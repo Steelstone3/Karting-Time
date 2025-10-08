@@ -64,7 +64,7 @@ mod race_information_should {
     #[test]
     fn get_unique_race_identifier() {
         // Given
-        let expected_race_identifer = "Date_2024-10-15_Track_Three Sisters_Session_1".to_string();
+        let expected_race_identifier = "Date_2024-10-15_Track_Three Sisters_Session_1".to_string();
         let race_information = RaceInformation::new(
             "Three Sisters",
             RaceDate {
@@ -80,7 +80,7 @@ mod race_information_should {
 
         // Then
         pretty_assertions::assert_eq!(
-            expected_race_identifer,
+            expected_race_identifier,
             race_information.unique_race_identifier
         )
     }

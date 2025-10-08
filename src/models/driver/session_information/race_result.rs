@@ -34,18 +34,8 @@ impl RaceResult {
         race_result
     }
 
-    pub fn new_from_self(race_result: RaceResult) -> Self {
-        let mut race_result = Self {
-            race_information: race_result.race_information,
-            race_metadata: race_result.race_metadata,
-            race_statistics: Default::default(),
-            laptimes: race_result.laptimes,
-            is_deleting: false,
-        };
-
-        race_result.race_statistics = RaceStatistics::new(&race_result);
-
-        race_result
+    pub fn update_race_result(&mut self) {
+        self.race_statistics = RaceStatistics::new(self);
     }
 
     pub fn convert_to_race_file(&self) -> RaceFile {
