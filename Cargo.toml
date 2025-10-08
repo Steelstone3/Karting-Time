@@ -44,6 +44,10 @@ rfd = "0"
 version = "0.13"
 features = ["tokio"]
 
+# [dependencies.tokio]
+# version = "1"
+# features = ["rt-multi-thread", "macros"]
+
 [dependencies.serde]
 version = "1"
 features = ["derive"]
