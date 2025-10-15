@@ -4,13 +4,13 @@ use crate::{
         application::karting_time::KartingTime,
         driver::session_information::race_result::RaceResult,
     },
-    table::Table,
 };
 use iced::{
     Element, Renderer, Theme,
     widget::{button, column, row, text},
 };
 use iced_aw::widgets::Card;
+use iced_table::Table;
 
 impl KartingTime {
     pub fn race_results_view(&self) -> iced::widget::Column<'_, Message> {
@@ -115,16 +115,22 @@ impl KartingTime {
     fn race_result_table(&self, race: &RaceResult) -> Element<'_, Message> {
         let mut table = Table::default();
 
-        table.add_headers(vec!["Lap".to_string(), "Time (s)".to_string()]);
+        table.add_headers(vec!["Lap", "Time (s)"]);
 
         let mut lap_number = 1;
 
         for time in &race.race_statistics.formatted_laps {
-            table.add_row(vec![lap_number.to_string(), time.to_string()]);
+            table.add_row(vec![&lap_number.to_string(), &time.to_string()]);
 
             lap_number += 1;
         }
 
-        Table::build(table, self.theme().palette().text, Some(200.0))
+        Table::build(
+            table,
+            Some(self.theme().palette().text),
+            Some(200.0),
+            None,
+            None,
+        )
     }
 }

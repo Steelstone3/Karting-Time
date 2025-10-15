@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "1.4.6"
+version = "1.4.7"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2024"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -32,6 +32,7 @@ pretty_assertions = "1"
 [dependencies]
 # Fixed Version
 iced_aw = "0.12"
+iced_table = { git = "https://github.com/Steelstone3/Iced-Table" }
 
 # Variable Version
 toml = "0"

@@ -4,13 +4,13 @@ use crate::{
         application::karting_time::KartingTime,
         driver::session_information::race_result::RaceResult,
     },
-    table::Table,
 };
 use iced::{
     Element,
     widget::{column, text},
 };
 use iced_aw::widgets::Card;
+use iced_table::Table;
 
 impl KartingTime {
     pub fn overview_race_results_view(&self) -> iced::widget::Column<'_, Message> {
@@ -38,39 +38,39 @@ impl KartingTime {
         let mut table = Table::default();
 
         table.add_headers(vec![
-            "Track Name".to_string(),
-            "Date".to_string(),
-            "Session".to_string(),
-            "Car Used".to_string(),
-            "Race Position".to_string(),
-            "Fastest Lap".to_string(),
-            "Average Lap 5".to_string(),
-            "Average Lap 10".to_string(),
-            "Average Lap 15".to_string(),
-            "Total Lap 5".to_string(),
-            "Total Lap 10".to_string(),
-            "Total Lap 15".to_string(),
-            "Total Time".to_string(),
+            "Track Name",
+            "Date",
+            "Session",
+            "Car Used",
+            "Race Position",
+            "Fastest Lap",
+            "Average Lap 5",
+            "Average Lap 10",
+            "Average Lap 15",
+            "Total Lap 5",
+            "Total Lap 10",
+            "Total Lap 15",
+            "Total Time",
         ]);
 
         for race in races {
             table.add_row(vec![
-                race.race_information.track_name.to_string(),
-                race.race_information.date.to_string(),
-                race.race_information.session.session_id.to_string(),
-                race.race_metadata.car_used.to_string(),
-                race.race_information.session.race_position.to_string(),
-                race.race_statistics.fastest_lap.clone(),
-                race.race_statistics.average_5.clone(),
-                race.race_statistics.average_10.clone(),
-                race.race_statistics.average_15.clone(),
-                race.race_statistics.total_5.clone(),
-                race.race_statistics.total_10.clone(),
-                race.race_statistics.total_15.clone(),
-                race.race_statistics.total_time.clone(),
+                &race.race_information.track_name,
+                &race.race_information.date.to_string(),
+                &race.race_information.session.session_id.to_string(),
+                &race.race_metadata.car_used,
+                &race.race_information.session.race_position.to_string(),
+                &race.race_statistics.fastest_lap,
+                &race.race_statistics.average_5,
+                &race.race_statistics.average_10,
+                &race.race_statistics.average_15,
+                &race.race_statistics.total_5,
+                &race.race_statistics.total_10,
+                &race.race_statistics.total_15,
+                &race.race_statistics.total_time,
             ]);
         }
 
-        Table::build(table, self.theme().palette().text, None)
+        Table::build(table, Some(self.theme().palette().text), None, None, None)
     }
 }
