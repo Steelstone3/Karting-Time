@@ -20,46 +20,16 @@ impl RaceResult {
         self.laptimes = converted_laptimes;
     }
 
-    pub fn convert_total_times_to_string(&self) -> String {
-        let mut total_times_string = String::new();
-
-        let sorted_total_times = Self::convert_hash_map(self.calculate_total_times());
-
-        for (lap_number, total_time) in sorted_total_times {
-            total_times_string += &format!(
-                "\nTotal Time {}: {}",
-                lap_number,
-                format_laptime(total_time)
-            );
-        }
-
-        total_times_string
-    }
-
-    pub fn convert_average_total_times_to_string(&self) -> String {
-        let mut total_times_string = String::new();
-
-        let sorted_average_times = Self::convert_hash_map(
-            self.calculate_average_total_times(&self.calculate_total_times()),
-        );
-
-        for (lap_number, average_time) in sorted_average_times {
-            total_times_string += &format!(
-                "\nAverage Time {}: {}",
-                lap_number,
-                format_laptime(average_time)
-            );
-        }
-
-        total_times_string
-    }
-
-    pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, f32)> {
+    pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, String)> {
+        // order by key
         let mut sorted: Vec<(usize, f32)> = hash_map.into_iter().collect();
-
         sorted.sort_by_key(|(k, _)| *k);
 
+        // format laptime
         sorted
+            .into_iter()
+            .map(|(k, v)| (k, format_laptime(v)))
+            .collect()
     }
 
     pub fn convert_laps_to_string(&self) -> String {
@@ -127,68 +97,13 @@ mod laptime_converter_should {
     }
 
     #[test]
-    fn convert_total_times_to_string() {
-        // Given
-        let expected_total_times = "\nTotal Time 5: 2:04.27\nTotal Time 10: 4:14.42".to_string();
-
-        // TODO AH Make a test fixture
-        let race = RaceResult::new(
-            Default::default(),
-            Default::default(),
-            vec![
-                Lap::new(1, 25.555),
-                Lap::new(1, 26.657),
-                Lap::new(1, 24.585),
-                Lap::new(1, 25.475),
-                Lap::new(1, 24.899),
-                Lap::new(1, 25.345),
-                Lap::new(1, 26.123),
-                Lap::new(1, 24.879),
-                Lap::new(1, 26.341),
-                Lap::new(1, 24.563),
-            ],
-        );
-
-        // When
-        let total_times = race.convert_total_times_to_string();
-
-        // Then
-        pretty_assertions::assert_eq!(expected_total_times, total_times)
-    }
-
-    #[test]
-    pub fn convert_average_total_times_to_string() {
-        // Given
-        let expected_average_laps = "\nAverage Time 5: 24.85\nAverage Time 10: 25.44".to_string();
-        // TODO AH Make a test fixture
-        let race = RaceResult::new(
-            Default::default(),
-            Default::default(),
-            vec![
-                Lap::new(1, 25.555),
-                Lap::new(1, 26.657),
-                Lap::new(1, 24.585),
-                Lap::new(1, 25.475),
-                Lap::new(1, 24.899),
-                Lap::new(1, 25.345),
-                Lap::new(1, 26.123),
-                Lap::new(1, 24.879),
-                Lap::new(1, 26.341),
-                Lap::new(1, 24.563),
-            ],
-        );
-
-        // When
-        let average_laps = race.convert_average_total_times_to_string();
-
-        // Then
-        pretty_assertions::assert_eq!(expected_average_laps, average_laps)
-    }
-
-    #[test]
     fn convert_hash_map() {
         // Given
-        let expected_sorted_races = vec![(5, 230.0), (10, 550.0), (15, 770.0)];
+        let expected_sorted_races = vec![
+            (5, "3:50.00".to_string()),
+            (10, "9:10.00".to_string()),
+            (15, "12:50.00".to_string()),
+        ];
         let mut races_hash_map = HashMap::new();
         races_hash_map.insert(15, 770.0);
         races_hash_map.insert(5, 230.0);

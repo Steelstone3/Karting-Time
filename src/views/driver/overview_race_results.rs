@@ -61,13 +61,12 @@ impl KartingTime {
                 &race.race_metadata.car_used,
                 &race.race_information.session.race_position.to_string(),
                 &race.race_statistics.fastest_lap,
-                &race.race_statistics.average_5,
-                &race.race_statistics.average_10,
-                &race.race_statistics.average_15,
-                &race.race_statistics.total_5,
-                &race.race_statistics.total_10,
-                &race.race_statistics.total_15,
-                &race.race_statistics.total_time,
+                &RaceResult::get_time_by_key(&race.race_statistics.average_times_table, 5),
+                &RaceResult::get_time_by_key(&race.race_statistics.average_times_table, 10),
+                &RaceResult::get_time_by_key(&race.race_statistics.total_times_table, 15),
+                &RaceResult::get_time_by_key(&race.race_statistics.total_times_table, 10),
+                &RaceResult::get_time_by_key(&race.race_statistics.total_times_table, 15),
+                &RaceResult::get_last_time(&race.race_statistics.total_times_table),
             ]);
         }
 

@@ -54,7 +54,7 @@ impl KartingTime {
             };
 
             let race_summary = format!(
-                "Session Type: {}\nTrack Conditions: {}\nCar Used: {}{}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n\nRace Pace:\n{}\n{}{}",
+                "Session Type: {}\nTrack Conditions: {}\nCar Used: {}{}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n{}",
                 race.race_metadata.session_type,
                 race.race_metadata.track_conditions,
                 race.race_metadata.car_used,
@@ -63,50 +63,26 @@ impl KartingTime {
                 race.race_statistics.number_of_laps,
                 race.race_statistics.fastest_lap,
                 race.race_statistics.average_105_lap,
-                race.race_statistics.total_times_summary,
-                race.race_statistics.average_times_summary,
                 notes_line
             )
             .to_string();
 
-            let footer = match race.is_deleting {
-                true => column!()
-                    .push(text(race_summary))
-                    .spacing(10)
-                    .padding(10)
-                    .push(
-                        row!()
-                            .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
-                                race.race_information.unique_race_identifier.clone(),
-                            )))
-                            .spacing(10)
-                            .padding(10)
-                            .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
-                                race.race_information.unique_race_identifier.clone(),
-                            )))
-                            .spacing(10)
-                            .padding(10),
-                    ),
-                false => column!()
-                    .push(text(race_summary))
-                    .spacing(10)
-                    .padding(10)
-                    .push(
-                        row!()
-                            .push(button("Replace").on_press(Message::ReplacePressed(
-                                race.race_information.unique_race_identifier.clone(),
-                            )))
-                            .spacing(10)
-                            .padding(10)
-                            .push(button("Delete").on_press(Message::DeletePressed(
-                                race.race_information.unique_race_identifier.clone(),
-                            )))
-                            .spacing(10)
-                            .padding(10),
-                    ),
-            };
+            let footer = create_footer(race, race_summary);
 
-            result_cards.push(Card::new(text(header), self.race_result_table(race)).foot(footer));
+            result_cards.push(
+                Card::new(
+                    text(header),
+                    column!(
+                        text!("Laptimes"),
+                        self.race_result_table(race),
+                        text!("Total Times"),
+                        self.total_time_table(race),
+                        text!("Average Times"),
+                        self.average_time_table(race)
+                    ),
+                )
+                .foot(footer),
+            );
         }
 
         result_cards
@@ -132,5 +108,83 @@ impl KartingTime {
             None,
             None,
         )
+    }
+
+    fn total_time_table(&self, race: &RaceResult) -> Element<'_, Message> {
+        let mut table = Table::default();
+
+        table.add_headers(vec!["Lap", "Time (s)"]);
+
+        for (total_time_key, total_time_value) in &race.race_statistics.total_times_table {
+            table.add_row(vec![total_time_key.to_string(), total_time_value.clone()]);
+        }
+
+        Table::build(
+            table,
+            Some(self.theme().palette().text),
+            Some(200.0),
+            None,
+            None,
+        )
+    }
+
+    fn average_time_table(&self, race: &RaceResult) -> Element<'_, Message> {
+        let mut table = Table::default();
+
+        table.add_headers(vec!["Lap", "Time (s)"]);
+
+        for (average_time_key, average_time_value) in &race.race_statistics.average_times_table {
+            table.add_row(vec![
+                average_time_key.to_string(),
+                average_time_value.clone(),
+            ]);
+        }
+
+        Table::build(
+            table,
+            Some(self.theme().palette().text),
+            Some(200.0),
+            None,
+            None,
+        )
+    }
+}
+
+fn create_footer(race: &RaceResult, race_summary: String) -> iced::widget::Column<'_, Message> {
+    match race.is_deleting {
+        true => column!()
+            .push(text(race_summary))
+            .spacing(10)
+            .padding(10)
+            .push(
+                row!()
+                    .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
+                        race.race_information.unique_race_identifier.clone(),
+                    )))
+                    .spacing(10)
+                    .padding(10)
+                    .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
+                        race.race_information.unique_race_identifier.clone(),
+                    )))
+                    .spacing(10)
+                    .padding(10),
+            ),
+        false => column!()
+            .push(text(race_summary))
+            .spacing(10)
+            .padding(10)
+            .push(
+                row!()
+                    .push(button("Replace").on_press(Message::ReplacePressed(
+                        race.race_information.unique_race_identifier.clone(),
+                    )))
+                    .spacing(10)
+                    .padding(10)
+                    .push(button("Delete").on_press(Message::DeletePressed(
+                        race.race_information.unique_race_identifier.clone(),
+                    )))
+                    .spacing(10)
+                    .padding(10),
+            ),
     }
 }
