@@ -1,4 +1,7 @@
-use crate::data_models::driver_profile_file::DriverProfileFile;
+use crate::{
+    data_models::driver_profile_file::DriverProfileFile,
+    models::driver::session_information::race_result::RaceResult,
+};
 use maud::{DOCTYPE, Markup, html};
 
 pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
@@ -87,14 +90,14 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                 td data-label="Race Position" { ( &race.race_position ) }
                                 td data-label="Fastest Lap" { ( race.race_statistics.fastest_lap ) }
 
-                                td data-label="Average Lap 5" { ( race.race_statistics.average_5 ) }
-                                td data-label="Average Lap 10" { ( race.race_statistics.average_10 ) }
-                                td data-label="Average Lap 15" { ( race.race_statistics.average_15 ) }
+                                td data-label="Average Lap 5" { ( RaceResult::get_time_by_key( &race.race_statistics.average_times_table, 5 ) ) }
+                                td data-label="Average Lap 10" { ( RaceResult::get_time_by_key( &race.race_statistics.average_times_table, 10 ) ) }
+                                td data-label="Average Lap 15" { ( RaceResult::get_time_by_key( &race.race_statistics.average_times_table, 15 ) ) }
 
-                                td data-label="Total Lap 5" { ( race.race_statistics.total_5 ) }
-                                td data-label="Total Lap 10" { ( race.race_statistics.total_10 ) }
-                                td data-label="Total Lap 15" { ( race.race_statistics.total_15 ) }
-                                td data-label="Total Time" { ( race.race_statistics.total_time ) }
+                                td data-label="Total Lap 5" { ( RaceResult::get_time_by_key( &race.race_statistics.total_times_table, 5 ) ) }
+                                td data-label="Total Lap 10" { ( RaceResult::get_time_by_key( &race.race_statistics.total_times_table, 10 ) ) }
+                                td data-label="Total Lap 15" { ( RaceResult::get_time_by_key( &race.race_statistics.total_times_table, 15 ) ) }
+                                td data-label="Total Time" { ( RaceResult::get_last_time( &race.race_statistics.total_times_table) ) }
                             }
                         }
                     }
@@ -366,14 +369,14 @@ mod html_converter_should {
             assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 5</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 6</td>"));
 
-            assert!(markdown_string.contains("<td data-label=\"Pace\">75</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Pace\">105</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">1:15.00</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">1:45.00</td>"));
 
             assert!(markdown_string.contains("<td data-label=\"Lap\">Average Time 5</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Average Time 6</td>"));
 
-            assert!(markdown_string.contains("<td data-label=\"Pace\">15</td>"));
-            assert!(markdown_string.contains("<td data-label=\"Pace\">17.5</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">15.00</td>"));
+            assert!(markdown_string.contains("<td data-label=\"Pace\">17.50</td>"));
         }
     }
 
