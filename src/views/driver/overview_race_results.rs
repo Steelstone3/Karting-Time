@@ -63,6 +63,7 @@ impl KartingTime {
                 &race.race_statistics.fastest_lap,
                 &RaceResult::get_time_by_key(&race.race_statistics.average_times_table, 5),
                 &RaceResult::get_time_by_key(&race.race_statistics.average_times_table, 10),
+                &RaceResult::get_time_by_key(&race.race_statistics.average_times_table, 15),
                 &RaceResult::get_time_by_key(&race.race_statistics.total_times_table, 15),
                 &RaceResult::get_time_by_key(&race.race_statistics.total_times_table, 10),
                 &RaceResult::get_time_by_key(&race.race_statistics.total_times_table, 15),
