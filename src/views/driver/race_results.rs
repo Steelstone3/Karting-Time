@@ -104,7 +104,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(200.0),
+            Some(300.0),
             None,
             None,
         )
@@ -122,7 +122,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(200.0),
+            Some(300.0),
             None,
             None,
         )
@@ -143,7 +143,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(200.0),
+            Some(300.0),
             None,
             None,
         )
