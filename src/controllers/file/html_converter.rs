@@ -114,7 +114,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                             tr { th { "Lap" } th { "Time" } }
                         }
                         tbody {
-                            @for (lap_number, lap_time) in race.laptimes.iter().enumerate() {
+                            @for (lap_number, lap_time) in race.race_statistics.formatted_laps.iter().enumerate() {
                                 tr {
                                     td data-label="Lap" { ( lap_number + 1 ) }
                                     td data-label="Time" { ( lap_time ) }
@@ -411,27 +411,27 @@ mod html_converter_should {
             assert!(markdown_string.contains("<td data-label=\"Lap\">6</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Time\">{}</td>",
-                race.laptimes[0].clone()
+                race.race_statistics.formatted_laps[0].clone()
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Time\">{}</td>",
-                race.laptimes[1].clone()
+                race.race_statistics.formatted_laps[1].clone()
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Time\">{}</td>",
-                race.laptimes[2].clone()
+                race.race_statistics.formatted_laps[2].clone()
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Time\">{}</td>",
-                race.laptimes[3].clone()
+                race.race_statistics.formatted_laps[3].clone()
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Time\">{}</td>",
-                race.laptimes[4].clone()
+                race.race_statistics.formatted_laps[4].clone()
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Time\">{}</td>",
-                race.laptimes[5].clone()
+                race.race_statistics.formatted_laps[5].clone()
             )));
         }
     }
