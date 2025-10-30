@@ -34,58 +34,53 @@ impl KartingTime {
         let mut result_cards = vec![];
 
         for race in self.driver_profile.filter.filtered_races.iter() {
-            let header = format!(
-                "{} Session: {} Date: {}",
-                race.race_information.track_name,
-                race.race_information.session.session_id,
-                race.race_information.date
-            );
-
-            let notes_line = if !race.race_metadata.notes.is_empty() {
-                format!("\n\nNotes: {}", race.race_metadata.notes)
-            } else {
-                String::from("")
-            };
-
-            let championship_line = if !race.race_metadata.championship.is_empty() {
-                format!("\nChampionship: {}", race.race_metadata.championship)
-            } else {
-                String::from("")
-            };
-
-            let race_summary = format!(
-                "Session Type: {}\nTrack Conditions: {}\nCar Used: {}{}\n\nRace position: {}\nNumber of laps: {}\nFastest lap: {}\nAverage lap (105%): {}\n{}",
-                race.race_metadata.session_type,
-                race.race_metadata.track_conditions,
-                race.race_metadata.car_used,
-                championship_line,
-                race.race_information.session.race_position,
-                race.race_statistics.number_of_laps,
-                race.race_statistics.fastest_lap,
-                race.race_statistics.average_105_lap,
-                notes_line
-            )
-            .to_string();
-
-            let footer = create_footer(race, race_summary);
-
-            result_cards.push(
-                Card::new(
-                    text(header),
-                    column!(
-                        text!("Laptimes"),
-                        self.race_result_table(race),
-                        text!("Total Times"),
-                        self.total_time_table(race),
-                        text!("Average Times"),
-                        self.average_time_table(race)
-                    ),
-                )
-                .foot(footer),
-            );
+            result_cards.push(self.create_result_card(race));
         }
 
         result_cards
+    }
+
+    fn create_result_card<'a>(&'a self, race: &'a RaceResult) -> Card<'a, Message> {
+        let header = format!(
+            "{} Session: {} Date: {}",
+            race.race_information.track_name,
+            race.race_information.session.session_id,
+            race.race_information.date
+        );
+
+        if self.is_metadata_table_empty(race) {
+            Card::new(
+                text(header),
+                column!(
+                    text!("Laptimes"),
+                    self.race_result_table(race),
+                    text!("Total Times"),
+                    self.total_time_table(race),
+                    text!("Average Times"),
+                    self.average_time_table(race),
+                    text!("Race Summary"),
+                    self.race_summary_table(race),
+                ),
+            )
+            .foot(create_footer(race))
+        } else {
+            Card::new(
+                text(header),
+                column!(
+                    text!("Laptimes"),
+                    self.race_result_table(race),
+                    text!("Total Times"),
+                    self.total_time_table(race),
+                    text!("Average Times"),
+                    self.average_time_table(race),
+                    text!("Race Summary"),
+                    self.race_summary_table(race),
+                    text!("Metadata"),
+                    self.metadata_table(race),
+                ),
+            )
+            .foot(create_footer(race))
+        }
     }
 
     fn race_result_table(&self, race: &RaceResult) -> Element<'_, Message> {
@@ -100,6 +95,33 @@ impl KartingTime {
 
             lap_number += 1;
         }
+
+        Table::build(
+            table,
+            Some(self.theme().palette().text),
+            Some(300.0),
+            None,
+            None,
+        )
+    }
+
+    fn race_summary_table(&self, race: &RaceResult) -> Element<'_, Message> {
+        let mut table = Table::default();
+
+        table.add_headers(vec!["Race Summary", "Race Statistic"]);
+
+        table.add_rows(vec![
+            vec![
+                "Race Position",
+                &race.race_information.session.race_position.to_string(),
+            ],
+            vec![
+                "Number of Laps",
+                &race.race_statistics.number_of_laps.to_string(),
+            ],
+            vec!["Fastest Lap", &race.race_statistics.fastest_lap],
+            vec!["Average Lap", &race.race_statistics.average_105_lap],
+        ]);
 
         Table::build(
             table,
@@ -148,43 +170,79 @@ impl KartingTime {
             None,
         )
     }
+
+    fn metadata_table(&self, race: &RaceResult) -> Element<'_, Message> {
+        let mut table = Table::default();
+
+        table.add_headers(vec!["Metadata", "Value"]);
+
+        if !race.race_metadata.session_type.is_empty() {
+            table.add_row(vec!["Session Type", &race.race_metadata.session_type]);
+        }
+        if !race.race_metadata.track_conditions.is_empty() {
+            table.add_row(vec![
+                "Track Conditions",
+                &race.race_metadata.track_conditions,
+            ]);
+        }
+        if !race.race_metadata.car_used.is_empty() {
+            table.add_row(vec!["Car Used", &race.race_metadata.car_used]);
+        }
+        if !race.race_metadata.championship.is_empty() {
+            table.add_row(vec!["Championship", &race.race_metadata.championship]);
+        }
+
+        Table::build(
+            table,
+            Some(self.theme().palette().text),
+            Some(300.0),
+            None,
+            None,
+        )
+    }
+
+    fn is_metadata_table_empty(&self, race: &RaceResult) -> bool {
+        race.race_metadata.notes.is_empty()
+            && race.race_metadata.championship.is_empty()
+            && race.race_metadata.car_used.is_empty()
+            && race.race_metadata.session_type.is_empty()
+            && race.race_metadata.track_conditions.is_empty()
+    }
 }
 
-fn create_footer(race: &RaceResult, race_summary: String) -> iced::widget::Column<'_, Message> {
+fn create_footer(race: &RaceResult) -> iced::widget::Column<'_, Message> {
+    let notes = if !race.race_metadata.notes.is_empty() {
+        format!("Notes: {}", race.race_metadata.notes)
+    } else {
+        String::from("")
+    };
+
     match race.is_deleting {
-        true => column!()
-            .push(text(race_summary))
-            .spacing(10)
-            .padding(10)
-            .push(
-                row!()
-                    .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
-                        race.race_information.unique_race_identifier.clone(),
-                    )))
-                    .spacing(10)
-                    .padding(10)
-                    .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
-                        race.race_information.unique_race_identifier.clone(),
-                    )))
-                    .spacing(10)
-                    .padding(10),
-            ),
-        false => column!()
-            .push(text(race_summary))
-            .spacing(10)
-            .padding(10)
-            .push(
-                row!()
-                    .push(button("Replace").on_press(Message::ReplacePressed(
-                        race.race_information.unique_race_identifier.clone(),
-                    )))
-                    .spacing(10)
-                    .padding(10)
-                    .push(button("Delete").on_press(Message::DeletePressed(
-                        race.race_information.unique_race_identifier.clone(),
-                    )))
-                    .spacing(10)
-                    .padding(10),
-            ),
+        true => column!().push(text(notes)).spacing(10).padding(10).push(
+            row!()
+                .push(button("Confirm").on_press(Message::DeleteConfirmedPressed(
+                    race.race_information.unique_race_identifier.clone(),
+                )))
+                .spacing(10)
+                .padding(10)
+                .push(button("Cancel").on_press(Message::DeleteCancelledPressed(
+                    race.race_information.unique_race_identifier.clone(),
+                )))
+                .spacing(10)
+                .padding(10),
+        ),
+        false => column!().push(text(notes)).spacing(10).padding(10).push(
+            row!()
+                .push(button("Replace").on_press(Message::ReplacePressed(
+                    race.race_information.unique_race_identifier.clone(),
+                )))
+                .spacing(10)
+                .padding(10)
+                .push(button("Delete").on_press(Message::DeletePressed(
+                    race.race_information.unique_race_identifier.clone(),
+                )))
+                .spacing(10)
+                .padding(10),
+        ),
     }
 }
