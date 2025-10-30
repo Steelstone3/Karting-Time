@@ -12,6 +12,8 @@ use iced::{
 use iced_aw::widgets::Card;
 use iced_table::Table;
 
+const TABLE_WIDTH: f32 = 500.0;
+
 impl KartingTime {
     pub fn race_results_view(&self) -> iced::widget::Column<'_, Message> {
         if self.driver_profile.name.is_empty() {
@@ -99,7 +101,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(500.0),
+            Some(TABLE_WIDTH),
             None,
             None,
         )
@@ -126,7 +128,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(500.0),
+            Some(TABLE_WIDTH),
             None,
             None,
         )
@@ -144,7 +146,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(500.0),
+            Some(TABLE_WIDTH),
             None,
             None,
         )
@@ -165,7 +167,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(500.0),
+            Some(TABLE_WIDTH),
             None,
             None,
         )
@@ -195,7 +197,7 @@ impl KartingTime {
         Table::build(
             table,
             Some(self.theme().palette().text),
-            Some(500.0),
+            Some(TABLE_WIDTH),
             None,
             None,
         )
