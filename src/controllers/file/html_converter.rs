@@ -149,6 +149,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                     }
                     // Pace
                     h3 { "Race Pace" }
+                    h4 { "Total Times" }
                     table {
                         thead {
                             tr { th { "Lap" } th { "Pace" } }
@@ -160,6 +161,14 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                                     td data-label="Pace" { (total_time_value) }
                                 }
                             }
+                        }
+                    }
+                    h4 { "Average Times" }
+                    table {
+                        thead {
+                            tr { th { "Lap" } th { "Pace" } }
+                        }
+                        tbody {
                             @for (average_time_key, average_time_value) in &race.race_statistics.average_times_table {
                                 tr {
                                     td data-label="Lap" { "Average Time " (average_time_key) }
@@ -352,7 +361,7 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_race_pace_table() {
+    fn convert_race_pace_total_times_table() {
         // Given
         let driver_profile_file = driver_profile_file_test_fixture();
 
@@ -365,13 +374,34 @@ mod html_converter_should {
         for _ in driver_profile_file.races {
             // Race Pace Table
             assert!(markdown_string.contains("<h3>Race Pace</h3>"));
+
+            assert!(markdown_string.contains("<h4>Total Times</h4>"));
             assert!(markdown_string.contains("<th>Lap</th><th>Pace</th>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 5</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Total Time 6</td>"));
 
             assert!(markdown_string.contains("<td data-label=\"Pace\">1:15.00</td>"));
             assert!(markdown_string.contains("<td data-label=\"Pace\">1:45.00</td>"));
+        }
+    }
 
+    #[test]
+    fn convert_race_pace_average_times_table() {
+        // Given
+        let driver_profile_file = driver_profile_file_test_fixture();
+
+        // When
+        let markdown = convert_to_html(&driver_profile_file);
+
+        // Then
+        let markdown_string = markdown.into_string();
+
+        for _ in driver_profile_file.races {
+            // Race Pace Table
+            assert!(markdown_string.contains("<h3>Race Pace</h3>"));
+
+            assert!(markdown_string.contains("<h4>Average Times</h4>"));
+            assert!(markdown_string.contains("<th>Lap</th><th>Pace</th>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Average Time 5</td>"));
             assert!(markdown_string.contains("<td data-label=\"Lap\">Average Time 6</td>"));
 
