@@ -2,9 +2,13 @@ use crate::{
     commands::{messages::Message, tab_identifiers::TabIdentifier},
     models::application::karting_time::KartingTime,
 };
-use iced::{Element, Theme};
+use iced::{Element, Task, Theme};
 
 impl KartingTime {
+    pub fn boot() -> (Self, Task<Message>) {
+        (Self::default(), Task::none())
+    }
+
     pub fn view(&self) -> Element<'_, Message> {
         self.tab_bar_view().into()
     }
