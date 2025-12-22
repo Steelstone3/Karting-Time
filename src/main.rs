@@ -12,9 +12,12 @@ mod views;
 #[deny(clippy::panic)]
 #[deny(unused_must_use)]
 pub fn main() -> iced::Result {
-    iced::application("Karting Time", KartingTime::update, KartingTime::view)
+    iced::application(KartingTime::boot, KartingTime::update, KartingTime::view)
         .theme(KartingTime::theme)
         .antialiasing(true)
-        .settings(Settings::default())
+        .settings(Settings {
+            id: Some("Karting Time".to_string()),
+            ..Default::default()
+        })
         .run()
 }

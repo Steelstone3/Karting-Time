@@ -1,5 +1,5 @@
 use crate::models::driver::session_information::race_result::RaceResult;
-use iced::widget::text_editor::{self, Action, Edit};
+use iced::widget::text_editor::{self, Action, Content, Edit};
 
 #[derive(Default, Debug)]
 pub struct RaceEditor {
@@ -26,10 +26,7 @@ impl RaceEditor {
     }
 
     pub fn clear_text_editor(&mut self) {
-        self.text_editor.perform(Action::SelectAll);
-
-        self.text_editor
-            .perform(Action::Edit(Edit::Paste("".to_string().into())));
+        self.text_editor = Content::new();
     }
 
     pub fn paste_laptimes(&mut self, race: &RaceResult) {
@@ -74,13 +71,13 @@ mod race_editor_should {
         let text = race_editor.get_text_from_text_editor();
 
         // Then
-        pretty_assertions::assert_eq!(expected_text + "\n", text)
+        pretty_assertions::assert_eq!(expected_text, text)
     }
 
     #[test]
     pub fn clear_text_editor() {
         // Given
-        let expected_text = "\n";
+        let expected_text = "";
         let mut race_editor = RaceEditor {
             text_editor: Default::default(),
         };
@@ -103,10 +100,10 @@ mod race_editor_should {
             Default::default(),
             vec![Lap::new(1, 40.965), Lap::new(2, 41.875)],
         );
-
         let mut race_editor = RaceEditor {
             text_editor: Default::default(),
         };
+
         // When
         race_editor.paste_laptimes(&race);
 
