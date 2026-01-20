@@ -78,6 +78,14 @@ impl KartingTime {
                 self.driver_profile.update_filtering();
                 Task::none()
             }
+            Message::PaginationNext => {
+                self.driver_profile.filter.next_page();
+                Task::none()
+            }
+            Message::PaginationPrevious => {
+                self.driver_profile.filter.previous_page();
+                Task::none()
+            }
             Message::DriverNameChanged(name) => {
                 self.driver_profile.name = name;
                 Task::none()

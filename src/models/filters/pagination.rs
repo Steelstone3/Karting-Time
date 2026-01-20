@@ -7,6 +7,7 @@ pub struct Pagination {
     pub page_size: usize,
     pub start_index: usize,
     pub end_index: usize,
+    pub total_pages: usize,
 }
 
 impl Default for Pagination {
@@ -17,6 +18,7 @@ impl Default for Pagination {
             current_page: Default::default(),
             start_index: Default::default(),
             end_index: Default::default(),
+            total_pages: Default::default(),
         }
     }
 }

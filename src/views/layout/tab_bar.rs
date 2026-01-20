@@ -1,4 +1,7 @@
-use iced::widget::{Column, Container, Scrollable, column, container, scrollable};
+use iced::{
+    Length,
+    widget::{Column, Container, Scrollable, column, container, scrollable},
+};
 use iced_aw::{TabBar, TabLabel};
 
 use crate::{
@@ -58,11 +61,21 @@ impl KartingTime {
                 let scrollable_filter: Container<Message> =
                     container(scrollable(filter)).height(200);
 
-                let contents = Scrollable::new(column!().push(self.race_results_view()));
+                let contents = container(scrollable(self.race_results_view()))
+                    .height(Length::Fill)
+                    .width(Length::Fill);
+
+                let pagination = self.pagination_bar_view();
 
                 match self.driver_profile.filter.is_filter_visible {
-                    true => column!(self.menu_bar_view(), tab_bar, scrollable_filter, contents),
-                    false => column!(self.menu_bar_view(), tab_bar, contents),
+                    true => column!(
+                        self.menu_bar_view(),
+                        tab_bar,
+                        scrollable_filter,
+                        contents,
+                        pagination
+                    ),
+                    false => column!(self.menu_bar_view(), tab_bar, contents, pagination),
                 }
             }
         }
