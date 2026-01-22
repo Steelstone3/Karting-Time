@@ -1,4 +1,6 @@
-use crate::models::driver::session_information::race_result::RaceResult;
+use crate::models::{
+    driver::session_information::race_result::RaceResult, filters::pagination::Pagination,
+};
 
 #[derive(Default, Clone, PartialEq, Debug)]
 pub struct Filter {
@@ -8,6 +10,7 @@ pub struct Filter {
     pub car_used_query: String,
     pub championship_query: String,
     pub session_type_query: String,
+    pub pagination: Pagination,
     pub filtered_races: Vec<RaceResult>,
 }
 
@@ -30,6 +33,7 @@ impl Filter {
             championship_query: championship_query.to_string(),
             session_type_query: session_type_query.to_string(),
             filtered_races,
+            pagination: Pagination::default(),
         }
     }
 
