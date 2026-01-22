@@ -491,7 +491,7 @@ mod paginate_race_results_should {
         );
     }
 
-      #[test]
+    #[test]
     fn previous_page() {
         // Given
         let mut race_result = RaceResult {
@@ -745,7 +745,7 @@ mod paginate_race_results_should {
         );
     }
 
- #[test]
+    #[test]
     fn previous_page_exceeds_bound() {
         // Given
         let mut race_result = RaceResult {
