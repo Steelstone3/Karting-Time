@@ -33,17 +33,17 @@ impl Filter {
         self.update_total_page_count();
 
         let race_count = self.filtered_races.len();
-        
+
         self.pagination.start_index = self.pagination.current_page * self.pagination.page_size;
-        
+
         if self.pagination.start_index + self.pagination.page_size > race_count {
             self.pagination.end_index = race_count;
         } else {
             self.pagination.end_index = self.pagination.start_index + self.pagination.page_size;
         }
-        
+
         self.pagination.paginated_races =
-        self.filtered_races[self.pagination.start_index..self.pagination.end_index].to_vec();
+            self.filtered_races[self.pagination.start_index..self.pagination.end_index].to_vec();
     }
 
     fn update_total_page_count(&mut self) {
