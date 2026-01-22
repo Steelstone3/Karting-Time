@@ -63,7 +63,7 @@ impl RaceResult {
 }
 
 #[cfg(test)]
-mod calculate_race_time_summaries_should {
+mod race_time_summaries_should {
     use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
 
     #[test]

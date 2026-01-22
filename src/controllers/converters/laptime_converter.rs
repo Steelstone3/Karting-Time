@@ -1,5 +1,5 @@
 use crate::{
-    controllers::driver_profile::time_parser::format_laptime,
+    controllers::converters::time_parser::format_laptime,
     models::driver::session_information::{lap::Lap, race_result::RaceResult},
 };
 use std::collections::HashMap;

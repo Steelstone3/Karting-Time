@@ -32,7 +32,7 @@ impl RaceResult {
 }
 
 #[cfg(test)]
-mod update_existing_race {
+mod edit_existing_race_should {
     use crate::models::{
         date::RaceDate,
         driver::session_information::{

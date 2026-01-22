@@ -35,7 +35,7 @@ impl KartingTime {
     fn read_only_result_cards(&self) -> Vec<Card<'_, Message, Theme, Renderer>> {
         let mut result_cards = vec![];
 
-        for race in self.driver_profile.filter.filtered_races.iter() {
+        for race in self.driver_profile.filter.pagination.paginated_races.iter() {
             result_cards.push(self.create_result_card(race));
         }
 

@@ -39,7 +39,7 @@ pub fn format_laptimes(laptimes: Vec<Lap>) -> Vec<String> {
 
 #[cfg(test)]
 mod format_laptime_should {
-    use crate::controllers::driver_profile::time_parser::format_laptime;
+    use super::*;
     use rstest::rstest;
 
     #[rstest]

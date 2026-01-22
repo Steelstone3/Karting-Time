@@ -1,8 +1,10 @@
 use crate::{
     data_models::driver_profile_file::DriverProfileFile,
-    models::driver::{
-        filter::Filter, profile_statistics::ProfileStatistics,
-        session_information::race_result::RaceResult,
+    models::{
+        driver::{
+            profile_statistics::ProfileStatistics, session_information::race_result::RaceResult,
+        },
+        filters::filter::Filter,
     },
 };
 

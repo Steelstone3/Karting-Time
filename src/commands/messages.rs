@@ -18,6 +18,8 @@ pub enum Message {
     ViewToggleTheme,
     ViewToggleFilter,
     SelectedTabChanged(TabIdentifier),
+    PaginationPrevious,
+    PaginationNext,
     DriverNameChanged(String),
     TrackNameChanged(String),
     DayChanged(String),

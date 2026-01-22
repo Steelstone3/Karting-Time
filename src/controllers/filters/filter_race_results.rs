@@ -137,12 +137,9 @@ impl DriverProfile {
 mod filter_race_results_should {
     use crate::models::date::RaceDate;
     use crate::models::driver::driver_profile::DriverProfile;
-    use crate::models::driver::{
-        filter::Filter,
-        session_information::{
-            race_information::RaceInformation, race_metadata::RaceMetadata,
-            race_result::RaceResult, session::Session,
-        },
+    use crate::models::driver::session_information::{
+        race_information::RaceInformation, race_metadata::RaceMetadata, race_result::RaceResult,
+        session::Session,
     };
     use rstest::rstest;
 
@@ -174,6 +171,8 @@ mod filter_race_results_should {
         #[case] count: usize,
     ) {
         // Given
+
+        use crate::models::filters::filter::Filter;
         let races = vec![
             RaceResult::new(
                 RaceInformation::new(&track_name, date, Session::new(1, 2)),

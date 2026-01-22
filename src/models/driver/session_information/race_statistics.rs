@@ -1,5 +1,5 @@
 use crate::{
-    controllers::driver_profile::time_parser::{format_laptime, format_laptimes},
+    controllers::converters::time_parser::{format_laptime, format_laptimes},
     models::driver::session_information::race_result::RaceResult,
 };
 

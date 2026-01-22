@@ -1,4 +1,4 @@
-pub mod calculate_race_time_summaries;
-pub mod display_race_summary;
-pub mod laptime_converter;
-pub mod update_existing_race;
+pub mod edit_existing_race;
+pub mod race_results_summary;
+pub mod race_time_summaries;
+pub mod upsert_race;
