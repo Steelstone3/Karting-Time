@@ -27,6 +27,7 @@ impl KartingTime {
                     self.import_races(file_paths);
                     self.driver_profile.sort_races();
                     self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
                 }
                 Task::none()
             }
@@ -66,6 +67,7 @@ impl KartingTime {
                     self.load_application(&file_path);
                     self.driver_profile.sort_races();
                     self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
                 }
                 Task::none()
             }
