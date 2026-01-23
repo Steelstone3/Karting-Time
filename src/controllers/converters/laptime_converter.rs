@@ -122,7 +122,7 @@ mod laptime_converter_should {
         let expected_laps =
             "25.555\n26.657\n24.585\n25.475\n24.899\n25.345\n26.123\n24.879\n26.341\n24.563\n"
                 .to_string();
-        // TODO AH make a test fixture
+        // TODO make a test fixture
         let race = RaceResult::new(
             Default::default(),
             Default::default(),

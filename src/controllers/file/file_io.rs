@@ -111,7 +111,7 @@ mod file_integration_should {
     fn upsert_races_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        // TODO AH make a test fixture
+        // TODO make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -148,7 +148,7 @@ mod file_integration_should {
     fn upsert_races_test() {
         // Given
         let file_location = ".";
-        // TODO AH Make a test fixture
+        // TODO Make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -191,7 +191,7 @@ mod file_integration_should {
     fn upsert_races_html_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        // TODO AH Make a test fixture
+        // TODO Make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -221,7 +221,7 @@ mod file_integration_should {
     fn upsert_races_html_test() {
         // Given
         let file_location = ".";
-        // TODO AH make a test fixture
+        // TODO make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
