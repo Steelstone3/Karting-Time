@@ -78,6 +78,7 @@ impl KartingTime {
             Message::ViewToggleFilter => {
                 self.toggle_filter();
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::PaginationNext => {
@@ -192,30 +193,35 @@ impl KartingTime {
                 self.driver_profile.filter.track_query = track_query;
 
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::DateFilterChanged(date_query) => {
                 self.driver_profile.filter.date_query = date_query;
 
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::CarUsedFilterChanged(car_used_query) => {
                 self.driver_profile.filter.car_used_query = car_used_query;
 
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::ChampionshipFilterChanged(championship_query) => {
                 self.driver_profile.filter.championship_query = championship_query;
 
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::SessionTypeFilterChanged(session_type_query) => {
                 self.driver_profile.filter.session_type_query = session_type_query;
 
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::UpdateRacesPressed => {
@@ -228,6 +234,7 @@ impl KartingTime {
                 self.driver_profile.upsert_race();
                 self.driver_profile.sort_races();
                 self.driver_profile.update_filtering();
+                self.driver_profile.filter.update_pagination();
                 Task::none()
             }
             Message::ClearRaceEditorPressed => {
@@ -245,6 +252,7 @@ impl KartingTime {
                     self.application_state.race_editor.clear_text_editor();
                     self.application_state.race_editor.paste_laptimes(race);
                     self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
                 }
                 Task::none()
             }
@@ -257,6 +265,7 @@ impl KartingTime {
                 {
                     race.is_deleting = true;
                     self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
                 }
                 Task::none()
             }
@@ -269,6 +278,7 @@ impl KartingTime {
                 {
                     self.driver_profile.races.remove(index);
                     self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
                 }
                 Task::none()
             }
@@ -281,6 +291,7 @@ impl KartingTime {
                 {
                     race.is_deleting = false;
                     self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
                 }
                 Task::none()
             }
