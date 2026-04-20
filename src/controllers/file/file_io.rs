@@ -4,7 +4,7 @@ use crate::data_models::race_file::RaceFile;
 use crate::models::driver::driver_profile::DriverProfile;
 use crate::models::driver::session_information::race_result::RaceResult;
 use maud::Markup;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{Read, Write};
 
 const FILE_ERROR: &str = "failed to create file";
@@ -46,6 +46,59 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     };
 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
+}
+
+// TODO Test
+pub fn read_laptimes_file(file_name: &str) -> RaceFile {
+    let contents = get_file_contents(file_name);
+
+    let normalised_file_name = file_name.to_string().to_lowercase();
+
+    if contents.is_empty() {
+        return Default::default();
+    }
+
+    if normalised_file_name.ends_with(".txt") {
+        read_laptime_list_file_strategy(file_name)
+    } else if normalised_file_name.ends_with(".md") {
+        read_laptime_list_file_strategy(file_name)
+    } else if normalised_file_name.ends_with(".csv") {
+        read_laptime_list_file_strategy(file_name)
+    } else if normalised_file_name.ends_with(".json") {
+        read_json_laptime_file_strategy(file_name)
+    } else if normalised_file_name.ends_with(".toml") {
+        read_toml_laptime_file_strategy(file_name)
+    } else {
+        RaceFile::default()
+    }
+}
+
+fn read_laptime_list_file_strategy(file_name: &str) -> RaceFile {
+    let contents = match fs::read_to_string(file_name) {
+        Ok(contents) => contents,
+        Err(_) => return RaceFile::default(),
+    };
+
+    let laptimes = contents
+        .lines()
+        .map(|line| line.trim().trim_end_matches(',').to_string())
+        .map(|line| {
+            line.chars()
+                .filter(|char| char.is_ascii_digit() || *char == '.' || *char == ':')
+                .collect::<String>()
+        })
+        .filter(|line| line.chars().any(|c| c.is_ascii_digit()))
+        .collect();
+
+    RaceFile::new_from_laptime_file(laptimes)
+}
+
+fn read_json_laptime_file_strategy(file_name: &str) -> RaceFile {
+    read_laptime_list_file_strategy(file_name)
+}
+
+fn read_toml_laptime_file_strategy(file_name: &str) -> RaceFile {
+    read_laptime_list_file_strategy(file_name)
 }
 
 pub fn read_race_file(file_name: &str) -> RaceFile {
@@ -105,6 +158,7 @@ mod file_integration_should {
             },
         },
     };
+    use rstest::rstest;
     use std::fs;
 
     #[test]
@@ -244,6 +298,109 @@ mod file_integration_should {
         // Then
         assert!(fs::metadata(&file_name).is_ok());
         assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+    }
+
+    #[test]
+    fn read_non_existent_laptime_file_test() {
+        // Given
+        let expected_race_file = RaceFile::default();
+
+        // When
+        let race_file = read_laptimes_file("");
+
+        // Then
+        pretty_assertions::assert_eq!(expected_race_file, race_file);
+    }
+
+    #[rstest]
+    #[case(
+        "./file_io_test_files/laptime_file_test.txt".to_string(), 
+        vec!["2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test.csv".to_string(), 
+        vec!["2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test.md".to_string(), 
+        vec!["2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_1.json".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_2.json".to_string(), 
+        vec!["120.6".to_string(),
+        "120.7".to_string(),
+        "120.8".to_string(),
+        "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_3.json".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_object_collection.json".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_1.toml".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+     #[case(
+        "./file_io_test_files/laptime_file_test_collection_2.toml".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_object_collection.toml".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    fn read_laptime_file_test(#[case] file_name: String, #[case] laptimes: Vec<String>) {
+        // Given
+        let expected_race_file = RaceFile {
+            track_name: "Default".to_string(),
+            laptimes,
+            ..Default::default()
+        };
+
+        // When
+        let race_file = read_laptimes_file(&file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        pretty_assertions::assert_eq!(expected_race_file, race_file);
     }
 
     #[test]

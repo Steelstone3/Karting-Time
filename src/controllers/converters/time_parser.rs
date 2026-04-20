@@ -27,11 +27,38 @@ pub fn format_laptime(time_in_seconds: f32) -> String {
     )
 }
 
-pub fn format_laptimes(laptimes: Vec<Lap>) -> Vec<String> {
+pub fn convert_laps_to_string_laps(laptimes: Vec<Lap>) -> Vec<String> {
     let mut formatted_laptimes: Vec<String> = vec![];
 
     for laptime in laptimes {
         formatted_laptimes.push(format_laptime(laptime.time));
+    }
+
+    formatted_laptimes
+}
+
+// TODO test
+pub fn convert_string_laps_to_laps(laptimes: Vec<String>) -> Vec<Lap> {
+    let mut formatted_laptimes: Vec<Lap> = vec![];
+
+    for lap in laptimes.iter().enumerate() {
+        let trimmed_lap = lap.1.trim();
+
+        if trimmed_lap.contains(':') {
+            let parts: Vec<&str> = trimmed_lap.split(':').collect();
+
+            let minutes = parts[0].parse::<f32>();
+
+            if let Ok(minutes) = minutes {
+                let seconds = parts[1].parse::<f32>();
+
+                if let Ok(seconds) = seconds { formatted_laptimes
+                .push(Lap::new((lap.0 + 1) as u32, minutes * 60.0 + seconds)) };
+            }
+        } else {
+            let time = lap.1.trim().parse::<f32>().ok();
+            formatted_laptimes.push(Lap::new((lap.0 + 1) as u32, time.unwrap_or_default()));
+        }
     }
 
     formatted_laptimes

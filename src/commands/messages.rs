@@ -5,6 +5,8 @@ use iced::widget::text_editor;
 pub enum Message {
     MenuBar,
     FileNew,
+    ImportLaptimesFileRequested,
+    ImportLaptimesFileCompleted(Option<String>),
     ImportRacesRequested,
     ImportRacesCompleted(Option<Vec<String>>),
     ExportRacesRequested,
