@@ -48,7 +48,6 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
-// TODO Test
 pub fn read_laptimes_file(file_name: &str) -> RaceFile {
     let contents = get_file_contents(file_name);
 
