@@ -52,8 +52,9 @@ pub fn convert_string_laps_to_laps(laptimes: Vec<String>) -> Vec<Lap> {
             if let Ok(minutes) = minutes {
                 let seconds = parts[1].parse::<f32>();
 
-                if let Ok(seconds) = seconds { formatted_laptimes
-                .push(Lap::new((lap.0 + 1) as u32, minutes * 60.0 + seconds)) };
+                if let Ok(seconds) = seconds {
+                    formatted_laptimes.push(Lap::new((lap.0 + 1) as u32, minutes * 60.0 + seconds))
+                };
             }
         } else {
             let time = lap.1.trim().parse::<f32>().ok();
@@ -68,6 +69,29 @@ pub fn convert_string_laps_to_laps(laptimes: Vec<String>) -> Vec<Lap> {
 mod format_laptime_should {
     use super::*;
     use rstest::rstest;
+
+    #[test]
+    fn be_able_to_convert_string_laps_to_laps() {
+        // Given
+        let string_laps = vec![
+            "2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string(),
+        ];
+        let expected_laps = vec![
+            Lap::new(1, 120.6),
+            Lap::new(2, 120.7),
+            Lap::new(3, 120.8),
+            Lap::new(4, 120.9),
+        ];
+
+        // When
+        let actual_laps = convert_string_laps_to_laps(string_laps);
+
+        // Then
+        pretty_assertions::assert_eq!(expected_laps, actual_laps);
+    }
 
     #[rstest]
     #[case(1.0, "1.00".to_string())]
