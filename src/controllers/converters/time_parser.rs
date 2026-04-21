@@ -70,29 +70,6 @@ mod format_laptime_should {
     use super::*;
     use rstest::rstest;
 
-    #[test]
-    fn be_able_to_convert_string_laps_to_laps() {
-        // Given
-        let string_laps = vec![
-            "2:00.6".to_string(),
-            "120.7".to_string(),
-            "120.8".to_string(),
-            "120.9".to_string(),
-        ];
-        let expected_laps = vec![
-            Lap::new(1, 120.6),
-            Lap::new(2, 120.7),
-            Lap::new(3, 120.8),
-            Lap::new(4, 120.9),
-        ];
-
-        // When
-        let actual_laps = convert_string_laps_to_laps(string_laps);
-
-        // Then
-        pretty_assertions::assert_eq!(expected_laps, actual_laps);
-    }
-
     #[rstest]
     #[case(1.0, "1.00".to_string())]
     #[case(59.0, "59.00".to_string())]
@@ -121,5 +98,51 @@ mod format_laptime_should {
 
         // Then
         pretty_assertions::assert_eq!(expected_formatted_time, formatted_time);
+    }
+
+    #[test]
+    fn be_able_to_convert_laps_to_string_laps() {
+        // Given
+        let laps = vec![
+            Lap::new(1, 120.6),
+            Lap::new(2, 120.7),
+            Lap::new(3, 120.8),
+            Lap::new(4, 120.9),
+        ];
+        let expected_string_laps = vec![
+            "2:00.60".to_string(),
+            "2:00.70".to_string(),
+            "2:00.80".to_string(),
+            "2:00.90".to_string(),
+        ];
+
+        // When
+        let actual_laps = convert_laps_to_string_laps(laps);
+
+        // Then
+        pretty_assertions::assert_eq!(expected_string_laps, actual_laps);
+    }
+
+    #[test]
+    fn be_able_to_convert_string_laps_to_laps() {
+        // Given
+        let string_laps = vec![
+            "2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string(),
+        ];
+        let expected_laps = vec![
+            Lap::new(1, 120.6),
+            Lap::new(2, 120.7),
+            Lap::new(3, 120.8),
+            Lap::new(4, 120.9),
+        ];
+
+        // When
+        let actual_laps = convert_string_laps_to_laps(string_laps);
+
+        // Then
+        pretty_assertions::assert_eq!(expected_laps, actual_laps);
     }
 }
