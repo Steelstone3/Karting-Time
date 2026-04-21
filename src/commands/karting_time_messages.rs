@@ -57,7 +57,9 @@ impl KartingTime {
                 save_folder_location().map(Message::ExportHtmlRacesCompleted)
             }
             Message::ExportHtmlRacesCompleted(folder_location) => {
-                if let Some(folder_location) = folder_location { self.export_html_races(&folder_location) }
+                if let Some(folder_location) = folder_location {
+                    self.export_html_races(&folder_location)
+                }
                 Task::none()
             }
             Message::SaveApplicationRequested => {
