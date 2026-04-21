@@ -37,7 +37,6 @@ pub fn convert_laps_to_string_laps(laptimes: Vec<Lap>) -> Vec<String> {
     formatted_laptimes
 }
 
-// TODO test
 pub fn convert_string_laps_to_laps(laptimes: Vec<String>) -> Vec<Lap> {
     let mut formatted_laptimes: Vec<Lap> = vec![];
 
