@@ -47,7 +47,6 @@ args = ["tarpaulin", "--skip-clean", "--locked"]
 command = "cargo"
 install_crate = "tarpaulin"
 
-
 # workflows
 
 [tasks.check_all]

@@ -1,7 +1,7 @@
 use iced::Task;
 use rfd::AsyncFileDialog;
 
-pub fn select_file_to_load() -> Task<Option<String>> {
+pub fn select_toml_file_to_load() -> Task<Option<String>> {
     Task::future(async {
         let file = AsyncFileDialog::new()
             .add_filter("toml", &["toml"])
@@ -12,7 +12,22 @@ pub fn select_file_to_load() -> Task<Option<String>> {
     })
 }
 
-pub fn select_files_to_load() -> Task<Option<Vec<String>>> {
+pub fn select_file_to_load() -> Task<Option<String>> {
+    Task::future(async {
+        let file = AsyncFileDialog::new()
+            .add_filter("toml", &["toml"])
+            .add_filter("json", &["json"])
+            .add_filter("txt", &["txt"])
+            .add_filter("csv", &["csv"])
+            .add_filter("md", &["md"])
+            .pick_file()
+            .await;
+
+        file.and_then(|handle| handle.path().to_str().map(|s| s.to_string()))
+    })
+}
+
+pub fn select_toml_files_to_load() -> Task<Option<Vec<String>>> {
     Task::future(async {
         AsyncFileDialog::new()
             .add_filter("toml", &["toml"])
@@ -27,7 +42,7 @@ pub fn select_files_to_load() -> Task<Option<Vec<String>>> {
     })
 }
 
-pub fn save_file_location() -> Task<Option<String>> {
+pub fn save_toml_file_location() -> Task<Option<String>> {
     Task::future(async {
         let file = AsyncFileDialog::new()
             .add_filter("toml", &["toml"])

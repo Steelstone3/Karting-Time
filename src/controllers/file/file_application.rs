@@ -2,7 +2,8 @@ use super::file_io::{
     read_application_state, read_race_file, upsert_application_state, upsert_races,
 };
 use crate::{
-    controllers::file::file_io::upsert_html_races, models::application::karting_time::KartingTime,
+    controllers::file::file_io::{read_laptimes_file, upsert_html_races},
+    models::application::karting_time::KartingTime,
 };
 
 impl KartingTime {
@@ -16,6 +17,16 @@ impl KartingTime {
 
     pub fn export_html_races(&self, folder_location: &str) {
         upsert_html_races(folder_location, &self.driver_profile);
+    }
+
+    pub fn import_laptimes(&mut self, file_name: &str) {
+        let race_file = read_laptimes_file(file_name);
+
+        let race = race_file.convert_to_race_result();
+
+        if race.is_unique_identifier(&self.driver_profile.races) {
+            self.driver_profile.races.push(race);
+        }
     }
 
     pub fn import_races(&mut self, file_names: Vec<String>) {
@@ -50,6 +61,7 @@ mod file_application_should {
     use super::*;
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
+        data_models::race_file::RaceFile,
         models::{
             date::RaceDate,
             driver::{
@@ -61,6 +73,7 @@ mod file_application_should {
             },
         },
     };
+    use rstest::rstest;
     use std::fs;
 
     #[test]
@@ -108,6 +121,113 @@ mod file_application_should {
         let _guard = TestFileGuard::new(&file_name);
         assert!(fs::metadata(&file_name).is_ok());
         assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+    }
+
+    #[test]
+    fn read_non_existent_laptime_file_test() {
+        // Given
+        let mut karting_time = KartingTime::default();
+
+        // When
+        karting_time.import_laptimes("");
+
+        // Then
+        pretty_assertions::assert_eq!(1, karting_time.driver_profile.races.len());
+    }
+
+    #[rstest]
+    #[case(
+        "./file_io_test_files/laptime_file_test.txt".to_string(), 
+        vec!["2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test.csv".to_string(), 
+        vec!["2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test.md".to_string(), 
+        vec!["2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_1.json".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_2.json".to_string(), 
+        vec!["120.6".to_string(),
+        "120.7".to_string(),
+        "120.8".to_string(),
+        "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_3.json".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_object_collection.json".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_1.toml".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_collection_2.toml".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    #[case(
+        "./file_io_test_files/laptime_file_test_object_collection.toml".to_string(), 
+        vec!["120.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string()]
+    )]
+    fn able_to_import_race_laptimes(#[case] file_name: String, #[case] laptimes: Vec<String>) {
+        // Given
+        let expected_race_file = RaceFile {
+            track_name: "Default".to_string(),
+            laptimes,
+            ..Default::default()
+        };
+        let mut karting_time = KartingTime::default();
+
+        // When
+        karting_time.import_laptimes(&file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        pretty_assertions::assert_eq!(
+            expected_race_file.convert_to_race_result(),
+            karting_time.driver_profile.races[0]
+        );
     }
 
     #[test]

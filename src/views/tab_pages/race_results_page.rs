@@ -90,12 +90,8 @@ impl KartingTime {
 
         table.add_headers(vec!["Lap", "Time (s)"]);
 
-        let mut lap_number = 1;
-
-        for time in &race.race_statistics.formatted_laps {
+        for (lap_number, time) in (1..).zip(race.race_statistics.formatted_laps.iter()) {
             table.add_row(vec![&lap_number.to_string(), &time.to_string()]);
-
-            lap_number += 1;
         }
 
         Table::build(
