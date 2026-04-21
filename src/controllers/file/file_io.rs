@@ -51,25 +51,11 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
 pub fn read_laptimes_file(file_name: &str) -> RaceFile {
     let contents = get_file_contents(file_name);
 
-    let normalised_file_name = file_name.to_string().to_lowercase();
-
     if contents.is_empty() {
         return Default::default();
     }
 
-    if normalised_file_name.ends_with(".txt") {
-        read_laptime_list_file_strategy(file_name)
-    } else if normalised_file_name.ends_with(".md") {
-        read_laptime_list_file_strategy(file_name)
-    } else if normalised_file_name.ends_with(".csv") {
-        read_laptime_list_file_strategy(file_name)
-    } else if normalised_file_name.ends_with(".json") {
-        read_laptime_list_file_strategy(file_name)
-    } else if normalised_file_name.ends_with(".toml") {
-        read_laptime_list_file_strategy(file_name)
-    } else {
-        RaceFile::default()
-    }
+    read_laptime_list_file_strategy(file_name)
 }
 
 fn read_laptime_list_file_strategy(file_name: &str) -> RaceFile {
