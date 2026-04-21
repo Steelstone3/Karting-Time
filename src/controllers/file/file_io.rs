@@ -65,9 +65,9 @@ pub fn read_laptimes_file(file_name: &str) -> RaceFile {
     } else if normalised_file_name.ends_with(".csv") {
         read_laptime_list_file_strategy(file_name)
     } else if normalised_file_name.ends_with(".json") {
-        read_json_laptime_file_strategy(file_name)
+        read_laptime_list_file_strategy(file_name)
     } else if normalised_file_name.ends_with(".toml") {
-        read_toml_laptime_file_strategy(file_name)
+        read_laptime_list_file_strategy(file_name)
     } else {
         RaceFile::default()
     }
@@ -91,14 +91,6 @@ fn read_laptime_list_file_strategy(file_name: &str) -> RaceFile {
         .collect();
 
     RaceFile::new_from_laptime_file(laptimes)
-}
-
-fn read_json_laptime_file_strategy(file_name: &str) -> RaceFile {
-    read_laptime_list_file_strategy(file_name)
-}
-
-fn read_toml_laptime_file_strategy(file_name: &str) -> RaceFile {
-    read_laptime_list_file_strategy(file_name)
 }
 
 pub fn read_race_file(file_name: &str) -> RaceFile {
@@ -369,7 +361,7 @@ mod file_integration_should {
             "120.8".to_string(),
             "120.9".to_string()]
     )]
-     #[case(
+    #[case(
         "./file_io_test_files/laptime_file_test_collection_2.toml".to_string(), 
         vec!["120.6".to_string(),
             "120.7".to_string(),
