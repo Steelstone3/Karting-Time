@@ -27,11 +27,38 @@ pub fn format_laptime(time_in_seconds: f32) -> String {
     )
 }
 
-pub fn format_laptimes(laptimes: Vec<Lap>) -> Vec<String> {
+pub fn convert_laps_to_string_laps(laptimes: Vec<Lap>) -> Vec<String> {
     let mut formatted_laptimes: Vec<String> = vec![];
 
     for laptime in laptimes {
         formatted_laptimes.push(format_laptime(laptime.time));
+    }
+
+    formatted_laptimes
+}
+
+pub fn convert_string_laps_to_laps(laptimes: Vec<String>) -> Vec<Lap> {
+    let mut formatted_laptimes: Vec<Lap> = vec![];
+
+    for lap in laptimes.iter().enumerate() {
+        let trimmed_lap = lap.1.trim();
+
+        if trimmed_lap.contains(':') {
+            let parts: Vec<&str> = trimmed_lap.split(':').collect();
+
+            let minutes = parts[0].parse::<f32>();
+
+            if let Ok(minutes) = minutes {
+                let seconds = parts[1].parse::<f32>();
+
+                if let Ok(seconds) = seconds {
+                    formatted_laptimes.push(Lap::new((lap.0 + 1) as u32, minutes * 60.0 + seconds))
+                };
+            }
+        } else {
+            let time = lap.1.trim().parse::<f32>().ok();
+            formatted_laptimes.push(Lap::new((lap.0 + 1) as u32, time.unwrap_or_default()));
+        }
     }
 
     formatted_laptimes
@@ -70,5 +97,51 @@ mod format_laptime_should {
 
         // Then
         pretty_assertions::assert_eq!(expected_formatted_time, formatted_time);
+    }
+
+    #[test]
+    fn be_able_to_convert_laps_to_string_laps() {
+        // Given
+        let laps = vec![
+            Lap::new(1, 120.6),
+            Lap::new(2, 120.7),
+            Lap::new(3, 120.8),
+            Lap::new(4, 120.9),
+        ];
+        let expected_string_laps = vec![
+            "2:00.60".to_string(),
+            "2:00.70".to_string(),
+            "2:00.80".to_string(),
+            "2:00.90".to_string(),
+        ];
+
+        // When
+        let actual_laps = convert_laps_to_string_laps(laps);
+
+        // Then
+        pretty_assertions::assert_eq!(expected_string_laps, actual_laps);
+    }
+
+    #[test]
+    fn be_able_to_convert_string_laps_to_laps() {
+        // Given
+        let string_laps = vec![
+            "2:00.6".to_string(),
+            "120.7".to_string(),
+            "120.8".to_string(),
+            "120.9".to_string(),
+        ];
+        let expected_laps = vec![
+            Lap::new(1, 120.6),
+            Lap::new(2, 120.7),
+            Lap::new(3, 120.8),
+            Lap::new(4, 120.9),
+        ];
+
+        // When
+        let actual_laps = convert_string_laps_to_laps(string_laps);
+
+        // Then
+        pretty_assertions::assert_eq!(expected_laps, actual_laps);
     }
 }

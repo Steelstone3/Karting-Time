@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 impl RaceResult {
     pub fn convert_to_laps(&mut self, laptime_editor_string: String) {
-        let laptimes = self.convert_string_to_laps(laptime_editor_string);
+        let laptimes = Self::convert_laptimes_string_to_laps(laptime_editor_string);
 
         let mut converted_laptimes = Vec::new();
 
@@ -42,8 +42,8 @@ impl RaceResult {
         laps
     }
 
-    fn convert_string_to_laps(&self, laptime_editor_string: String) -> Vec<f32> {
-        laptime_editor_string
+    fn convert_laptimes_string_to_laps(laptime_string: String) -> Vec<f32> {
+        laptime_string
             .lines()
             .filter_map(|lap| {
                 let trimmed_lap = lap.trim();
@@ -51,14 +51,14 @@ impl RaceResult {
                 if trimmed_lap.contains(':') {
                     let parts: Vec<&str> = trimmed_lap.split(':').collect();
 
-                    let minutes = parts[0].parse::<u32>();
+                    let minutes = parts[0].parse::<f32>();
 
                     match minutes {
                         Ok(minutes) => {
                             let seconds = parts[1].parse::<f32>();
 
                             match seconds {
-                                Ok(seconds) => Some(minutes as f32 * 60.0 + seconds),
+                                Ok(seconds) => Some(minutes * 60.0 + seconds),
                                 Err(_) => None,
                             }
                         }

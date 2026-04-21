@@ -1,7 +1,8 @@
 use crate::{
     commands::messages::Message,
     controllers::file::file_picker::{
-        save_file_location, save_folder_location, select_file_to_load, select_files_to_load,
+        save_folder_location, save_toml_file_location, select_file_to_load,
+        select_toml_file_to_load, select_toml_files_to_load,
     },
     models::application::karting_time::KartingTime,
 };
@@ -19,8 +20,20 @@ impl KartingTime {
                 self.file_new();
                 Task::none()
             }
+            Message::ImportLaptimesFileRequested => {
+                select_file_to_load().map(Message::ImportLaptimesFileCompleted)
+            }
+            Message::ImportLaptimesFileCompleted(file_path) => {
+                if let Some(file_path) = file_path {
+                    self.import_laptimes(&file_path);
+                    self.driver_profile.sort_races();
+                    self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
+                }
+                Task::none()
+            }
             Message::ImportRacesRequested => {
-                select_files_to_load().map(Message::ImportRacesCompleted)
+                select_toml_files_to_load().map(Message::ImportRacesCompleted)
             }
             Message::ImportRacesCompleted(file_paths) => {
                 if let Some(file_paths) = file_paths {
@@ -44,14 +57,13 @@ impl KartingTime {
                 save_folder_location().map(Message::ExportHtmlRacesCompleted)
             }
             Message::ExportHtmlRacesCompleted(folder_location) => {
-                match folder_location {
-                    Some(folder_location) => self.export_html_races(&folder_location),
-                    None => todo!(),
+                if let Some(folder_location) = folder_location {
+                    self.export_html_races(&folder_location)
                 }
                 Task::none()
             }
             Message::SaveApplicationRequested => {
-                save_file_location().map(Message::SaveApplicationCompleted)
+                save_toml_file_location().map(Message::SaveApplicationCompleted)
             }
             Message::SaveApplicationCompleted(file_path) => {
                 if let Some(file_path) = file_path {
@@ -60,7 +72,7 @@ impl KartingTime {
                 Task::none()
             }
             Message::LoadApplicationRequested => {
-                select_file_to_load().map(Message::LoadApplicationCompleted)
+                select_toml_file_to_load().map(Message::LoadApplicationCompleted)
             }
             Message::LoadApplicationCompleted(file_path) => {
                 if let Some(file_path) = file_path {

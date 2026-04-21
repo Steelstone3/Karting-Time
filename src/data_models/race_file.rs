@@ -1,12 +1,14 @@
-use crate::models::{
-    date::RaceDate,
-    driver::session_information::{
-        lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
-        race_result::RaceResult, race_statistics::RaceStatistics, session::Session,
+use crate::{
+    controllers::converters::time_parser::convert_string_laps_to_laps,
+    models::{
+        date::RaceDate,
+        driver::session_information::{
+            race_information::RaceInformation, race_metadata::RaceMetadata,
+            race_result::RaceResult, race_statistics::RaceStatistics, session::Session,
+        },
     },
 };
 use serde::{Deserialize, Serialize};
-use std::f32;
 
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RaceFile {
@@ -27,6 +29,14 @@ pub struct RaceFile {
 }
 
 impl RaceFile {
+    pub fn new_from_laptime_file(laptimes: Vec<String>) -> Self {
+        Self {
+            track_name: "Default".to_string(),
+            laptimes,
+            ..Default::default()
+        }
+    }
+
     pub fn new(
         track_name: &str,
         laptimes: Vec<String>,
@@ -94,7 +104,7 @@ impl RaceFile {
         RaceResult::new(
             self.convert_to_race_information(),
             self.convert_to_race_metadata(),
-            self.convert_laptimes_to_laps(),
+            convert_string_laps_to_laps(self.laptimes.clone()),
         )
     }
 
@@ -132,23 +142,6 @@ impl RaceFile {
                 race_position,
             },
         )
-    }
-
-    fn convert_laptimes_to_laps(&self) -> Vec<Lap> {
-        let mut laps: Vec<Lap> = vec![];
-
-        for (index, laptime) in self.laptimes.iter().enumerate() {
-            let time = laptime.parse::<f32>();
-
-            if let Ok(time) = time {
-                laps.push(Lap {
-                    lap_number: (index + 1) as u32,
-                    time,
-                })
-            }
-        }
-
-        laps
     }
 
     fn convert_to_race_metadata(&self) -> RaceMetadata {
@@ -195,7 +188,10 @@ impl RaceFile {
 #[cfg(test)]
 mod race_file_should {
     use super::*;
-    use crate::{data_models::race_file::RaceFile, models::date::RaceDate};
+    use crate::{
+        data_models::race_file::RaceFile,
+        models::{date::RaceDate, driver::session_information::lap::Lap},
+    };
 
     #[test]
     fn convert_to_race() {
@@ -213,12 +209,20 @@ mod race_file_should {
                 "Championship",
                 "Notes",
             ),
-            vec![Lap::new(1, 50.662), Lap::new(2, 51.877)],
+            vec![
+                Lap::new(1, 50.662),
+                Lap::new(2, 51.877),
+                Lap::new(3, 61.222),
+            ],
         );
 
         let race_file = RaceFile::new(
             "Three Ponies",
-            vec!["50.662".to_string(), "51.877".to_string()],
+            vec![
+                "50.662".to_string(),
+                "51.877".to_string(),
+                "1:01.222".to_string(),
+            ],
             RaceMetadata::new(
                 Default::default(),
                 Default::default(),

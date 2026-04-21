@@ -1,5 +1,5 @@
 use crate::{
-    controllers::converters::time_parser::{format_laptime, format_laptimes},
+    controllers::converters::time_parser::{convert_laps_to_string_laps, format_laptime},
     models::driver::session_information::race_result::RaceResult,
 };
 
@@ -22,7 +22,7 @@ impl RaceStatistics {
             average_times_table: RaceResult::convert_hash_map(average_times),
             total_times_table: RaceResult::convert_hash_map(total_times),
             fastest_lap: format_laptime(race_result.get_fastest_lap()),
-            formatted_laps: format_laptimes(race_result.laptimes.clone()),
+            formatted_laps: convert_laps_to_string_laps(race_result.laptimes.clone()),
             number_of_laps: race_result.get_number_of_laps(),
             average_105_lap: format_laptime(race_result.get_average_lap()),
         }
