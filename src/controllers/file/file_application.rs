@@ -22,10 +22,12 @@ impl KartingTime {
     pub fn import_laptimes(&mut self, file_name: &str) {
         let race_file = read_laptimes_file(file_name);
 
-        let race = race_file.convert_to_race_result();
+        if let Some(race_file) = race_file {
+            let race = race_file.convert_to_race_result();
 
-        if race.is_unique_identifier(&self.driver_profile.races) {
-            self.driver_profile.races.push(race);
+            if race.is_unique_identifier(&self.driver_profile.races) {
+                self.driver_profile.races.push(race);
+            }
         }
     }
 
@@ -33,14 +35,16 @@ impl KartingTime {
         for file_name in file_names {
             let race_file = read_race_file(&file_name);
 
-            let race = race_file.convert_to_race_result();
+            if let Some(race_file) = race_file {
+                let race = race_file.convert_to_race_result();
 
-            if race.is_unique_identifier(&self.driver_profile.races) {
-                self.driver_profile.races.push(race);
+                if race.is_unique_identifier(&self.driver_profile.races) {
+                    self.driver_profile.races.push(race);
+                }
+
+                self.driver_profile.update_driver_profile();
             }
         }
-
-        self.driver_profile.update_driver_profile();
     }
 
     pub fn save_application(&self, file_path: &str) {
@@ -52,7 +56,9 @@ impl KartingTime {
     pub fn load_application(&mut self, file_name: &str) {
         let karting_time_file = read_application_state(file_name);
 
-        *self = karting_time_file.convert_to_karting_time();
+        if let Some(karting_time_file) = karting_time_file {
+            *self = karting_time_file.convert_to_karting_time()
+        }
     }
 }
 
@@ -132,7 +138,7 @@ mod file_application_should {
         karting_time.import_laptimes("");
 
         // Then
-        pretty_assertions::assert_eq!(1, karting_time.driver_profile.races.len());
+        assert!(karting_time.driver_profile.races.is_empty());
     }
 
     #[rstest]
@@ -233,14 +239,13 @@ mod file_application_should {
     #[test]
     fn import_non_existent_race_test() {
         // Given
-        let expected_race = RaceResult::default();
         let mut karting_time = KartingTime::default();
 
         // When
         karting_time.import_races(vec!["".to_string()]);
 
         // Then
-        pretty_assertions::assert_eq!(expected_race, karting_time.driver_profile.races[0]);
+        assert!(karting_time.driver_profile.races.is_empty());
     }
 
     #[test]

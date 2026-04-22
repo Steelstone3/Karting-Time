@@ -4,7 +4,7 @@ use crate::data_models::race_file::RaceFile;
 use crate::models::driver::driver_profile::DriverProfile;
 use crate::models::driver::session_information::race_result::RaceResult;
 use maud::Markup;
-use std::fs::{self, File};
+use std::fs::File;
 use std::io::{Read, Write};
 
 const FILE_ERROR: &str = "failed to create file";
@@ -48,23 +48,14 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
-pub fn read_laptimes_file(file_name: &str) -> RaceFile {
+pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
-        return Default::default();
+        return None;
     }
 
-    read_laptime_list_file_strategy(file_name)
-}
-
-fn read_laptime_list_file_strategy(file_name: &str) -> RaceFile {
-    let contents = match fs::read_to_string(file_name) {
-        Ok(contents) => contents,
-        Err(_) => return RaceFile::default(),
-    };
-
-    let laptimes = contents
+    let laptimes: Vec<String> = contents
         .lines()
         .map(|line| line.trim().trim_end_matches(',').to_string())
         .map(|line| {
@@ -75,14 +66,18 @@ fn read_laptime_list_file_strategy(file_name: &str) -> RaceFile {
         .filter(|line| line.chars().any(|c| c.is_ascii_digit()))
         .collect();
 
-    RaceFile::new_from_laptime_file(laptimes)
+    if laptimes.is_empty() {
+        return None;
+    }
+
+    Some(RaceFile::new_from_laptime_file(laptimes))
 }
 
-pub fn read_race_file(file_name: &str) -> RaceFile {
+pub fn read_race_file(file_name: &str) -> Option<RaceFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
-        return Default::default();
+        return None;
     }
 
     toml::from_str(&contents).unwrap_or_default()
@@ -102,11 +97,11 @@ pub fn upsert_application_state(file_path: &str, karting_time: &KartingTimeFile)
     write!(file, "{toml}").unwrap_or_default()
 }
 
-pub fn read_application_state(file_name: &str) -> KartingTimeFile {
+pub fn read_application_state(file_name: &str) -> Option<KartingTimeFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
-        return KartingTimeFile::default();
+        return None;
     }
 
     toml::from_str(&contents).unwrap_or_default()
@@ -279,14 +274,11 @@ mod file_integration_should {
 
     #[test]
     fn read_non_existent_laptime_file_test() {
-        // Given
-        let expected_race_file = RaceFile::default();
-
         // When
         let race_file = read_laptimes_file("");
 
         // Then
-        pretty_assertions::assert_eq!(expected_race_file, race_file);
+        assert!(race_file.is_none());
     }
 
     #[rstest]
@@ -377,19 +369,17 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        pretty_assertions::assert_eq!(expected_race_file, race_file);
+        assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
     }
 
     #[test]
     fn read_non_existent_race_file_test() {
-        // Given
-        let expected_race_file = RaceFile::default();
-
         // When
         let race_file = read_race_file("");
 
         // Then
-        pretty_assertions::assert_eq!(expected_race_file, race_file);
+        assert!(race_file.is_none());
     }
 
     #[test]
@@ -435,7 +425,8 @@ mod file_integration_should {
         let race_file = read_race_file(&file_name);
 
         // Then
-        pretty_assertions::assert_eq!(expected_race_file, race_file);
+        assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
     }
 
     #[test]
@@ -482,14 +473,14 @@ mod file_integration_should {
         let race_file = read_race_file(&file_name);
 
         // Then
-        pretty_assertions::assert_eq!(expected_race_file, race_file);
+        assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
     }
 
     #[test]
     fn read_application_state_empty() {
         // Given
         let file_name = "non_existent_file.toml";
-        let expected_application = KartingTimeFile::default();
 
         // When
         let _guard = TestFileGuard::new(file_name);
@@ -497,7 +488,7 @@ mod file_integration_should {
         let karting_time = read_application_state(file_name);
 
         // Then
-        pretty_assertions::assert_eq!(expected_application, karting_time);
+        assert!(karting_time.is_none());
     }
 
     #[test]
@@ -546,6 +537,7 @@ mod file_integration_should {
         let karting_time = read_application_state(file_name);
 
         // Then
-        pretty_assertions::assert_eq!(expected_karting_time, karting_time);
+        assert!(karting_time.is_some(), "Unexpectedly returned None");
+        assert_eq!(expected_karting_time, karting_time.unwrap());
     }
 }
