@@ -20,7 +20,7 @@ impl KartingTime {
     }
 
     pub fn import_acc_laptimes(&mut self, file_name: &str) {
-         let race_file = read_acc_laptimes_file(file_name);
+        let race_file = read_acc_laptimes_file(file_name);
 
         if let Some(race_file) = race_file {
             let race = race_file.convert_to_race_result();
