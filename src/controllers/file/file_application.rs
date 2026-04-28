@@ -19,6 +19,18 @@ impl KartingTime {
         upsert_html_races(folder_location, &self.driver_profile);
     }
 
+    pub fn import_acc_laptimes(&mut self, file_name: &str) {
+         let race_file = read_acc_laptimes_file(file_name);
+
+        if let Some(race_file) = race_file {
+            let race = race_file.convert_to_race_result();
+
+            if race.is_unique_identifier(&self.driver_profile.races) {
+                self.driver_profile.races.push(race);
+            }
+        }
+    }
+
     pub fn import_laptimes(&mut self, file_name: &str) {
         let race_file = read_laptimes_file(file_name);
 

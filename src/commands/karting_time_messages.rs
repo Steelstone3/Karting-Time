@@ -2,7 +2,7 @@ use crate::{
     commands::messages::Message,
     controllers::file::file_picker::{
         save_folder_location, save_toml_file_location, select_file_to_load,
-        select_toml_file_to_load, select_toml_files_to_load,
+        select_json_file_to_load, select_toml_file_to_load, select_toml_files_to_load,
     },
     models::application::karting_time::KartingTime,
 };
@@ -20,7 +20,7 @@ impl KartingTime {
                 self.file_new();
                 Task::none()
             }
-             Message::SaveApplicationRequested => {
+            Message::SaveApplicationRequested => {
                 save_toml_file_location().map(Message::SaveApplicationCompleted)
             }
             Message::SaveApplicationCompleted(file_path) => {
@@ -53,8 +53,18 @@ impl KartingTime {
                 }
                 Task::none()
             }
-            Message::ImportAccLaptimesFileRequested => Task::none(),
-            Message::ImportAccLaptimesFileCompleted(_) => Task::none(),
+            Message::ImportAccLaptimesFileRequested => {
+                select_json_file_to_load().map(Message::ImportAccLaptimesFileCompleted)
+            }
+            Message::ImportAccLaptimesFileCompleted(file_path) => {
+                if let Some(file_path) = file_path {
+                    self.import_laptimes(&file_path);
+                    self.driver_profile.sort_races();
+                    self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
+                }
+                Task::none()
+            }
             Message::ImportLaptimesFileRequested => {
                 select_file_to_load().map(Message::ImportLaptimesFileCompleted)
             }
@@ -85,7 +95,7 @@ impl KartingTime {
                 }
                 Task::none()
             }
-           
+
             Message::ViewToggleTheme => {
                 self.switch_theme();
                 Task::none()

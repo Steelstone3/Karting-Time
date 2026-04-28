@@ -12,6 +12,17 @@ pub fn select_toml_file_to_load() -> Task<Option<String>> {
     })
 }
 
+pub fn select_json_file_to_load() -> Task<Option<String>> {
+    Task::future(async {
+        let file = AsyncFileDialog::new()
+            .add_filter("json", &["json"])
+            .pick_file()
+            .await;
+
+        file.and_then(|handle| handle.path().to_str().map(|s| s.to_string()))
+    })
+}
+
 pub fn select_file_to_load() -> Task<Option<String>> {
     Task::future(async {
         let file = AsyncFileDialog::new()

@@ -48,6 +48,22 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
+pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
+    let contents = get_file_contents(file_name);
+
+    if contents.is_empty() {
+        return None;
+    }
+
+    struct AccLaptimes {
+
+    }
+
+    // let acc_laptimes: AccLaptimes = serde_json::from_str(&contents).unwrap_or_default();
+
+    Some(RaceFile::default())
+}
+
 pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
     let contents = get_file_contents(file_name);
 
