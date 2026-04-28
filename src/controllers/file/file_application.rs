@@ -19,6 +19,7 @@ impl KartingTime {
         upsert_html_races(folder_location, &self.driver_profile);
     }
 
+    // TODO Test
     pub fn import_acc_laptimes(&mut self, file_name: &str) {
         let race_file = read_acc_laptimes_file(file_name);
 
