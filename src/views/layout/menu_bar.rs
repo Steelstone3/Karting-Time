@@ -20,18 +20,32 @@ impl KartingTime {
                     (button("Load Driver Profile")
                         .width(Length::Fill)
                         .on_press(Message::LoadApplicationRequested)),
-                    (button("Import Laptimes")
-                        .width(Length::Fill)
-                        .on_press(Message::ImportLaptimesFileRequested)),
-                    (button("Import Race")
-                        .width(Length::Fill)
-                        .on_press(Message::ImportRacesRequested)),
-                    (button("Export Races")
-                        .width(Length::Fill)
-                        .on_press(Message::ExportRacesRequested)),
-                    (button("Export HTML Races")
-                        .width(Length::Fill)
-                        .on_press(Message::ExportHtmlRacesRequested))
+                    (
+                        button("Import")
+                            .width(Length::Fill)
+                            .on_press(Message::MenuBar),
+                        menu_template(menu_items!(
+                            (button("Import Laptimes")
+                                .width(Length::Fill)
+                                .on_press(Message::ImportLaptimesFileRequested)),
+                            (button("Import Race")
+                                .width(Length::Fill)
+                                .on_press(Message::ImportRacesRequested))
+                        ))
+                    ),
+                    (
+                        button("Export")
+                            .width(Length::Fill)
+                            .on_press(Message::MenuBar),
+                        menu_template(menu_items!(
+                            (button("Export Races")
+                                .width(Length::Fill)
+                                .on_press(Message::ExportRacesRequested)),
+                            (button("Export HTML Races")
+                                .width(Length::Fill)
+                                .on_press(Message::ExportHtmlRacesRequested))
+                        ))
+                    )
                 ))
             ),
             (
