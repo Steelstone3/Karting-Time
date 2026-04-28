@@ -1,9 +1,14 @@
 use crate::controllers::file::html_converter::convert_to_html;
 use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_file::RaceFile;
+use crate::models::date::RaceDate;
 use crate::models::driver::driver_profile::DriverProfile;
+use crate::models::driver::session_information::race_metadata::RaceMetadata;
 use crate::models::driver::session_information::race_result::RaceResult;
+use crate::models::driver::session_information::session::Session;
+use chrono::{Datelike, Local};
 use maud::Markup;
+use serde::Deserialize;
 use std::fs::File;
 use std::io::{Read, Write};
 
@@ -53,18 +58,79 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
+        println!("no contents");
         return None;
     }
 
-    // struct AccLap {}
+    #[derive(Default, Debug, Deserialize)]
+    pub struct AccSessionData {
+        #[serde(rename = "trackName")]
+        pub track_name: String,
+        #[serde(rename = "sessionType")]
+        pub session_type: String,
+        #[serde(rename = "sessionIndex")]
+        pub session_index: u32,
+        // #[serde(rename = "metaData")]
+        // pub metadata: String,
+        #[serde(rename = "laps")]
+        pub laps: Vec<AccLap>,
+        // pub penalties: Vec<serde_json::Value>,
+        // pub post_race_penalties: Vec<serde_json::Value>,
+    }
 
-    // struct AccLaptimes {
-    //     laps: Vec<AccLap>,
-    // }
+    #[derive(Default, Debug, Deserialize)]
+    pub struct AccLap {
+        // pub carId: u32,
+        // pub driverIndex: u32,
+        pub laptime: String,
+        // pub isValidForBest: bool,
+        // pub splits: Vec<u32>,
+    }
 
-    // let acc_laptimes: AccLaptimes = serde_json::from_str(&contents).unwrap_or_default();
+    let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
-    Some(RaceFile::default())
+    if session_data.track_name.is_empty() {
+        println!("track name is empty")
+    } else {
+        println!("{}", &session_data.track_name);
+    }
+
+    if session_data.session_type.is_empty() {
+        println!("session type is empty");
+    } else {
+        println!("{}", &session_data.session_type);
+    }
+    println!("{}", &session_data.session_index);
+
+    let laptimes: Vec<String> = session_data
+        .laps
+        .into_iter()
+        .map(|lap| lap.laptime)
+        .collect();
+
+    if laptimes.is_empty() {
+        println!("laptimes is empty")
+    } else {
+        for laptime in &laptimes {
+            println!("Lap time: {}", laptime);
+        }
+    }
+
+    let today = Local::now().date_naive();
+
+    Some(RaceFile::new(
+        &session_data.track_name,
+        laptimes,
+        RaceMetadata::new(
+            &session_data.session_type,
+            Default::default(),
+            Default::default(),
+            Default::default(),
+            "Imported from ACC",
+        ),
+        Session::new(session_data.session_index, 999),
+        RaceDate::new(today.day(), today.month(), today.year()),
+    ))
 }
 
 pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
