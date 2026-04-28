@@ -58,7 +58,7 @@ impl KartingTime {
             }
             Message::ImportAccLaptimesFileCompleted(file_path) => {
                 if let Some(file_path) = file_path {
-                    self.import_laptimes(&file_path);
+                    self.import_acc_laptimes(&file_path);
                     self.driver_profile.sort_races();
                     self.driver_profile.update_filtering();
                     self.driver_profile.filter.update_pagination();

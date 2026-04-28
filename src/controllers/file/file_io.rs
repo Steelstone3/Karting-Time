@@ -55,11 +55,11 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
         return None;
     }
 
-    struct AccLap {}
+    // struct AccLap {}
 
-    struct AccLaptimes {
-        laps: Vec<AccLap>,
-    }
+    // struct AccLaptimes {
+    //     laps: Vec<AccLap>,
+    // }
 
     // let acc_laptimes: AccLaptimes = serde_json::from_str(&contents).unwrap_or_default();
 
