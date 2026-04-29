@@ -358,6 +358,39 @@ mod file_integration_should {
     }
 
     #[test]
+    fn read_non_existent_acc_laptime_file_test() {
+        // When
+        let race_file = read_acc_laptimes_file("");
+
+        // Then
+        assert!(race_file.is_none());
+    }
+
+    #[test]
+    fn read_acc_laptime_file_test() {
+        // Given
+        let expected_race_file = RaceFile {
+            track_name: "Default".to_string(),
+            laptimes: vec!["120.0".to_string()],
+            ..Default::default()
+        };
+
+        let file_name = "./file_io_test_files/acc_file.md";
+
+        // When
+        let race_file = read_acc_laptimes_file("");
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+    }
+
+    #[test]
     fn read_non_existent_laptime_file_test() {
         // When
         let race_file = read_laptimes_file("");
