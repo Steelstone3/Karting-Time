@@ -375,7 +375,7 @@ mod file_integration_should {
             ..Default::default()
         };
 
-        let file_name = "./file_io_test_files/acc_file.md";
+        let file_name = "./file_io_test_files/acc_file.json";
 
         // When
         let race_file = read_acc_laptimes_file("");
