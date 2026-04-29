@@ -378,7 +378,7 @@ mod file_integration_should {
         let file_name = "./file_io_test_files/acc_file.json";
 
         // When
-        let race_file = read_acc_laptimes_file("");
+        let race_file = read_acc_laptimes_file(file_name);
 
         // Then
         assert!(
