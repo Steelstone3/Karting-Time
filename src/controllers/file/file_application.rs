@@ -66,7 +66,9 @@ impl KartingTime {
     pub fn load_application(&mut self, file_name: &str) {
         let karting_time_file = read_application_state(file_name);
 
-        let Some(karting_time_file) = karting_time_file else { return };
+        let Some(karting_time_file) = karting_time_file else {
+            return;
+        };
         *self = karting_time_file.convert_to_karting_time()
     }
 }
