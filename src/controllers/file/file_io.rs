@@ -386,8 +386,8 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
         assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
     }
 
     #[test]
