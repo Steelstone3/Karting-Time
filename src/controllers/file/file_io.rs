@@ -348,7 +348,20 @@ mod file_integration_should {
         // Given
         let expected_race_file = RaceFile {
             track_name: "Default".to_string(),
-            laptimes: vec!["120.0".to_string()],
+            laptimes: vec![
+                "122.505".to_string(),
+                "122.147".to_string(),
+                "121.615".to_string(),
+                "121.1".to_string(),
+                "121.935".to_string(),
+                "123.527".to_string(),
+                "122.215".to_string(),
+                "121.702".to_string(),
+                "122.18".to_string(),
+                "121.297".to_string(),
+                "120.785".to_string(),
+                "120.522".to_string(),
+            ],
             ..Default::default()
         };
 
