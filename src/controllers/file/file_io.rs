@@ -7,9 +7,7 @@ use crate::models::driver::session_information::acc_session_data::AccSessionData
 use crate::models::driver::session_information::race_metadata::RaceMetadata;
 use crate::models::driver::session_information::race_result::RaceResult;
 use crate::models::driver::session_information::session::Session;
-use chrono::{Datelike, Local};
 use maud::Markup;
-use serde::Deserialize;
 use std::fs::File;
 use std::io::{Read, Write};
 
