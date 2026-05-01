@@ -2,7 +2,7 @@ use crate::{
     commands::messages::Message,
     controllers::file::file_picker::{
         save_folder_location, save_toml_file_location, select_file_to_load,
-        select_toml_file_to_load, select_toml_files_to_load,
+        select_json_file_to_load, select_toml_file_to_load, select_toml_files_to_load,
     },
     models::application::karting_time::KartingTime,
 };
@@ -20,12 +20,21 @@ impl KartingTime {
                 self.file_new();
                 Task::none()
             }
-            Message::ImportLaptimesFileRequested => {
-                select_file_to_load().map(Message::ImportLaptimesFileCompleted)
+            Message::SaveApplicationRequested => {
+                save_toml_file_location().map(Message::SaveApplicationCompleted)
             }
-            Message::ImportLaptimesFileCompleted(file_path) => {
+            Message::SaveApplicationCompleted(file_path) => {
                 if let Some(file_path) = file_path {
-                    self.import_laptimes(&file_path);
+                    self.save_application(&file_path);
+                }
+                Task::none()
+            }
+            Message::LoadApplicationRequested => {
+                select_toml_file_to_load().map(Message::LoadApplicationCompleted)
+            }
+            Message::LoadApplicationCompleted(file_path) => {
+                if let Some(file_path) = file_path {
+                    self.load_application(&file_path);
                     self.driver_profile.sort_races();
                     self.driver_profile.update_filtering();
                     self.driver_profile.filter.update_pagination();
@@ -38,6 +47,30 @@ impl KartingTime {
             Message::ImportRacesCompleted(file_paths) => {
                 if let Some(file_paths) = file_paths {
                     self.import_races(file_paths);
+                    self.driver_profile.sort_races();
+                    self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
+                }
+                Task::none()
+            }
+            Message::ImportAccLaptimesFileRequested => {
+                select_json_file_to_load().map(Message::ImportAccLaptimesFileCompleted)
+            }
+            Message::ImportAccLaptimesFileCompleted(file_path) => {
+                if let Some(file_path) = file_path {
+                    self.import_acc_laptimes(&file_path);
+                    self.driver_profile.sort_races();
+                    self.driver_profile.update_filtering();
+                    self.driver_profile.filter.update_pagination();
+                }
+                Task::none()
+            }
+            Message::ImportLaptimesFileRequested => {
+                select_file_to_load().map(Message::ImportLaptimesFileCompleted)
+            }
+            Message::ImportLaptimesFileCompleted(file_path) => {
+                if let Some(file_path) = file_path {
+                    self.import_laptimes(&file_path);
                     self.driver_profile.sort_races();
                     self.driver_profile.update_filtering();
                     self.driver_profile.filter.update_pagination();
@@ -62,27 +95,7 @@ impl KartingTime {
                 }
                 Task::none()
             }
-            Message::SaveApplicationRequested => {
-                save_toml_file_location().map(Message::SaveApplicationCompleted)
-            }
-            Message::SaveApplicationCompleted(file_path) => {
-                if let Some(file_path) = file_path {
-                    self.save_application(&file_path);
-                }
-                Task::none()
-            }
-            Message::LoadApplicationRequested => {
-                select_toml_file_to_load().map(Message::LoadApplicationCompleted)
-            }
-            Message::LoadApplicationCompleted(file_path) => {
-                if let Some(file_path) = file_path {
-                    self.load_application(&file_path);
-                    self.driver_profile.sort_races();
-                    self.driver_profile.update_filtering();
-                    self.driver_profile.filter.update_pagination();
-                }
-                Task::none()
-            }
+
             Message::ViewToggleTheme => {
                 self.switch_theme();
                 Task::none()

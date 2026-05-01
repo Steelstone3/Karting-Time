@@ -23,7 +23,7 @@ impl KartingTimeFile {
 mod karting_time_file_should {
     use super::*;
     use crate::{
-        data_models::race_file::RaceFile,
+        data_models::race_result_file::RaceResultFile,
         models::{
             date::RaceDate,
             driver::{
@@ -60,7 +60,7 @@ mod karting_time_file_should {
 
         let karting_time_file = KartingTimeFile::new(DriverProfileFile::new(
             "Karl Chadwick",
-            vec![RaceFile::new(
+            vec![RaceResultFile::new(
                 "Three Ponies",
                 vec!["50.662".to_string(), "51.877".to_string()],
                 RaceMetadata::new(

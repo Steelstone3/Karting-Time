@@ -1,8 +1,12 @@
 use crate::controllers::file::html_converter::convert_to_html;
 use crate::data_models::karting_time_file::KartingTimeFile;
-use crate::data_models::race_file::RaceFile;
+use crate::data_models::race_result_file::RaceResultFile;
+use crate::models::date::RaceDate;
 use crate::models::driver::driver_profile::DriverProfile;
+use crate::models::driver::session_information::acc_session_data::AccSessionData;
+use crate::models::driver::session_information::race_metadata::RaceMetadata;
 use crate::models::driver::session_information::race_result::RaceResult;
+use crate::models::driver::session_information::session::Session;
 use maud::Markup;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -48,7 +52,32 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
-pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
+// TODO Test
+pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
+    let contents = get_file_contents(file_name);
+
+    if contents.is_empty() {
+        return None;
+    }
+
+    let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
+
+    Some(RaceResultFile::new(
+        &session_data.track_name,
+        session_data.convert_to_laptimes(),
+        RaceMetadata::new(
+            &session_data.session_type,
+            Default::default(),
+            Default::default(),
+            Default::default(),
+            "Imported from ACC",
+        ),
+        Session::new(session_data.session_index, 999),
+        RaceDate::today(),
+    ))
+}
+
+pub fn read_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
@@ -70,10 +99,10 @@ pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
         return None;
     }
 
-    Some(RaceFile::new_from_laptime_file(laptimes))
+    Some(RaceResultFile::new_from_laptime_file(laptimes))
 }
 
-pub fn read_race_file(file_name: &str) -> Option<RaceFile> {
+pub fn read_race_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
@@ -273,6 +302,54 @@ mod file_integration_should {
     }
 
     #[test]
+    fn read_non_existent_acc_laptime_file_test() {
+        // When
+        let race_file = read_acc_laptimes_file("");
+
+        // Then
+        assert!(race_file.is_none());
+    }
+
+    #[test]
+    fn read_acc_laptime_file_test() {
+        // Given
+        let expected_race_file = RaceResultFile::new(
+            "silverstone",
+            vec![
+                "122.505".to_string(),
+                "122.147".to_string(),
+                "121.615".to_string(),
+                "121.1".to_string(),
+                "121.935".to_string(),
+                "123.527".to_string(),
+                "122.215".to_string(),
+                "121.702".to_string(),
+                "122.18".to_string(),
+                "121.297".to_string(),
+                "120.785".to_string(),
+                "120.522".to_string(),
+            ],
+            RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC"),
+            Session::new(0, 999),
+            RaceDate::today(),
+        );
+
+        let file_name = "./file_io_test_files/acc_file.json";
+
+        // When
+        let race_file = read_acc_laptimes_file(file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+    }
+
+    #[test]
     fn read_non_existent_laptime_file_test() {
         // When
         let race_file = read_laptimes_file("");
@@ -354,7 +431,7 @@ mod file_integration_should {
     )]
     fn read_laptime_file_test(#[case] file_name: String, #[case] laptimes: Vec<String>) {
         // Given
-        let expected_race_file = RaceFile {
+        let expected_race_file = RaceResultFile {
             track_name: "Default".to_string(),
             laptimes,
             ..Default::default()
@@ -401,7 +478,7 @@ mod file_integration_should {
             ),
             Default::default(),
         )];
-        let expected_race_file = RaceFile::new(
+        let expected_race_file = RaceResultFile::new(
             "Three Sisters",
             Default::default(),
             RaceMetadata::new(
@@ -449,7 +526,7 @@ mod file_integration_should {
             Default::default(),
         )];
 
-        let expected_race_file = RaceFile::new(
+        let expected_race_file = RaceResultFile::new(
             "Three Sisters",
             Default::default(),
             RaceMetadata::new(

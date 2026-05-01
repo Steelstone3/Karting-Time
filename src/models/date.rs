@@ -1,5 +1,5 @@
 use crate::views::application::input_parser::parse_input_u32;
-use chrono::NaiveDate;
+use chrono::{Datelike, Local, NaiveDate};
 use std::{cmp::Ordering, fmt::Display};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -13,6 +13,12 @@ impl RaceDate {
     #[allow(dead_code)]
     pub fn new(day: u32, month: u32, year: i32) -> Self {
         Self { day, month, year }
+    }
+
+    pub fn today() -> RaceDate {
+        let today = Local::now().date_naive();
+
+        RaceDate::new(today.day(), today.month(), today.year())
     }
 }
 

@@ -2,7 +2,7 @@ use super::file_io::{
     read_application_state, read_race_file, upsert_application_state, upsert_races,
 };
 use crate::{
-    controllers::file::file_io::{read_laptimes_file, upsert_html_races},
+    controllers::file::file_io::{read_acc_laptimes_file, read_laptimes_file, upsert_html_races},
     models::application::karting_time::KartingTime,
 };
 
@@ -19,15 +19,26 @@ impl KartingTime {
         upsert_html_races(folder_location, &self.driver_profile);
     }
 
+    // TODO Test
+    pub fn import_acc_laptimes(&mut self, file_name: &str) {
+        let race_file = read_acc_laptimes_file(file_name);
+
+        let Some(race_file) = race_file else { return };
+        let race = race_file.convert_to_race_result();
+
+        if race.is_unique_identifier(&self.driver_profile.races) {
+            self.driver_profile.races.push(race);
+        }
+    }
+
     pub fn import_laptimes(&mut self, file_name: &str) {
         let race_file = read_laptimes_file(file_name);
 
-        if let Some(race_file) = race_file {
-            let race = race_file.convert_to_race_result();
+        let Some(race_file) = race_file else { return };
+        let race = race_file.convert_to_race_result();
 
-            if race.is_unique_identifier(&self.driver_profile.races) {
-                self.driver_profile.races.push(race);
-            }
+        if race.is_unique_identifier(&self.driver_profile.races) {
+            self.driver_profile.races.push(race);
         }
     }
 
@@ -35,15 +46,14 @@ impl KartingTime {
         for file_name in file_names {
             let race_file = read_race_file(&file_name);
 
-            if let Some(race_file) = race_file {
-                let race = race_file.convert_to_race_result();
+            let Some(race_file) = race_file else { continue };
+            let race = race_file.convert_to_race_result();
 
-                if race.is_unique_identifier(&self.driver_profile.races) {
-                    self.driver_profile.races.push(race);
-                }
-
-                self.driver_profile.update_driver_profile();
+            if race.is_unique_identifier(&self.driver_profile.races) {
+                self.driver_profile.races.push(race);
             }
+
+            self.driver_profile.update_driver_profile();
         }
     }
 
@@ -56,9 +66,10 @@ impl KartingTime {
     pub fn load_application(&mut self, file_name: &str) {
         let karting_time_file = read_application_state(file_name);
 
-        if let Some(karting_time_file) = karting_time_file {
-            *self = karting_time_file.convert_to_karting_time()
-        }
+        let Some(karting_time_file) = karting_time_file else {
+            return;
+        };
+        *self = karting_time_file.convert_to_karting_time()
     }
 }
 
@@ -67,7 +78,7 @@ mod file_application_should {
     use super::*;
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
-        data_models::race_file::RaceFile,
+        data_models::race_result_file::RaceResultFile,
         models::{
             date::RaceDate,
             driver::{
@@ -214,7 +225,7 @@ mod file_application_should {
     )]
     fn able_to_import_race_laptimes(#[case] file_name: String, #[case] laptimes: Vec<String>) {
         // Given
-        let expected_race_file = RaceFile {
+        let expected_race_file = RaceResultFile {
             track_name: "Default".to_string(),
             laptimes,
             ..Default::default()
