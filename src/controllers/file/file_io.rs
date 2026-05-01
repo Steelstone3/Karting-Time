@@ -59,7 +59,6 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
-        println!("no contents");
         return None;
     }
 
