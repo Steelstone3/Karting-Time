@@ -3,6 +3,7 @@ use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_result_file::RaceResultFile;
 use crate::models::date::RaceDate;
 use crate::models::driver::driver_profile::DriverProfile;
+use crate::models::driver::session_information::acc_session_data::AccSessionData;
 use crate::models::driver::session_information::race_metadata::RaceMetadata;
 use crate::models::driver::session_information::race_result::RaceResult;
 use crate::models::driver::session_information::session::Session;
@@ -62,39 +63,15 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
         return None;
     }
 
-    // TODO Move to models
-    #[derive(Default, Debug, Deserialize)]
-    pub struct AccSessionData {
-        #[serde(rename = "trackName")]
-        pub track_name: String,
-        #[serde(rename = "sessionType")]
-        pub session_type: String,
-        #[serde(rename = "sessionIndex")]
-        pub session_index: u32,
-        #[serde(rename = "laps")]
-        pub laps: Vec<AccLap>,
-    }
+  
 
-    // TODO Move to models
-    #[derive(Default, Debug, Deserialize)]
-    pub struct AccLap {
-        // TODO May want to consider grouping laptimes per driver index and making separate enteries for each
-        // pub driverIndex: u32,
-        pub laptime: f32,
-    }
+   
 
     let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
-    // TODO move to session data impl
-    let laptimes: Vec<String> = session_data
-        .laps
-        .into_iter()
-        .map(|lap| (lap.laptime / 1000.0).to_string())
-        .collect();
-
     Some(RaceResultFile::new(
         &session_data.track_name,
-        laptimes,
+        session_data.convert_to_laptimes(),
         RaceMetadata::new(
             &session_data.session_type,
             Default::default(),
