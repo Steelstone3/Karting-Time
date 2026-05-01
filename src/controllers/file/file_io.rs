@@ -63,10 +63,6 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
         return None;
     }
 
-  
-
-   
-
     let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
     Some(RaceResultFile::new(
