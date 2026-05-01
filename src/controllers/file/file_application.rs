@@ -78,7 +78,7 @@ mod file_application_should {
     use super::*;
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
-        data_models::race_file::RaceFile,
+        data_models::race_result_file::RaceResultFile,
         models::{
             date::RaceDate,
             driver::{
@@ -225,7 +225,7 @@ mod file_application_should {
     )]
     fn able_to_import_race_laptimes(#[case] file_name: String, #[case] laptimes: Vec<String>) {
         // Given
-        let expected_race_file = RaceFile {
+        let expected_race_file = RaceResultFile {
             track_name: "Default".to_string(),
             laptimes,
             ..Default::default()

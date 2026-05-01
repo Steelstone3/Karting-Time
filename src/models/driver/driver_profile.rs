@@ -81,7 +81,7 @@ impl Default for DriverProfile {
 mod driver_profile_should {
     use super::*;
     use crate::{
-        data_models::race_file::RaceFile,
+        data_models::race_result_file::RaceResultFile,
         models::{
             date::RaceDate,
             driver::session_information::{
@@ -96,7 +96,7 @@ mod driver_profile_should {
         // Given
         let expected_driver_profile_file = DriverProfileFile::new(
             "Karl Chadwick",
-            vec![RaceFile::new(
+            vec![RaceResultFile::new(
                 "Three Ponies",
                 vec!["50.662".to_string(), "51.877".to_string()],
                 RaceMetadata::new(

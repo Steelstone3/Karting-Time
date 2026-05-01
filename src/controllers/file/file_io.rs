@@ -1,6 +1,6 @@
 use crate::controllers::file::html_converter::convert_to_html;
 use crate::data_models::karting_time_file::KartingTimeFile;
-use crate::data_models::race_file::RaceFile;
+use crate::data_models::race_result_file::RaceResultFile;
 use crate::models::date::RaceDate;
 use crate::models::driver::driver_profile::DriverProfile;
 use crate::models::driver::session_information::race_metadata::RaceMetadata;
@@ -54,7 +54,7 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
 }
 
 // TODO Test
-pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
+pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
@@ -92,10 +92,7 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
         .map(|lap| (lap.laptime / 1000.0).to_string())
         .collect();
 
-    // TODO move to RaceDate
-    let today = Local::now().date_naive();
-
-    Some(RaceFile::new(
+    Some(RaceResultFile::new(
         &session_data.track_name,
         laptimes,
         RaceMetadata::new(
@@ -106,11 +103,11 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
             "Imported from ACC",
         ),
         Session::new(session_data.session_index, 999),
-        RaceDate::new(today.day(), today.month(), today.year()),
+        RaceDate::today(),
     ))
 }
 
-pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
+pub fn read_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
@@ -132,10 +129,10 @@ pub fn read_laptimes_file(file_name: &str) -> Option<RaceFile> {
         return None;
     }
 
-    Some(RaceFile::new_from_laptime_file(laptimes))
+    Some(RaceResultFile::new_from_laptime_file(laptimes))
 }
 
-pub fn read_race_file(file_name: &str) -> Option<RaceFile> {
+pub fn read_race_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
@@ -346,9 +343,9 @@ mod file_integration_should {
     #[test]
     fn read_acc_laptime_file_test() {
         // Given
-        let expected_race_file = RaceFile {
-            track_name: "Default".to_string(),
-            laptimes: vec![
+        let expected_race_file = RaceResultFile::new(
+            "silverstone",
+            vec![
                 "122.505".to_string(),
                 "122.147".to_string(),
                 "121.615".to_string(),
@@ -362,8 +359,10 @@ mod file_integration_should {
                 "120.785".to_string(),
                 "120.522".to_string(),
             ],
-            ..Default::default()
-        };
+            RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC"),
+            Session::new(0, 999),
+            RaceDate::today(),
+        );
 
         let file_name = "./file_io_test_files/acc_file.json";
 
@@ -462,7 +461,7 @@ mod file_integration_should {
     )]
     fn read_laptime_file_test(#[case] file_name: String, #[case] laptimes: Vec<String>) {
         // Given
-        let expected_race_file = RaceFile {
+        let expected_race_file = RaceResultFile {
             track_name: "Default".to_string(),
             laptimes,
             ..Default::default()
@@ -509,7 +508,7 @@ mod file_integration_should {
             ),
             Default::default(),
         )];
-        let expected_race_file = RaceFile::new(
+        let expected_race_file = RaceResultFile::new(
             "Three Sisters",
             Default::default(),
             RaceMetadata::new(
@@ -557,7 +556,7 @@ mod file_integration_should {
             Default::default(),
         )];
 
-        let expected_race_file = RaceFile::new(
+        let expected_race_file = RaceResultFile::new(
             "Three Sisters",
             Default::default(),
             RaceMetadata::new(

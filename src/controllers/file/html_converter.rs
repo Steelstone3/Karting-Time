@@ -225,7 +225,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
 mod html_converter_should {
     use crate::{
         controllers::file::html_converter::convert_to_html,
-        data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
+        data_models::{driver_profile_file::DriverProfileFile, race_result_file::RaceResultFile},
         models::{
             date::RaceDate,
             driver::session_information::{race_metadata::RaceMetadata, session::Session},
@@ -514,7 +514,7 @@ mod html_converter_should {
     fn driver_profile_file_test_fixture() -> DriverProfileFile {
         DriverProfileFile::new(
             "Derek",
-            vec![RaceFile::new(
+            vec![RaceResultFile::new(
                 "Three Brothers",
                 vec![
                     "5.0".to_string(),

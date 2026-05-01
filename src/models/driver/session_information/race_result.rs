@@ -1,6 +1,6 @@
 use super::{lap::Lap, race_information::RaceInformation};
 use crate::{
-    data_models::race_file::RaceFile,
+    data_models::race_result_file::RaceResultFile,
     models::driver::session_information::{
         race_metadata::RaceMetadata, race_statistics::RaceStatistics, session::Session,
     },
@@ -38,8 +38,8 @@ impl RaceResult {
         self.race_statistics = RaceStatistics::new(self);
     }
 
-    pub fn convert_to_race_file(&self) -> RaceFile {
-        RaceFile::new(
+    pub fn convert_to_race_file(&self) -> RaceResultFile {
+        RaceResultFile::new(
             &self.race_information.track_name,
             self.convert_laps_to_laptimes(),
             RaceMetadata::new(
@@ -78,7 +78,7 @@ mod race_result_should {
     #[test]
     fn convert_to_race_file() {
         // Given
-        let expected_race_file = RaceFile::new(
+        let expected_race_file = RaceResultFile::new(
             "Three Sisters",
             vec!["54.2".to_string(), "55.6".to_string()],
             RaceMetadata::new(

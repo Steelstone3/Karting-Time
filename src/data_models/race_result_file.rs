@@ -11,7 +11,7 @@ use crate::{
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
-pub struct RaceFile {
+pub struct RaceResultFile {
     pub laptimes: Vec<String>,
     pub day: u32,
     pub month: u32,
@@ -28,7 +28,7 @@ pub struct RaceFile {
     pub race_statistics: RaceStatistics,
 }
 
-impl RaceFile {
+impl RaceResultFile {
     pub fn new_from_laptime_file(laptimes: Vec<String>) -> Self {
         Self {
             track_name: "Default".to_string(),
@@ -90,7 +90,7 @@ impl RaceFile {
         race_file
     }
 
-    pub fn convert_to_race_results(race_files: Vec<RaceFile>) -> Vec<RaceResult> {
+    pub fn convert_to_race_results(race_files: Vec<RaceResultFile>) -> Vec<RaceResult> {
         let mut race_results = vec![];
 
         for race_file in race_files {
@@ -189,7 +189,7 @@ impl RaceFile {
 mod race_file_should {
     use super::*;
     use crate::{
-        data_models::race_file::RaceFile,
+        data_models::race_result_file::RaceResultFile,
         models::{date::RaceDate, driver::session_information::lap::Lap},
     };
 
@@ -216,7 +216,7 @@ mod race_file_should {
             ],
         );
 
-        let race_file = RaceFile::new(
+        let race_file = RaceResultFile::new(
             "Three Ponies",
             vec![
                 "50.662".to_string(),

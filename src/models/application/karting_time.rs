@@ -25,7 +25,7 @@ impl KartingTime {
 #[cfg(test)]
 mod karting_time_should {
     use crate::{
-        data_models::{driver_profile_file::DriverProfileFile, race_file::RaceFile},
+        data_models::{driver_profile_file::DriverProfileFile, race_result_file::RaceResultFile},
         models::{
             date::RaceDate,
             driver::session_information::{
@@ -42,7 +42,7 @@ mod karting_time_should {
         // Given
         let expected_karting_time_file = KartingTimeFile::new(DriverProfileFile::new(
             "Karl Chadwick",
-            vec![RaceFile::new(
+            vec![RaceResultFile::new(
                 "Three Ponies",
                 vec!["50.662".to_string(), "51.877".to_string()],
                 RaceMetadata::new(
