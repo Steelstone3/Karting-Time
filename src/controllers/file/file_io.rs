@@ -62,6 +62,7 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
         return None;
     }
 
+    // TODO Move to models
     #[derive(Default, Debug, Deserialize)]
     pub struct AccSessionData {
         #[serde(rename = "trackName")]
@@ -70,52 +71,28 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceFile> {
         pub session_type: String,
         #[serde(rename = "sessionIndex")]
         pub session_index: u32,
-        // #[serde(rename = "metaData")]
-        // pub metadata: String,
         #[serde(rename = "laps")]
         pub laps: Vec<AccLap>,
-        // pub penalties: Vec<serde_json::Value>,
-        // pub post_race_penalties: Vec<serde_json::Value>,
     }
 
+    // TODO Move to models
     #[derive(Default, Debug, Deserialize)]
     pub struct AccLap {
-        // pub carId: u32,
+        // TODO May want to consider grouping laptimes per driver index and making separate enteries for each
         // pub driverIndex: u32,
-        pub laptime: String,
-        // pub isValidForBest: bool,
-        // pub splits: Vec<u32>,
+        pub laptime: f32,
     }
 
     let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
-    if session_data.track_name.is_empty() {
-        println!("track name is empty")
-    } else {
-        println!("{}", &session_data.track_name);
-    }
-
-    if session_data.session_type.is_empty() {
-        println!("session type is empty");
-    } else {
-        println!("{}", &session_data.session_type);
-    }
-    println!("{}", &session_data.session_index);
-
+    // TODO move to session data impl
     let laptimes: Vec<String> = session_data
         .laps
         .into_iter()
-        .map(|lap| lap.laptime)
+        .map(|lap| (lap.laptime / 1000.0).to_string())
         .collect();
 
-    if laptimes.is_empty() {
-        println!("laptimes is empty")
-    } else {
-        for laptime in &laptimes {
-            println!("Lap time: {}", laptime);
-        }
-    }
-
+    // TODO move to RaceDate
     let today = Local::now().date_naive();
 
     Some(RaceFile::new(
