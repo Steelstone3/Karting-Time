@@ -43,7 +43,7 @@ maud = "0"
 [dependencies.iced]
 # Fixed Version
 version = "0.14"
-features = ["tokio"]
+features = ["tokio", "wayland"]
 
 [dependencies.serde]
 version = "1"
