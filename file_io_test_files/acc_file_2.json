@@ -68,7 +68,7 @@
     "laps": [
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 1,
             "laptime": 122505,
             "isValidForBest": true,
             "splits": [
@@ -90,7 +90,7 @@
         },
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 1,
             "laptime": 121615,
             "isValidForBest": true,
             "splits": [
@@ -112,7 +112,7 @@
         },
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 2,
             "laptime": 121935,
             "isValidForBest": true,
             "splits": [
