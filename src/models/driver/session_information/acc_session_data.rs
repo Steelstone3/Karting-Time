@@ -8,8 +8,6 @@ pub struct AccSessionData {
     pub track_name: String,
     #[serde(rename = "sessionType")]
     pub session_type: String,
-    #[serde(rename = "sessionIndex")]
-    pub session_index: u32,
     #[serde(rename = "laps")]
     pub laps: Vec<AccLap>,
 }
