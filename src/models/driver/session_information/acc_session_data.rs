@@ -1,7 +1,6 @@
 use crate::models::driver::session_information::acc_lap::AccLap;
 use serde::Deserialize;
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 #[derive(Default, Debug, Deserialize)]
 pub struct AccSessionData {
@@ -23,7 +22,7 @@ impl AccSessionData {
         for lap in &converted_laptimes {
             grouped
                 .entry(lap.driver_index)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(lap.laptime.to_string().clone());
         }
 
