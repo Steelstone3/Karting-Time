@@ -315,7 +315,7 @@ mod file_application_should {
         let mut karting_time = KartingTime::new(driver_profile_test_fixture());
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
+        let _guard = TestFileGuard::new(file_name);
 
         karting_time.save_application(file_name);
         karting_time.load_application(file_name);

@@ -190,12 +190,12 @@ mod file_integration_should {
         let file_name = path.to_str().unwrap();
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
+        let _guard = TestFileGuard::new(file_name);
 
         upsert_races(file_location, &races);
 
         // Then
-        assert!(fs::metadata(&file_name).is_err());
+        assert!(fs::metadata(file_name).is_err());
     }
 
     #[test]
@@ -261,12 +261,12 @@ mod file_integration_should {
         let file_name = path.to_str().unwrap();
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
+        let _guard = TestFileGuard::new(file_name);
 
         upsert_html_races(file_location, &driver_profile);
 
         // Then
-        assert!(fs::metadata(&file_name).is_err());
+        assert!(fs::metadata(file_name).is_err());
     }
 
     #[test]
