@@ -9,8 +9,6 @@ pub struct AccSessionData {
     pub session_type: String,
     #[serde(rename = "sessionIndex")]
     pub session_index: u32,
-    // TODO Then from the laptime totals each driver index the fastest to slowest can be established
-    // TODO For a race total time or the fastest lap for a practise session/ qualifying
     #[serde(rename = "laps")]
     pub laps: Vec<AccLap>,
 }

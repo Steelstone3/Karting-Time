@@ -72,8 +72,6 @@ mod driver_statistics_should {
         },
     };
 
-    // TODO Test fixtures
-
     #[test]
     fn get_number_of_races() {
         // Given

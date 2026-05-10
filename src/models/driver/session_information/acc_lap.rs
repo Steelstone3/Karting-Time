@@ -2,7 +2,8 @@ use serde::Deserialize;
 
 #[derive(Clone, Default, Debug, Deserialize)]
 pub struct AccLap {
-    // TODO May want to consider grouping laptimes per driver index and making separate enteries for each
-    // pub driverIndex: u32,
+    #[serde(rename = "driverIndex")]
+    pub driver_index: u32,
+    #[serde(rename = "laptime")]
     pub laptime: f32,
 }

@@ -52,7 +52,7 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
-// TODO Test
+// TODO Test multiple result import
 pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
     let contents = get_file_contents(file_name);
 
@@ -166,7 +166,6 @@ mod file_integration_should {
     fn upsert_races_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        // TODO make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -203,7 +202,6 @@ mod file_integration_should {
     fn upsert_races_test() {
         // Given
         let file_location = ".";
-        // TODO Make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -246,7 +244,6 @@ mod file_integration_should {
     fn upsert_races_html_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        // TODO Make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -276,7 +273,6 @@ mod file_integration_should {
     fn upsert_races_html_test() {
         // Given
         let file_location = ".";
-        // TODO make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
