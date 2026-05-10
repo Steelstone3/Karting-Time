@@ -311,7 +311,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_acc_laptime_file_test() {
+    fn read_one_player_acc_laptime_file_test() {
         // Given
         let expected_race_file = RaceResultFile::new(
             "silverstone",
@@ -335,6 +335,45 @@ mod file_integration_should {
         );
 
         let file_name = "./file_io_test_files/acc_file_1.json";
+
+        // When
+        let race_file = read_acc_laptimes_file(file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        assert!(race_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+    }
+
+    #[test]
+    fn read_multiple_player_acc_laptime_file_test() {
+        // Given
+        let expected_race_file = RaceResultFile::new(
+            "silverstone",
+            vec![
+                "122.505".to_string(),
+                "122.147".to_string(),
+                "121.615".to_string(),
+                "121.1".to_string(),
+                "121.935".to_string(),
+                "123.527".to_string(),
+                "122.215".to_string(),
+                "121.702".to_string(),
+                "122.18".to_string(),
+                "121.297".to_string(),
+                "120.785".to_string(),
+                "120.522".to_string(),
+            ],
+            RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC"),
+            Session::new(0, 999),
+            RaceDate::today(),
+        );
+
+        let file_name = "./file_io_test_files/acc_file_2.json";
 
         // When
         let race_file = read_acc_laptimes_file(file_name);
