@@ -53,16 +53,18 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
 }
 
 // TODO Test multiple result import
-pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
+pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
-        return None;
+        return vec![];
     }
+
+    let mut race_result_files = vec![];
 
     let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
-    Some(RaceResultFile::new(
+    race_result_files.push(Some(RaceResultFile::new(
         &session_data.track_name,
         session_data.convert_to_laptimes(),
         RaceMetadata::new(
@@ -74,7 +76,9 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
         ),
         Session::new(session_data.session_index, 999),
         RaceDate::today(),
-    ))
+    )));
+
+    race_result_files
 }
 
 pub fn read_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
@@ -303,7 +307,7 @@ mod file_integration_should {
         let race_file = read_acc_laptimes_file("");
 
         // Then
-        assert!(race_file.is_none());
+        assert!(race_file.is_empty());
     }
 
     #[test]
@@ -333,7 +337,7 @@ mod file_integration_should {
         let file_name = "./file_io_test_files/acc_file_1.json";
 
         // When
-        let race_file = read_acc_laptimes_file(file_name);
+        let race_files = read_acc_laptimes_file(file_name);
 
         // Then
         assert!(
@@ -341,11 +345,12 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        assert!(race_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+
+        pretty_assertions::assert_eq!(1, race_files.len());
+        assert!(race_files[0].is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_files[0].clone().unwrap());
     }
 
-    // TODO return multiple race result file
     // TODO each driver index should return its laps in its own race result file
     #[test]
     fn read_multiple_player_acc_laptime_file_test() {
@@ -374,7 +379,7 @@ mod file_integration_should {
         let file_name = "./file_io_test_files/acc_file_2.json";
 
         // When
-        let race_file = read_acc_laptimes_file(file_name);
+        let race_files = read_acc_laptimes_file(file_name);
 
         // Then
         assert!(
@@ -382,8 +387,13 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        assert!(race_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+        pretty_assertions::assert_eq!(3, race_files.len());
+        assert!(race_files[0].is_some(), "Unexpectedly returned None");
+        assert!(race_files[1].is_some(), "Unexpectedly returned None");
+        assert!(race_files[2].is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_files[0].clone().unwrap());
+        pretty_assertions::assert_eq!(expected_race_file, race_files[1].clone().unwrap());
+        pretty_assertions::assert_eq!(expected_race_file, race_files[2].clone().unwrap());
     }
 
     #[test]

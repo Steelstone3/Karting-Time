@@ -21,13 +21,15 @@ impl KartingTime {
 
     // TODO Test
     pub fn import_acc_laptimes(&mut self, file_name: &str) {
-        let race_file = read_acc_laptimes_file(file_name);
+        let race_files = read_acc_laptimes_file(file_name);
 
-        let Some(race_file) = race_file else { return };
-        let race = race_file.convert_to_race_result();
+        for race_file in race_files {
+            let Some(race_file) = race_file else { return };
+            let race = race_file.convert_to_race_result();
 
-        if race.is_unique_identifier(&self.driver_profile.races) {
-            self.driver_profile.races.push(race);
+            if race.is_unique_identifier(&self.driver_profile.races) {
+                self.driver_profile.races.push(race);
+            }
         }
     }
 
