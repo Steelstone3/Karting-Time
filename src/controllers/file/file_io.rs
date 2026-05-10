@@ -66,8 +66,7 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
 
     let laptimes_per_driver = session_data.convert_to_laptimes();
 
-    let mut session_index = 1001;
-    for laptimes in laptimes_per_driver {
+    for (session_index, laptimes) in (1001..).zip(laptimes_per_driver) {
         race_result_files.push(Some(RaceResultFile::new(
             &session_data.track_name,
             laptimes,
@@ -81,8 +80,6 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
             Session::new(session_index, 999),
             RaceDate::today(),
         )));
-
-        session_index += 1;
     }
 
     race_result_files
