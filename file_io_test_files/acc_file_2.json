@@ -123,7 +123,7 @@
         },
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 2,
             "laptime": 123527,
             "isValidForBest": true,
             "splits": [
@@ -145,7 +145,7 @@
         },
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 1,
             "laptime": 121702,
             "isValidForBest": true,
             "splits": [
@@ -178,7 +178,7 @@
         },
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 1,
             "laptime": 120785,
             "isValidForBest": true,
             "splits": [
@@ -189,7 +189,7 @@
         },
         {
             "carId": 1001,
-            "driverIndex": 0,
+            "driverIndex": 2,
             "laptime": 120522,
             "isValidForBest": true,
             "splits": [
