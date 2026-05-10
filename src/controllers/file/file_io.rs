@@ -334,7 +334,7 @@ mod file_integration_should {
             RaceDate::today(),
         );
 
-        let file_name = "./file_io_test_files/acc_file_single_player_free_practice.json";
+        let file_name = "./file_io_test_files/acc_file_1.json";
 
         // When
         let race_file = read_acc_laptimes_file(file_name);
