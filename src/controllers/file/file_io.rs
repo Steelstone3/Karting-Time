@@ -66,7 +66,7 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
 
     let laptimes_per_driver = session_data.convert_to_laptimes();
 
-    let mut session_index = 999;
+    let mut session_index = 1001;
     for laptimes in laptimes_per_driver {
         race_result_files.push(Some(RaceResultFile::new(
             &session_data.track_name,
@@ -337,7 +337,7 @@ mod file_integration_should {
                 "120.522".to_string(),
             ],
             RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC"),
-            Session::new(999, 999),
+            Session::new(1001, 999),
             RaceDate::today(),
         );
 
@@ -375,7 +375,7 @@ mod file_integration_should {
                 "121.297".to_string(),
             ],
             race_meta_data.clone(),
-            Session::new(999, 999),
+            Session::new(1001, 999),
             race_date.clone(),
         );
         let expected_race_file_2 = RaceResultFile::new(
@@ -387,7 +387,7 @@ mod file_integration_should {
                 "120.785".to_string(),
             ],
             race_meta_data.clone(),
-            Session::new(1000, 999),
+            Session::new(1002, 999),
             race_date.clone(),
         );
         let expected_race_file_3 = RaceResultFile::new(
@@ -398,7 +398,7 @@ mod file_integration_should {
                 "120.522".to_string(),
             ],
             race_meta_data.clone(),
-            Session::new(1001, 999),
+            Session::new(1003, 999),
             race_date.clone(),
         );
 
