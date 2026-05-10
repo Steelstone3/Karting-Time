@@ -52,29 +52,36 @@ pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) 
     write!(file, "{}", markup.into_string()).unwrap_or_default()
 }
 
-// TODO Test
-pub fn read_acc_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
+pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
     let contents = get_file_contents(file_name);
 
     if contents.is_empty() {
-        return None;
+        return vec![];
     }
+
+    let mut race_result_files = vec![];
 
     let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
-    Some(RaceResultFile::new(
-        &session_data.track_name,
-        session_data.convert_to_laptimes(),
-        RaceMetadata::new(
-            &session_data.session_type,
-            Default::default(),
-            Default::default(),
-            Default::default(),
-            "Imported from ACC",
-        ),
-        Session::new(session_data.session_index, 999),
-        RaceDate::today(),
-    ))
+    let laptimes_per_driver = session_data.convert_to_laptimes();
+
+    for (session_index, laptimes) in (1001..).zip(laptimes_per_driver) {
+        race_result_files.push(Some(RaceResultFile::new(
+            &session_data.track_name,
+            laptimes,
+            RaceMetadata::new(
+                &session_data.session_type,
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                "Imported from ACC",
+            ),
+            Session::new(session_index, 999),
+            RaceDate::today(),
+        )));
+    }
+
+    race_result_files
 }
 
 pub fn read_laptimes_file(file_name: &str) -> Option<RaceResultFile> {
@@ -166,7 +173,6 @@ mod file_integration_should {
     fn upsert_races_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        // TODO make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -191,19 +197,18 @@ mod file_integration_should {
         let file_name = path.to_str().unwrap();
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
+        let _guard = TestFileGuard::new(file_name);
 
         upsert_races(file_location, &races);
 
         // Then
-        assert!(fs::metadata(&file_name).is_err());
+        assert!(fs::metadata(file_name).is_err());
     }
 
     #[test]
     fn upsert_races_test() {
         // Given
         let file_location = ".";
-        // TODO Make a test fixture
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -246,7 +251,6 @@ mod file_integration_should {
     fn upsert_races_html_test_failed_to_create_file() {
         // Given
         let file_location = "/";
-        // TODO Make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -264,19 +268,18 @@ mod file_integration_should {
         let file_name = path.to_str().unwrap();
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
+        let _guard = TestFileGuard::new(file_name);
 
         upsert_html_races(file_location, &driver_profile);
 
         // Then
-        assert!(fs::metadata(&file_name).is_err());
+        assert!(fs::metadata(file_name).is_err());
     }
 
     #[test]
     fn upsert_races_html_test() {
         // Given
         let file_location = ".";
-        // TODO make a test fixture
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -307,11 +310,11 @@ mod file_integration_should {
         let race_file = read_acc_laptimes_file("");
 
         // Then
-        assert!(race_file.is_none());
+        assert!(race_file.is_empty());
     }
 
     #[test]
-    fn read_acc_laptime_file_test() {
+    fn read_one_player_acc_laptime_file_test() {
         // Given
         let expected_race_file = RaceResultFile::new(
             "silverstone",
@@ -330,14 +333,14 @@ mod file_integration_should {
                 "120.522".to_string(),
             ],
             RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC"),
-            Session::new(0, 999),
+            Session::new(1001, 999),
             RaceDate::today(),
         );
 
-        let file_name = "./file_io_test_files/acc_file.json";
+        let file_name = "./file_io_test_files/acc_file_1.json";
 
         // When
-        let race_file = read_acc_laptimes_file(file_name);
+        let race_files = read_acc_laptimes_file(file_name);
 
         // Then
         assert!(
@@ -345,8 +348,77 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        assert!(race_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+
+        pretty_assertions::assert_eq!(1, race_files.len());
+        assert!(race_files[0].is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(expected_race_file, race_files[0].clone().unwrap());
+    }
+
+    #[test]
+    fn read_multiple_player_acc_laptime_file_test() {
+        // Given
+        let track_name = "silverstone";
+        let race_meta_data = RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC");
+        let race_date = RaceDate::today();
+
+        let expected_race_file_1 = RaceResultFile::new(
+            track_name,
+            vec![
+                "122.147".to_string(),
+                "121.1".to_string(),
+                "122.215".to_string(),
+                "122.18".to_string(),
+                "121.297".to_string(),
+            ],
+            race_meta_data.clone(),
+            Session::new(1001, 999),
+            race_date.clone(),
+        );
+        let expected_race_file_2 = RaceResultFile::new(
+            track_name,
+            vec![
+                "122.505".to_string(),
+                "121.615".to_string(),
+                "121.702".to_string(),
+                "120.785".to_string(),
+            ],
+            race_meta_data.clone(),
+            Session::new(1002, 999),
+            race_date.clone(),
+        );
+        let expected_race_file_3 = RaceResultFile::new(
+            track_name,
+            vec![
+                "121.935".to_string(),
+                "123.527".to_string(),
+                "120.522".to_string(),
+            ],
+            race_meta_data.clone(),
+            Session::new(1003, 999),
+            race_date.clone(),
+        );
+
+        let file_name = "./file_io_test_files/acc_file_2.json";
+
+        // When
+        let race_files = read_acc_laptimes_file(file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        // pretty_assertions::assert_eq!(3, race_files.len());
+        assert!(race_files[0].is_some(), "Unexpectedly returned None");
+        assert!(race_files[1].is_some(), "Unexpectedly returned None");
+        assert!(race_files[2].is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(5, race_files[0].clone().unwrap().laptimes.len());
+        pretty_assertions::assert_eq!(4, race_files[1].clone().unwrap().laptimes.len());
+        pretty_assertions::assert_eq!(3, race_files[2].clone().unwrap().laptimes.len());
+        pretty_assertions::assert_eq!(expected_race_file_1, race_files[0].clone().unwrap());
+        pretty_assertions::assert_eq!(expected_race_file_2, race_files[1].clone().unwrap());
+        pretty_assertions::assert_eq!(expected_race_file_3, race_files[2].clone().unwrap());
     }
 
     #[test]

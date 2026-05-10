@@ -28,6 +28,7 @@ jobs:
     env:
       BUILD_REF: ${{ github.event.inputs.commit_sha || github.ref }}
       TAG: ${{ github.event.inputs.tag_name }}
+      RUSTFLAGS: "-C link-arg=-fuse-ld=mold -C linker=clang"
 
     steps:
       - name: Checkout
@@ -35,6 +36,11 @@ jobs:
         with:
           # Use the commit_sha input if provided, otherwise use the branch's current HEAD
           ref: ${{ env.BUILD_REF }}
+
+      - name: Install Mold and Clang
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mold clang
 
       - name: Setup toolchain
         uses: dtolnay/rust-toolchain@stable

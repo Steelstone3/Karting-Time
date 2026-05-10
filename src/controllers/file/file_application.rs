@@ -19,15 +19,16 @@ impl KartingTime {
         upsert_html_races(folder_location, &self.driver_profile);
     }
 
-    // TODO Test
     pub fn import_acc_laptimes(&mut self, file_name: &str) {
-        let race_file = read_acc_laptimes_file(file_name);
+        let race_files = read_acc_laptimes_file(file_name);
 
-        let Some(race_file) = race_file else { return };
-        let race = race_file.convert_to_race_result();
+        for race_file in race_files {
+            let Some(race_file) = race_file else { return };
+            let race = race_file.convert_to_race_result();
 
-        if race.is_unique_identifier(&self.driver_profile.races) {
-            self.driver_profile.races.push(race);
+            if race.is_unique_identifier(&self.driver_profile.races) {
+                self.driver_profile.races.push(race);
+            }
         }
     }
 
@@ -315,7 +316,7 @@ mod file_application_should {
         let mut karting_time = KartingTime::new(driver_profile_test_fixture());
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
+        let _guard = TestFileGuard::new(file_name);
 
         karting_time.save_application(file_name);
         karting_time.load_application(file_name);
@@ -362,5 +363,78 @@ mod file_application_should {
                 ),
             ],
         )
+    }
+
+    #[test]
+    fn import_acc_laptimes() {
+        // Given
+        let mut karting_time = KartingTime::default();
+        let track_name = "silverstone";
+        let session_1 = Session::new(1001, 999);
+        let session_2 = Session::new(1002, 999);
+        let session_3 = Session::new(1003, 999);
+        let race_date = RaceDate::today();
+        let race_information_1 = RaceInformation::new(track_name, race_date.clone(), session_1);
+        let race_information_2 = RaceInformation::new(track_name, race_date.clone(), session_2);
+        let race_information_3 = RaceInformation::new(track_name, race_date.clone(), session_3);
+        let laptimes_1: Vec<Lap> = vec![
+            Lap::new(1, 122.147),
+            Lap::new(2, 121.1),
+            Lap::new(3, 122.215),
+            Lap::new(4, 122.18),
+            Lap::new(5, 121.297),
+        ];
+        let laptimes_2: Vec<Lap> = vec![
+            Lap::new(1, 122.505),
+            Lap::new(2, 121.615),
+            Lap::new(3, 121.702),
+            Lap::new(4, 120.785),
+        ];
+
+        let laptimes_3: Vec<Lap> = vec![
+            Lap::new(1, 121.935),
+            Lap::new(2, 123.527),
+            Lap::new(3, 120.522),
+        ];
+        let race_meta_data = RaceMetadata::new("FP", "N/A", "N/A", "", "Imported from ACC");
+
+        let expected_race_1 =
+            RaceResult::new(race_information_1, race_meta_data.clone(), laptimes_1);
+        let expected_race_2 =
+            RaceResult::new(race_information_2, race_meta_data.clone(), laptimes_2);
+        let expected_race_3 =
+            RaceResult::new(race_information_3, race_meta_data.clone(), laptimes_3);
+
+        let file_name = "./file_io_test_files/acc_file_2.json";
+
+        // When
+        karting_time.import_acc_laptimes(file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        pretty_assertions::assert_eq!(3, karting_time.driver_profile.races.len());
+        pretty_assertions::assert_eq!(5, karting_time.driver_profile.races[0].laptimes.len());
+        pretty_assertions::assert_eq!(4, karting_time.driver_profile.races[1].laptimes.len());
+        pretty_assertions::assert_eq!(3, karting_time.driver_profile.races[2].laptimes.len());
+        // TODO remove convert_to_race_result
+        pretty_assertions::assert_eq!(expected_race_1, karting_time.driver_profile.races[0]);
+        pretty_assertions::assert_eq!(expected_race_2, karting_time.driver_profile.races[1]);
+        pretty_assertions::assert_eq!(expected_race_3, karting_time.driver_profile.races[2]);
+    }
+
+    #[test]
+    fn import_non_existent_acc_laptimes() {
+        // Given
+        let mut karting_time = KartingTime::default();
+
+        // When
+        karting_time.import_acc_laptimes("");
+
+        // Then
+        assert!(karting_time.driver_profile.races.is_empty());
     }
 }

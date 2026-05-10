@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "1.6.2"
+version = "1.6.3"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2024"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -43,7 +43,7 @@ maud = "0"
 [dependencies.iced]
 # Fixed Version
 version = "0.14"
-features = ["tokio"]
+features = ["tokio", "wayland"]
 
 [dependencies.serde]
 version = "1"
