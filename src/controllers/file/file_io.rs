@@ -315,7 +315,6 @@ mod file_integration_should {
     }
 
     #[test]
-    #[ignore]
     fn read_one_player_acc_laptime_file_test() {
         // Given
         let expected_race_file = RaceResultFile::new(
@@ -356,9 +355,7 @@ mod file_integration_should {
         pretty_assertions::assert_eq!(expected_race_file, race_files[0].clone().unwrap());
     }
 
-    // TODO each driver index should return its laps in its own race result file
     #[test]
-    #[ignore]
     fn read_multiple_player_acc_laptime_file_test() {
         // Given
         let track_name = "silverstone";
@@ -369,10 +366,11 @@ mod file_integration_should {
         let expected_race_file_1 = RaceResultFile::new(
             track_name,
             vec![
-                "122.505".to_string(),
-                "121.615".to_string(),
-                "121.702".to_string(),
-                "120.785".to_string(),
+                "122.147".to_string(),
+                "121.1".to_string(),
+                "122.215".to_string(),
+                "122.18".to_string(),
+                "121.297".to_string(),
             ],
             race_meta_data.clone(),
             session.clone(),
@@ -382,17 +380,9 @@ mod file_integration_should {
             track_name,
             vec![
                 "122.505".to_string(),
-                "122.147".to_string(),
                 "121.615".to_string(),
-                "121.1".to_string(),
-                "121.935".to_string(),
-                "123.527".to_string(),
-                "122.215".to_string(),
                 "121.702".to_string(),
-                "122.18".to_string(),
-                "121.297".to_string(),
                 "120.785".to_string(),
-                "120.522".to_string(),
             ],
             race_meta_data.clone(),
             session.clone(),
@@ -401,17 +391,8 @@ mod file_integration_should {
         let expected_race_file_3 = RaceResultFile::new(
             track_name,
             vec![
-                "122.505".to_string(),
-                "122.147".to_string(),
-                "121.615".to_string(),
-                "121.1".to_string(),
                 "121.935".to_string(),
                 "123.527".to_string(),
-                "122.215".to_string(),
-                "121.702".to_string(),
-                "122.18".to_string(),
-                "121.297".to_string(),
-                "120.785".to_string(),
                 "120.522".to_string(),
             ],
             race_meta_data.clone(),
