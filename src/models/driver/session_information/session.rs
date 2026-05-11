@@ -37,7 +37,7 @@ mod session_should {
     use crate::models::driver::session_information::session::Session;
 
     #[test]
-    fn update_session_id() {
+    fn test_update_session_id() {
         // Given
         let session_id = 5;
         let mut session = Session {
@@ -53,7 +53,7 @@ mod session_should {
     }
 
     #[test]
-    fn update_race_position() {
+    fn test_update_race_position() {
         // Given
         let race_position = 5;
         let mut session = Session {

@@ -141,38 +141,41 @@ mod filter_race_results_should {
         race_information::RaceInformation, race_metadata::RaceMetadata, race_result::RaceResult,
         session::Session,
     };
+    use crate::models::filters::filter::Filter;
     use rstest::rstest;
 
     #[rstest]
-    #[case(false, "", "", "", "", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 2)]
-    #[case(true, "Silverstone", "", "", "", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "2025-12-21", "", "", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "", "MX5", "", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "", "", "MX5 Cup", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "", "", "", "Race", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "Silverstone", "", "", "", "Race", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "", "MX5", "", "Race", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "", "MX5", "MX5 Cup", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "2025-12-21", "MX5", "MX5 Cup", "", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "", "2025-12-21", "MX5", "MX5 Cup", "Race", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    #[case(true, "Silverstone", "2025-12-21", "MX5", "MX5 Cup", "Race", RaceDate{ day: 21, month: 12, year: 2025 }, "Silverstone", "MX5", "MX5 Cup", "Race", 1)]
-    fn update_filtering(
+    #[case(false, "", "", "", "", "", 2)]
+    #[case(true, "Silverstone", "", "", "", "", 1)]
+    #[case(true, "", "2025-12-21", "", "", "", 1)]
+    #[case(true, "", "", "MX5", "", "", 1)]
+    #[case(true, "", "", "", "MX5 Cup", "", 1)]
+    #[case(true, "", "", "", "", "Race", 1)]
+    #[case(true, "Silverstone", "", "", "", "Race", 1)]
+    #[case(true, "", "", "MX5", "", "Race", 1)]
+    #[case(true, "", "", "MX5", "MX5 Cup", "", 1)]
+    #[case(true, "", "2025-12-21", "MX5", "MX5 Cup", "", 1)]
+    #[case(true, "", "2025-12-21", "MX5", "MX5 Cup", "Race", 1)]
+    #[case(true, "Silverstone", "2025-12-21", "MX5", "MX5 Cup", "Race", 1)]
+    fn test_update_filtering(
         #[case] is_filter_visible: bool,
         #[case] track_query: String,
         #[case] date_query: String,
         #[case] car_used_query: String,
         #[case] championship_query: String,
         #[case] session_type_query: String,
-        #[case] date: RaceDate,
-        #[case] track_name: String,
-        #[case] car_used: String,
-        #[case] championship: String,
-        #[case] session_type: String,
         #[case] count: usize,
     ) {
         // Given
-
-        use crate::models::filters::filter::Filter;
+        let date = RaceDate {
+            day: 21,
+            month: 12,
+            year: 2025,
+        };
+        let track_name = "Silverstone".to_string();
+        let car_used = "MX5".to_string();
+        let championship = "MX5 Cup".to_string();
+        let session_type = "Race".to_string();
         let races = vec![
             RaceResult::new(
                 RaceInformation::new(&track_name, date, Session::new(1, 2)),

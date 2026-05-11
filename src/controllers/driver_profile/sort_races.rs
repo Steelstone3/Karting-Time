@@ -35,7 +35,7 @@ mod sort_races_should {
     };
 
     #[test]
-    fn sort_races() {
+    fn test_sort_races() {
         // Given
         let race_1 = RaceResult::new(
             RaceInformation::new(

@@ -43,7 +43,7 @@ mod race_editor_should {
     use super::*;
 
     #[test]
-    fn clone() {
+    fn test_clone() {
         // Given
         let expected_race_editor = RaceEditor {
             text_editor: Default::default(),
@@ -57,7 +57,7 @@ mod race_editor_should {
     }
 
     #[test]
-    fn get_text_from_text_editor() {
+    fn test_get_text_from_text_editor() {
         // Given
         let expected_text = "Hello There".to_string();
         let mut race_editor = RaceEditor {
@@ -75,7 +75,7 @@ mod race_editor_should {
     }
 
     #[test]
-    pub fn clear_text_editor() {
+    pub fn test_clear_text_editor() {
         // Given
         let expected_text = "";
         let mut race_editor = RaceEditor {
@@ -93,7 +93,7 @@ mod race_editor_should {
     }
 
     #[test]
-    fn paste_laptimes() {
+    fn test_paste_laptimes() {
         // Given
         let race = RaceResult::new(
             Default::default(),

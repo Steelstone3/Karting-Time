@@ -43,7 +43,7 @@ mod race_results_summary_should {
     use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
 
     #[test]
-    fn get_number_of_laps() {
+    fn test_get_number_of_laps() {
         // Given
         let race = RaceResult::new(
             Default::default(),
@@ -56,7 +56,7 @@ mod race_results_summary_should {
     }
 
     #[test]
-    fn get_no_fastest_lap() {
+    fn test_get_no_fastest_lap() {
         // Given
         let race = RaceResult::new(Default::default(), Default::default(), Default::default());
 
@@ -65,7 +65,7 @@ mod race_results_summary_should {
     }
 
     #[test]
-    fn get_fastest_lap() {
+    fn test_get_fastest_lap() {
         // Given
         let race = RaceResult::new(
             Default::default(),
@@ -78,7 +78,7 @@ mod race_results_summary_should {
     }
 
     #[test]
-    fn get_no_average_lap() {
+    fn test_get_no_average_lap() {
         // Given
         let race = RaceResult::new(Default::default(), Default::default(), Default::default());
 
@@ -87,7 +87,7 @@ mod race_results_summary_should {
     }
 
     #[test]
-    fn get_average_lap() {
+    fn test_get_average_lap() {
         // Given
         let race = RaceResult::new(
             Default::default(),

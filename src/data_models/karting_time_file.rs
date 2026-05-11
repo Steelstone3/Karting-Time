@@ -37,7 +37,7 @@ mod karting_time_file_should {
     };
 
     #[test]
-    fn convert_to_karting_time() {
+    fn test_convert_to_karting_time() {
         // Given
         let expected_karting_time = KartingTime::new(DriverProfile::new(
             "Karl Chadwick",

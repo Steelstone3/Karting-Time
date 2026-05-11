@@ -38,7 +38,7 @@ mod karting_time_should {
     use super::*;
 
     #[test]
-    fn convert_to_karting_time_file() {
+    fn test_convert_to_karting_time_file() {
         // Given
         let expected_karting_time_file = KartingTimeFile::new(DriverProfileFile::new(
             "Karl Chadwick",

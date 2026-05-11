@@ -67,7 +67,7 @@ mod race_time_summaries_should {
     use crate::models::driver::session_information::{lap::Lap, race_result::RaceResult};
 
     #[test]
-    fn calculate_total_times() {
+    fn test_calculate_total_times() {
         // Given
         let race = RaceResult::new(
             Default::default(),
@@ -91,7 +91,7 @@ mod race_time_summaries_should {
     }
 
     #[test]
-    fn calculate_total_times_last_lap() {
+    fn test_calculate_total_times_last_lap() {
         // Given
         let race = RaceResult::new(
             Default::default(),
@@ -118,7 +118,7 @@ mod race_time_summaries_should {
     }
 
     #[test]
-    fn get_time_by_key() {
+    fn test_get_time_by_key() {
         // Given
         let total_times = vec![
             (5, "1:40.00".to_string()),
@@ -133,7 +133,7 @@ mod race_time_summaries_should {
     }
 
     #[test]
-    fn get_last_time() {
+    fn test_get_last_time() {
         // Given
         let total_times = vec![
             (5, "1:40.00".to_string()),
@@ -146,7 +146,7 @@ mod race_time_summaries_should {
     }
 
     #[test]
-    fn calculate_average_total_times() {
+    fn test_calculate_average_total_times() {
         // Given
         let race = RaceResult::new(
             Default::default(),
@@ -171,7 +171,7 @@ mod race_time_summaries_should {
     }
 
     #[test]
-    fn order_by_fastest_lap() {
+    fn test_order_by_fastest_lap() {
         // Given
         let race = RaceResult::new(
             Default::default(),

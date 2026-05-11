@@ -20,6 +20,7 @@ impl RaceResult {
         self.laptimes = converted_laptimes;
     }
 
+    // TODO investigate if this can be removed
     pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, String)> {
         // order by key
         let mut sorted: Vec<(usize, f32)> = hash_map.into_iter().collect();
@@ -78,7 +79,7 @@ mod laptime_converter_should {
     use std::collections::HashMap;
 
     #[test]
-    fn convert_to_laps() {
+    fn test_convert_to_laps() {
         // Given
         let race_editor = "2:45.6\n3:boop\n53.2\n52.9\n54\n:45.6\nboop";
         let mut race = RaceResult::default();
@@ -96,8 +97,9 @@ mod laptime_converter_should {
         pretty_assertions::assert_eq!(expected_laps, race.laptimes)
     }
 
+    // TODO see if this can be removed
     #[test]
-    fn convert_hash_map() {
+    fn test_convert_hash_map() {
         // Given
         let expected_sorted_races = vec![
             (5, "3:50.00".to_string()),
@@ -117,7 +119,7 @@ mod laptime_converter_should {
     }
 
     #[test]
-    fn convert_laps_to_string() {
+    fn test_convert_laps_to_string() {
         // Given
         let expected_laps =
             "25.555\n26.657\n24.585\n25.475\n24.899\n25.345\n26.123\n24.879\n26.341\n24.563\n"

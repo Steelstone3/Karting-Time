@@ -233,9 +233,31 @@ mod html_converter_should {
     };
 
     #[test]
-    fn convert_profile_summary_table() {
+    fn test_convert_profile_summary_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -274,9 +296,31 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_profile_races_summary_table() {
+    fn test_convert_profile_races_summary_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -328,9 +372,31 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_race_summary_table() {
+    fn test_convert_race_summary_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -361,9 +427,31 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_race_pace_total_times_table() {
+    fn test_convert_race_pace_total_times_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -386,9 +474,31 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_race_pace_average_times_table() {
+    fn test_convert_race_pace_average_times_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -411,9 +521,31 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_laptime_table() {
+    fn test_convert_laptime_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -467,9 +599,31 @@ mod html_converter_should {
     }
 
     #[test]
-    fn convert_metadata_table() {
+    fn test_convert_metadata_table() {
         // Given
-        let driver_profile_file = driver_profile_file_test_fixture();
+        let driver_profile_file = DriverProfileFile::new(
+            "Derek",
+            vec![RaceResultFile::new(
+                "Three Brothers",
+                vec![
+                    "5.0".to_string(),
+                    "10.0".to_string(),
+                    "15.0".to_string(),
+                    "20.0".to_string(),
+                    "25.0".to_string(),
+                    "30.0".to_string(),
+                ],
+                RaceMetadata::new(
+                    "Race",
+                    "Dry",
+                    "Mercedes GT3",
+                    "GT World Challenge",
+                    "No comment",
+                ),
+                Session::new(1, 1),
+                RaceDate::new(24, 12, 2025),
+            )],
+        );
 
         // When
         let markdown = convert_to_html(&driver_profile_file);
@@ -509,31 +663,5 @@ mod html_converter_should {
                 &race.notes.unwrap_or_default()
             )));
         }
-    }
-
-    fn driver_profile_file_test_fixture() -> DriverProfileFile {
-        DriverProfileFile::new(
-            "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
-                RaceMetadata::new(
-                    "Race",
-                    "Dry",
-                    "Mercedes GT3",
-                    "GT World Challenge",
-                    "No comment",
-                ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
-            )],
-        )
     }
 }

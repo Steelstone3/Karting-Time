@@ -95,7 +95,7 @@ mod date_should {
     use std::cmp::Ordering;
 
     #[test]
-    fn create_date() {
+    fn test_create_date() {
         // Given
         let expected_date = RaceDate {
             day: 1,
@@ -115,7 +115,7 @@ mod date_should {
     #[case(RaceDate{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
     #[case(RaceDate{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
     #[case(RaceDate{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
-    fn ordering(#[case] comparison_date: RaceDate, #[case] expected_ordering: Ordering) {
+    fn test_ordering(#[case] comparison_date: RaceDate, #[case] expected_ordering: Ordering) {
         // Given
         let date = RaceDate {
             day: 21,
@@ -138,7 +138,10 @@ mod date_should {
     #[case(RaceDate{ day: 22, month: 11, year: 2025 }, Ordering::Less)]
     #[case(RaceDate{ day: 21, month: 12, year: 2025 }, Ordering::Less)]
     #[case(RaceDate{ day: 21, month: 11, year: 2026 }, Ordering::Less)]
-    fn partial_ordering(#[case] comparison_date: RaceDate, #[case] expected_ordering: Ordering) {
+    fn test_partial_ordering(
+        #[case] comparison_date: RaceDate,
+        #[case] expected_ordering: Ordering,
+    ) {
         // Given
         let date = RaceDate {
             day: 21,
@@ -154,7 +157,7 @@ mod date_should {
     }
 
     #[test]
-    fn display() {
+    fn test_display() {
         // Given
         let date = RaceDate {
             day: 15,
@@ -170,7 +173,7 @@ mod date_should {
     }
 
     #[test]
-    fn set_day() {
+    fn test_set_day() {
         // Given
         let mut date = RaceDate {
             day: 1,
@@ -186,7 +189,7 @@ mod date_should {
     }
 
     #[test]
-    fn set_month() {
+    fn test_set_month() {
         // Given
         let mut date = RaceDate {
             day: 1,
@@ -202,7 +205,7 @@ mod date_should {
     }
 
     #[test]
-    fn set_year() {
+    fn test_set_year() {
         // Given
         let mut date = RaceDate {
             day: 1,

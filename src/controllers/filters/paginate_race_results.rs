@@ -64,7 +64,7 @@ mod paginate_race_results_should {
     };
 
     #[test]
-    fn display_page_message_on_previous_page() {
+    fn test_display_page_message_on_previous_page() {
         // Given
         let mut filter = Filter {
             pagination: Pagination::default(),
@@ -122,7 +122,7 @@ mod paginate_race_results_should {
     }
 
     #[test]
-    fn next_page() {
+    fn test_next_page() {
         // Given
         let mut race_result = RaceResult {
             race_information: RaceInformation::new(
@@ -248,7 +248,7 @@ mod paginate_race_results_should {
     }
 
     #[test]
-    fn next_page_bound() {
+    fn test_next_page_bound() {
         // Given
         let mut race_result = RaceResult {
             race_information: RaceInformation::new(
@@ -369,7 +369,7 @@ mod paginate_race_results_should {
     }
 
     #[test]
-    fn next_page_exceeds_bound() {
+    fn test_next_page_exceeds_bound() {
         // Given
         let mut race_result = RaceResult {
             race_information: RaceInformation::new(
@@ -494,7 +494,7 @@ mod paginate_race_results_should {
     }
 
     #[test]
-    fn previous_page() {
+    fn test_previous_page() {
         // Given
         let mut race_result = RaceResult {
             race_information: RaceInformation::new(
@@ -622,7 +622,7 @@ mod paginate_race_results_should {
     }
 
     #[test]
-    fn previous_page_bound() {
+    fn test_previous_page_bound() {
         // Given
         let mut race_result = RaceResult {
             race_information: RaceInformation::new(
@@ -748,7 +748,7 @@ mod paginate_race_results_should {
     }
 
     #[test]
-    fn previous_page_exceeds_bound() {
+    fn test_previous_page_exceeds_bound() {
         // Given
         let mut race_result = RaceResult {
             race_information: RaceInformation::new(

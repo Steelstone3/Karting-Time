@@ -73,7 +73,7 @@ mod driver_statistics_should {
     };
 
     #[test]
-    fn get_number_of_races() {
+    fn test_get_number_of_races() {
         // Given
         let expected_number_of_races = 4;
 
@@ -92,7 +92,7 @@ mod driver_statistics_should {
     }
 
     #[test]
-    fn get_number_of_wins() {
+    fn test_get_number_of_wins() {
         // Given
         let expected_number_of_wins = 2;
 
@@ -143,7 +143,7 @@ mod driver_statistics_should {
     }
 
     #[test]
-    fn get_number_of_podiums() {
+    fn test_get_number_of_podiums() {
         // Given
         let expected_number_of_podiums = 3;
 
@@ -194,7 +194,7 @@ mod driver_statistics_should {
     }
 
     #[test]
-    fn get_number_of_top_fives() {
+    fn test_get_number_of_top_fives() {
         // Given
         let expected_number_of_top_fives = 3;
 
@@ -245,7 +245,7 @@ mod driver_statistics_should {
     }
 
     #[test]
-    fn get_number_of_top_tens() {
+    fn test_get_number_of_top_tens() {
         // Given
         let expected_number_of_top_fives = 2;
 
@@ -296,7 +296,7 @@ mod driver_statistics_should {
     }
 
     #[test]
-    fn get_number_of_unique_tracks() {
+    fn test_get_number_of_unique_tracks() {
         // Given
         let track_1 = "Three Sisters".to_string();
         let track_2 = "Llandow".to_string();
@@ -349,7 +349,7 @@ mod driver_statistics_should {
     }
 
     #[test]
-    fn get_number_of_unique_cars() {
+    fn test_get_number_of_unique_cars() {
         // Given
         let car_used_1 = "Go Kart".to_string();
         let car_used_2 = "GT3 Car".to_string();

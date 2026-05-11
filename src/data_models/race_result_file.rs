@@ -194,7 +194,7 @@ mod race_file_should {
     };
 
     #[test]
-    fn convert_to_race() {
+    fn test_convert_to_race() {
         // Given
         let expected_race = RaceResult::new(
             RaceInformation::new(

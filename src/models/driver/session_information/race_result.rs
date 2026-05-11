@@ -76,7 +76,7 @@ mod race_result_should {
     use crate::models::date::RaceDate;
 
     #[test]
-    fn convert_to_race_file() {
+    fn test_convert_to_race_file() {
         // Given
         let expected_race_file = RaceResultFile::new(
             "Three Sisters",
@@ -117,7 +117,7 @@ mod race_result_should {
     }
 
     #[test]
-    fn convert_laps_to_laptimes() {
+    fn test_convert_laps_to_laptimes() {
         // Given
         let expected_laptime_string = vec!["10.2".to_string(), "11.8".to_string()];
         let race = RaceResult::new(
