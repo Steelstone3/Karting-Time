@@ -48,7 +48,7 @@ mod race_information_should {
     use super::RaceInformation;
 
     #[test]
-    fn create_race_information() {
+    fn test_create_race_information() {
         // Given
         let expected_race_information = RaceInformation {
             unique_race_identifier: Default::default(),
@@ -62,7 +62,7 @@ mod race_information_should {
     }
 
     #[test]
-    fn get_unique_race_identifier() {
+    fn test_get_unique_race_identifier() {
         // Given
         let expected_race_identifier = "Date_2024-10-15_Track_Three Sisters_Session_1".to_string();
         let race_information = RaceInformation::new(

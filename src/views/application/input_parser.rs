@@ -24,7 +24,7 @@ mod input_parser_should {
     use super::*;
 
     #[test]
-    fn parse_input_of_f32_type() {
+    fn test_parse_input_of_f32_type() {
         // When
         let number = parse_input_f32(30.to_string(), 0.0, 50.0);
 
@@ -33,7 +33,7 @@ mod input_parser_should {
     }
 
     #[test]
-    fn return_minimum_value_for_invalid_input_f32() {
+    fn test_return_minimum_value_for_invalid_input_f32() {
         // When
         let number = parse_input_f32("Jeff".to_string(), 5.0, 200.0);
 
@@ -42,7 +42,7 @@ mod input_parser_should {
     }
 
     #[test]
-    fn return_maximum_value_for_invalid_input_f32() {
+    fn test_return_maximum_value_for_invalid_input_f32() {
         // When
         let number = parse_input_f32("2222".to_string(), 5.0, 200.0);
 
@@ -51,7 +51,7 @@ mod input_parser_should {
     }
 
     #[test]
-    fn parse_input_of_u32_type() {
+    fn test_parse_input_of_u32_type() {
         // When
         let number = parse_input_u32(30.to_string(), 0, 50);
 
@@ -60,7 +60,7 @@ mod input_parser_should {
     }
 
     #[test]
-    fn return_minimum_value_for_invalid_input_u32() {
+    fn test_return_minimum_value_for_invalid_input_u32() {
         // When
         let number = parse_input_u32("Jeff".to_string(), 5, 200);
 
@@ -69,7 +69,7 @@ mod input_parser_should {
     }
 
     #[test]
-    fn return_maximum_value_for_invalid_input_u32() {
+    fn test_return_maximum_value_for_invalid_input_u32() {
         // When
         let number = parse_input_u32("2222".to_string(), 5, 200);
 

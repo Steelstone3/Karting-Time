@@ -49,7 +49,7 @@ mod profile_file_should {
     use super::*;
 
     #[test]
-    fn convert_to_driver_profile() {
+    fn test_convert_to_driver_profile() {
         // Given
         let expected_driver_profile = DriverProfile::new(
             "Karl Chadwick",

@@ -91,7 +91,7 @@ mod format_laptime_should {
     #[case(3661.9, "1:01:01.90".to_string())]
     #[case(3661.99, "1:01:01.99".to_string())]
     #[case(8661.99, "2:24:21.99".to_string())]
-    fn form_laptime(#[case] time_in_seconds: f32, #[case] expected_formatted_time: String) {
+    fn test_format_laptime(#[case] time_in_seconds: f32, #[case] expected_formatted_time: String) {
         // When
         let formatted_time = format_laptime(time_in_seconds);
 
@@ -100,7 +100,7 @@ mod format_laptime_should {
     }
 
     #[test]
-    fn be_able_to_convert_laps_to_string_laps() {
+    fn test_be_able_to_convert_laps_to_string_laps() {
         // Given
         let laps = vec![
             Lap::new(1, 120.6),
@@ -123,7 +123,7 @@ mod format_laptime_should {
     }
 
     #[test]
-    fn be_able_to_convert_string_laps_to_laps() {
+    fn test_be_able_to_convert_string_laps_to_laps() {
         // Given
         let string_laps = vec![
             "2:00.6".to_string(),

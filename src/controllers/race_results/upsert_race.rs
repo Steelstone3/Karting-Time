@@ -50,7 +50,7 @@ mod upsert_race_should {
     };
 
     #[test]
-    fn upsert_race_no_session_type_or_track_condition_or_car_used() {
+    fn test_upsert_race_no_session_type_or_track_condition_or_car_used() {
         // Given
         let race_information = RaceInformation::new(
             "Three Sisters",
@@ -84,7 +84,7 @@ mod upsert_race_should {
     }
 
     #[test]
-    fn upsert_race() {
+    fn test_upsert_race() {
         // Given
         let race_information = RaceInformation::new(
             "Three Sisters",
@@ -106,7 +106,7 @@ mod upsert_race_should {
     }
 
     #[test]
-    fn upsert_race_match_and_update_existing() {
+    fn test_upsert_race_match_and_update_existing() {
         // Given
         let race_information = RaceInformation::new(
             "Three Sisters",

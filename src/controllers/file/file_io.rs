@@ -3,6 +3,7 @@ use crate::data_models::karting_time_file::KartingTimeFile;
 use crate::data_models::race_result_file::RaceResultFile;
 use crate::models::date::RaceDate;
 use crate::models::driver::driver_profile::DriverProfile;
+use crate::models::driver::session_information::acc_lap::AccLap;
 use crate::models::driver::session_information::acc_session_data::AccSessionData;
 use crate::models::driver::session_information::race_metadata::RaceMetadata;
 use crate::models::driver::session_information::race_result::RaceResult;
@@ -63,12 +64,12 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
 
     let session_data: AccSessionData = serde_json::from_str(&contents).unwrap_or_default();
 
-    let laptimes_per_driver = session_data.convert_to_laptimes();
+    let grouped = session_data.group_laps_by_driver();
 
-    for (session_index, laptimes) in (1001..).zip(laptimes_per_driver) {
+    for (session_index, (driver_index, laps)) in (1001..).zip(grouped) {
         race_result_files.push(Some(RaceResultFile::new(
             &session_data.track_name,
-            laptimes,
+            AccLap::convert_to_laptimes(laps),
             RaceMetadata::new(
                 &session_data.session_type,
                 Default::default(),
@@ -76,7 +77,10 @@ pub fn read_acc_laptimes_file(file_name: &str) -> Vec<Option<RaceResultFile>> {
                 Default::default(),
                 "Imported from ACC",
             ),
-            Session::new(session_index, 999),
+            Session::new(
+                session_index,
+                session_data.calculate_race_position(driver_index),
+            ),
             RaceDate::today(),
         )));
     }
@@ -170,7 +174,7 @@ mod file_integration_should {
     use std::fs;
 
     #[test]
-    fn upsert_races_test_failed_to_create_file() {
+    fn test_upsert_races_failed_to_create_file() {
         // Given
         let file_location = "/";
         let races = vec![RaceResult::new(
@@ -206,7 +210,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn upsert_races_test() {
+    fn test_upsert_races() {
         // Given
         let file_location = ".";
         let races = vec![RaceResult::new(
@@ -248,7 +252,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn upsert_races_html_test_failed_to_create_file() {
+    fn test_upsert_races_html_failed_to_create_file() {
         // Given
         let file_location = "/";
         let driver_profile = DriverProfile::new(
@@ -277,7 +281,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn upsert_races_html_test() {
+    fn test_upsert_races_html() {
         // Given
         let file_location = ".";
         let driver_profile = DriverProfile::new(
@@ -305,7 +309,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_non_existent_acc_laptime_file_test() {
+    fn test_read_non_existent_acc_laptime_file() {
         // When
         let race_file = read_acc_laptimes_file("");
 
@@ -314,7 +318,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_one_player_acc_laptime_file_test() {
+    fn test_read_one_player_acc_laptime_file() {
         // Given
         let expected_race_file = RaceResultFile::new(
             "silverstone",
@@ -333,7 +337,7 @@ mod file_integration_should {
                 "120.522".to_string(),
             ],
             RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC"),
-            Session::new(1001, 999),
+            Session::new(1001, 1),
             RaceDate::today(),
         );
 
@@ -355,7 +359,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_multiple_player_acc_laptime_file_test() {
+    fn test_read_multiple_player_acc_laptime_file() {
         // Given
         let track_name = "silverstone";
         let race_meta_data = RaceMetadata::new("FP", "N/A", "", "", "Imported from ACC");
@@ -371,7 +375,7 @@ mod file_integration_should {
                 "121.297".to_string(),
             ],
             race_meta_data.clone(),
-            Session::new(1001, 999),
+            Session::new(1001, 3),
             race_date.clone(),
         );
         let expected_race_file_2 = RaceResultFile::new(
@@ -383,7 +387,7 @@ mod file_integration_should {
                 "120.785".to_string(),
             ],
             race_meta_data.clone(),
-            Session::new(1002, 999),
+            Session::new(1002, 2),
             race_date.clone(),
         );
         let expected_race_file_3 = RaceResultFile::new(
@@ -394,7 +398,7 @@ mod file_integration_should {
                 "120.522".to_string(),
             ],
             race_meta_data.clone(),
-            Session::new(1003, 999),
+            Session::new(1003, 1),
             race_date.clone(),
         );
 
@@ -409,7 +413,7 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        // pretty_assertions::assert_eq!(3, race_files.len());
+        pretty_assertions::assert_eq!(3, race_files.len());
         assert!(race_files[0].is_some(), "Unexpectedly returned None");
         assert!(race_files[1].is_some(), "Unexpectedly returned None");
         assert!(race_files[2].is_some(), "Unexpectedly returned None");
@@ -422,7 +426,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_non_existent_laptime_file_test() {
+    fn test_read_non_existent_laptime_file() {
         // When
         let race_file = read_laptimes_file("");
 
@@ -501,7 +505,7 @@ mod file_integration_should {
             "120.8".to_string(),
             "120.9".to_string()]
     )]
-    fn read_laptime_file_test(#[case] file_name: String, #[case] laptimes: Vec<String>) {
+    fn test_read_laptime_file(#[case] file_name: String, #[case] laptimes: Vec<String>) {
         // Given
         let expected_race_file = RaceResultFile {
             track_name: "Default".to_string(),
@@ -523,7 +527,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_non_existent_race_file_test() {
+    fn test_read_non_existent_race_file() {
         // When
         let race_file = read_race_file("");
 
@@ -532,7 +536,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_race_file_test() {
+    fn test_read_race_file() {
         // Given
         let file_location = "./";
         let races = vec![RaceResult::new(
@@ -579,7 +583,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_race_file_test_no_session_type_or_session_conditions_or_car_used_or_notes() {
+    fn test_read_race_file_no_session_type_or_session_conditions_or_car_used_or_notes() {
         // Given
         let file_location = "./";
         let races = vec![RaceResult::new(
@@ -627,7 +631,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn read_application_state_empty() {
+    fn test_read_application_state_empty() {
         // Given
         let file_name = "non_existent_file.toml";
 
@@ -641,7 +645,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn upsert_application_state_failed_to_create_file() {
+    fn test_upsert_application_state_failed_to_create_file() {
         // Given
         let mut path = std::env::temp_dir();
         path.push("nonexistent_dir/".to_string() + "karting_time_test_file_1.toml");
@@ -658,7 +662,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn upsert_application_state_to_file() {
+    fn test_upsert_application_state_to_file() {
         // Given
         let file_name = "karting_time_test_file_1.toml";
         let karting_time_file = KartingTimeFile::default();
@@ -674,7 +678,7 @@ mod file_integration_should {
     }
 
     #[test]
-    fn acceptance_test_read_application_state_from_file() {
+    fn test_read_application_state_from_file_acceptance() {
         // Given
         let file_name = "karting_time_test_file_2.toml";
         let expected_karting_time = KartingTimeFile::default();
@@ -687,6 +691,6 @@ mod file_integration_should {
 
         // Then
         assert!(karting_time.is_some(), "Unexpectedly returned None");
-        assert_eq!(expected_karting_time, karting_time.unwrap());
+        pretty_assertions::assert_eq!(expected_karting_time, karting_time.unwrap());
     }
 }

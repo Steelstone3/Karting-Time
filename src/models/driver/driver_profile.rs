@@ -92,7 +92,7 @@ mod driver_profile_should {
     };
 
     #[test]
-    fn convert_to_driver_profile_file() {
+    fn test_convert_to_driver_profile_file() {
         // Given
         let expected_driver_profile_file = DriverProfileFile::new(
             "Karl Chadwick",

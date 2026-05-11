@@ -1,6 +1,6 @@
 [package]
 name = "karting-time"
-version = "1.6.3"
+version = "1.6.4"
 authors = ["Skippy <steelstone3@gmail.com>"]
 edition = "2024"
 homepage = "https://github.com/Steelstone3/Karting-Time"
@@ -11,8 +11,17 @@ include = []
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+
 [workspace]
 resolver = "2"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+
+[workspace.lints.rust]
+unused_must_use = "deny"
 
 [profile.release]
 opt-level = 'z'
