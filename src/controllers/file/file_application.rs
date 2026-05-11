@@ -98,7 +98,42 @@ mod file_application_should {
     fn export_races_test() {
         // Given
         let file_location = ".";
-        let karting_time = KartingTime::new(driver_profile_test_fixture());
+        let driver_profile = DriverProfile::new(
+            "Jack Jackson",
+            vec![
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Three Sisters",
+                        RaceDate::new(12, 12, 2025),
+                        Session::new(1, 1),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 50.4), Lap::new(2, 55.5)],
+                ),
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Trafford Park",
+                        RaceDate::new(15, 1, 2024),
+                        Session::new(2, 3),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 56.8), Lap::new(2, 58.7)],
+                ),
+            ],
+        );
+        let karting_time = KartingTime::new(driver_profile);
 
         // When
         karting_time.export_races(file_location);
@@ -129,7 +164,42 @@ mod file_application_should {
     fn export_races_html_test() {
         // Given
         let file_location = ".";
-        let karting_time = KartingTime::new(driver_profile_test_fixture());
+        let driver_profile = DriverProfile::new(
+            "Jack Jackson",
+            vec![
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Three Sisters",
+                        RaceDate::new(12, 12, 2025),
+                        Session::new(1, 1),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 50.4), Lap::new(2, 55.5)],
+                ),
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Trafford Park",
+                        RaceDate::new(15, 1, 2024),
+                        Session::new(2, 3),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 56.8), Lap::new(2, 58.7)],
+                ),
+            ],
+        );
+        let karting_time = KartingTime::new(driver_profile);
 
         // When
         karting_time.export_html_races(file_location);
@@ -298,37 +368,8 @@ mod file_application_should {
     #[test]
     fn new_karting_time_default_state() {
         // Given
-        let expected = KartingTime::default();
-        let mut karting_time = KartingTime::new(driver_profile_test_fixture());
-
-        // When
-        karting_time.file_new();
-
-        // Then
-        pretty_assertions::assert_eq!(expected, karting_time);
-    }
-
-    #[test]
-    fn acceptance_test_application_saves_then_loads() {
-        // Given
-        let file_name = "./karting_time_state.toml";
-        let expected = KartingTime::new(driver_profile_test_fixture());
-        let mut karting_time = KartingTime::new(driver_profile_test_fixture());
-
-        // When
-        let _guard = TestFileGuard::new(file_name);
-
-        karting_time.save_application(file_name);
-        karting_time.load_application(file_name);
-
-        // Then
-        assert!(fs::metadata(file_name).is_ok());
-        assert!(fs::metadata(file_name).unwrap().len() != 0);
-        pretty_assertions::assert_eq!(expected, karting_time);
-    }
-
-    fn driver_profile_test_fixture() -> DriverProfile {
-        DriverProfile::new(
+        let expected_karting_time = KartingTime::default();
+        let driver_profile = DriverProfile::new(
             "Jack Jackson",
             vec![
                 RaceResult::new(
@@ -362,7 +403,68 @@ mod file_application_should {
                     vec![Lap::new(1, 56.8), Lap::new(2, 58.7)],
                 ),
             ],
-        )
+        );
+        let mut karting_time = KartingTime::new(driver_profile);
+
+        // When
+        karting_time.file_new();
+
+        // Then
+        pretty_assertions::assert_eq!(expected_karting_time, karting_time);
+    }
+
+    #[test]
+    fn acceptance_test_application_saves_then_loads() {
+        // Given
+        let file_name = "./karting_time_state.toml";
+        let driver_profile = DriverProfile::new(
+            "Jack Jackson",
+            vec![
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Three Sisters",
+                        RaceDate::new(12, 12, 2025),
+                        Session::new(1, 1),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 50.4), Lap::new(2, 55.5)],
+                ),
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Trafford Park",
+                        RaceDate::new(15, 1, 2024),
+                        Session::new(2, 3),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 56.8), Lap::new(2, 58.7)],
+                ),
+            ],
+        );
+        let expected = KartingTime::new(driver_profile.clone());
+        let mut karting_time = KartingTime::new(driver_profile.clone());
+
+        // When
+        let _guard = TestFileGuard::new(file_name);
+
+        karting_time.save_application(file_name);
+        karting_time.load_application(file_name);
+
+        // Then
+        assert!(fs::metadata(file_name).is_ok());
+        assert!(fs::metadata(file_name).unwrap().len() != 0);
+        pretty_assertions::assert_eq!(expected, karting_time);
     }
 
     #[test]
