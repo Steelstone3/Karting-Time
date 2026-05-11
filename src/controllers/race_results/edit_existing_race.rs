@@ -43,6 +43,41 @@ mod edit_existing_race_should {
     use rstest::rstest;
 
     #[rstest]
+    #[case("Three Sisters", "Three Sisters", "Three Sisters", false)]
+    #[case("Three Sisters", "Four Sisters", "Five Sisters", true)]
+    fn is_unique_identifier_for_track(
+        #[case] track_1: String,
+        #[case] track_2: String,
+        #[case] track_3: String,
+        #[case] expected_is_unique: bool,
+    ) {
+        // Given
+        let race_date = RaceDate::new(12, 11, 2023);
+        let race_1 = RaceResult::new(
+            RaceInformation::new(&track_1, race_date.clone(), Session::new(1, 1)),
+            Default::default(),
+            Default::default(),
+        );
+        let race_2 = RaceResult::new(
+            RaceInformation::new(&track_2, race_date.clone(), Session::new(1, 1)),
+            Default::default(),
+            Default::default(),
+        );
+        let race_3 = RaceResult::new(
+            RaceInformation::new(&track_3, race_date.clone(), Session::new(1, 1)),
+            Default::default(),
+            Default::default(),
+        );
+        let races = vec![race_2, race_3];
+
+        // When
+        let is_unique = race_1.is_unique_identifier(&races);
+
+        // Then
+        pretty_assertions::assert_eq!(expected_is_unique, is_unique)
+    }
+
+    #[rstest]
     #[case("Three Sisters", "Three Sisters", "Three Sisters", RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, 1, 1, 1, false)]
     #[case("Three Sisters", "Four Sisters", "Five Sisters", RaceDate{day:15,month:11,year:2025}, RaceDate{day:16,month:11,year:2025}, RaceDate{day:17,month:11,year:2025}, 1, 2, 3, true)]
     #[case("Three Sisters", "Four Sisters", "Five Sisters", RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, RaceDate{day:15,month:11,year:2025}, 1, 1, 1, true)]
@@ -61,7 +96,6 @@ mod edit_existing_race_should {
         #[case] expected_is_unique: bool,
     ) {
         // Given
-
         let race_1 = RaceResult::new(
             RaceInformation::new(&track_1, race_date_1, Session::new(session_id_1, 1)),
             Default::default(),
