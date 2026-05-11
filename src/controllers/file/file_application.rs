@@ -522,7 +522,6 @@ mod file_application_should {
         pretty_assertions::assert_eq!(5, karting_time.driver_profile.races[0].laptimes.len());
         pretty_assertions::assert_eq!(4, karting_time.driver_profile.races[1].laptimes.len());
         pretty_assertions::assert_eq!(3, karting_time.driver_profile.races[2].laptimes.len());
-        // TODO remove convert_to_race_result
         pretty_assertions::assert_eq!(expected_race_1, karting_time.driver_profile.races[0]);
         pretty_assertions::assert_eq!(expected_race_2, karting_time.driver_profile.races[1]);
         pretty_assertions::assert_eq!(expected_race_3, karting_time.driver_profile.races[2]);
