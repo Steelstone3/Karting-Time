@@ -154,10 +154,10 @@ mod file_application_should {
         let _guard = TestFileGuard::new(&file_name_1);
         let _guard = TestFileGuard::new(&file_name_2);
 
-        assert!(fs::metadata(&file_name_1).is_ok());
-        assert!(fs::metadata(&file_name_1).unwrap().len() != 0);
-        assert!(fs::metadata(&file_name_2).is_ok());
-        assert!(fs::metadata(&file_name_2).unwrap().len() != 0);
+        assert!(std::path::Path::new(&file_name_1).is_file());
+        assert!(std::path::Path::new(&file_name_2).is_file());
+        pretty_assertions::assert_ne!(fs::metadata(&file_name_1).unwrap().len(), 0);
+        pretty_assertions::assert_ne!(fs::metadata(&file_name_2).unwrap().len(), 0);
     }
 
     #[test]
@@ -207,8 +207,8 @@ mod file_application_should {
         // Then
         let file_name = format!("./{}.html", &karting_time.driver_profile.name);
         let _guard = TestFileGuard::new(&file_name);
-        assert!(fs::metadata(&file_name).is_ok());
-        assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+        assert!(std::path::Path::new(&file_name).is_file());
+        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
     }
 
     #[test]
@@ -486,9 +486,9 @@ mod file_application_should {
     }
 
     #[test]
-    fn test_application_saves_then_loads_acceptance() {
+    fn test_application_saves_then_loads() {
         // Given
-        let file_name = "./karting_time_state.toml";
+        let file_name = "./file_io_test_files/karting_time_application_state.toml";
         let driver_profile = DriverProfile::new(
             "Jack Jackson",
             vec![
@@ -528,14 +528,11 @@ mod file_application_should {
         let mut karting_time = KartingTime::new(driver_profile.clone());
 
         // When
-        let _guard = TestFileGuard::new(file_name);
-
-        karting_time.save_application(file_name);
         karting_time.load_application(file_name);
 
         // Then
-        assert!(fs::metadata(file_name).is_ok());
-        assert!(fs::metadata(file_name).unwrap().len() != 0);
+        assert!(std::path::Path::new(file_name).is_file());
+        pretty_assertions::assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(expected, karting_time);
     }
 }

@@ -11,7 +11,7 @@ impl RaceMetadata {
     pub fn new(
         mut session_type: &str,
         mut track_conditions: &str,
-        car_used: &str,
+        mut car_used: &str,
         championship: &str,
         notes: &str,
     ) -> Self {
@@ -21,6 +21,10 @@ impl RaceMetadata {
 
         if track_conditions.is_empty() {
             track_conditions = "N/A"
+        }
+
+        if car_used.is_empty() {
+            car_used = "N/A"
         }
 
         Self {

@@ -146,6 +146,7 @@ mod filter_race_results_should {
 
     #[rstest]
     #[case(false, "", "", "", "", "", 2)]
+    #[case(true, "", "", "", "", "", 2)]
     #[case(true, "Silverstone", "", "", "", "", 1)]
     #[case(true, "", "2025-12-21", "", "", "", 1)]
     #[case(true, "", "", "MX5", "", "", 1)]

@@ -1,4 +1,4 @@
-use crate::views::application::input_parser::parse_input_u32;
+use crate::controllers::converters::input_parser::parse_input_u32;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Session {

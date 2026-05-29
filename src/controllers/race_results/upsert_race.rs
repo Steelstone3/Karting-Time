@@ -132,4 +132,32 @@ mod upsert_race_should {
         pretty_assertions::assert_eq!(1, driver_profile.races.len());
         pretty_assertions::assert_eq!(expected_race, driver_profile.races[0])
     }
+
+    #[test]
+    fn test_upsert_race_default() {
+        // Given
+        let mut driver_profile = DriverProfile::new("", vec![]);
+        driver_profile.new_race = RaceResult::new(
+            RaceInformation::new("", RaceDate::new(21, 12, 2022), Session::new(1, 5)),
+            RaceMetadata {
+                session_type: "".to_string(),
+                track_conditions: "".to_string(),
+                car_used: "".to_string(),
+                championship: "".to_string(),
+                notes: "".to_string(),
+            },
+            vec![],
+        );
+
+        // When
+        driver_profile.upsert_race();
+
+        // Then
+        pretty_assertions::assert_eq!("N/A", driver_profile.new_race.race_metadata.session_type);
+        pretty_assertions::assert_eq!(
+            "N/A",
+            driver_profile.new_race.race_metadata.track_conditions
+        );
+        pretty_assertions::assert_eq!("N/A", driver_profile.new_race.race_metadata.car_used);
+    }
 }

@@ -1,0 +1,14 @@
+laptimes = [
+    "50.4",
+    "55.5",
+]
+day = 12
+month = 12
+year = 2025
+track_name = "Three Sisters"
+session_id = 1
+race_position = 1
+session_type = "N/A"
+track_conditions = "N/A"
+car_used = "Kart"
+championship = "Championship"

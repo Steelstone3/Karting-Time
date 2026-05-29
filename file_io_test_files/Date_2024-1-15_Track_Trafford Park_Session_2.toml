@@ -1,0 +1,14 @@
+laptimes = [
+    "56.8",
+    "58.7",
+]
+day = 15
+month = 1
+year = 2024
+track_name = "Trafford Park"
+session_id = 2
+race_position = 3
+session_type = "N/A"
+track_conditions = "N/A"
+car_used = "Kart"
+championship = "Championship"

@@ -43,9 +43,8 @@ impl RaceInformation {
 
 #[cfg(test)]
 mod race_information_should {
-    use crate::models::{date::RaceDate, driver::session_information::session::Session};
-
     use super::RaceInformation;
+    use crate::models::{date::RaceDate, driver::session_information::session::Session};
 
     #[test]
     fn test_create_race_information() {
@@ -83,5 +82,24 @@ mod race_information_should {
             expected_race_identifier,
             race_information.unique_race_identifier
         )
+    }
+
+    #[test]
+    fn test_update_unique_identifier() {
+        // Given
+        let mut race_information = RaceInformation::new(
+            "Silverstone",
+            RaceDate::new(21, 12, 2022),
+            Session::new(1, 5),
+        );
+
+        // When
+        race_information.update_unique_identifier();
+
+        // Then
+        pretty_assertions::assert_eq!(
+            "Date_2022-12-21_Track_Silverstone_Session_1",
+            race_information.unique_race_identifier
+        );
     }
 }

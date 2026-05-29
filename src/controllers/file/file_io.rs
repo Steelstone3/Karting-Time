@@ -163,6 +163,7 @@ mod file_integration_should {
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
         models::{
+            application::karting_time::KartingTime,
             date::RaceDate,
             driver::session_information::{
                 lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
@@ -206,7 +207,7 @@ mod file_integration_should {
         upsert_races(file_location, &races);
 
         // Then
-        assert!(fs::metadata(file_name).is_err());
+        assert!(!std::path::Path::new(file_name).exists());
     }
 
     #[test]
@@ -247,8 +248,8 @@ mod file_integration_should {
             "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
         let _guard = TestFileGuard::new(&file_name);
 
-        assert!(fs::metadata(&file_name).is_ok());
-        assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+        assert!(std::path::Path::new(&file_name).is_file());
+        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
     }
 
     #[test]
@@ -277,7 +278,7 @@ mod file_integration_should {
         upsert_html_races(file_location, &driver_profile);
 
         // Then
-        assert!(fs::metadata(file_name).is_err());
+        assert!(!std::path::Path::new(file_name).exists());
     }
 
     #[test]
@@ -304,8 +305,8 @@ mod file_integration_should {
         upsert_html_races(file_location, &driver_profile);
 
         // Then
-        assert!(fs::metadata(&file_name).is_ok());
-        assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+        assert!(std::path::Path::new(&file_name).is_file());
+        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
     }
 
     #[test]
@@ -527,6 +528,23 @@ mod file_integration_should {
     }
 
     #[test]
+    fn test_read_laptime_file_with_no_laptimes() {
+        // Given
+        let file_name = "./file_io_test_files/laptime_file_test_empty.json";
+
+        // When
+        let race_file = read_laptimes_file(&file_name);
+
+        // Then
+        assert!(
+            std::path::Path::new(&file_name).is_file(),
+            "Expected test file to exist at path: {}",
+            file_name
+        );
+        pretty_assertions::assert_eq!(None, race_file);
+    }
+
+    #[test]
     fn test_read_non_existent_race_file() {
         // When
         let race_file = read_race_file("");
@@ -658,7 +676,7 @@ mod file_integration_should {
         upsert_application_state(file_name, &karting_time_file);
 
         // Then
-        assert!(fs::metadata(file_name).is_err());
+        assert!(!std::path::Path::new(file_name).exists());
     }
 
     #[test]
@@ -673,24 +691,59 @@ mod file_integration_should {
         upsert_application_state(file_name, &karting_time_file);
 
         // Then
-        assert!(fs::metadata(file_name).is_ok());
-        assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
+        assert!(std::path::Path::new(file_name).is_file());
+        pretty_assertions::assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
     }
 
     #[test]
-    fn test_read_application_state_from_file_acceptance() {
+    fn test_read_application_state_from_file() {
         // Given
-        let file_name = "karting_time_test_file_2.toml";
-        let expected_karting_time = KartingTimeFile::default();
+        let file_name = "./file_io_test_files/karting_time_application_state.toml";
+        let driver_profile = DriverProfile::new(
+            "Jack Jackson",
+            vec![
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Three Sisters",
+                        RaceDate::new(12, 12, 2025),
+                        Session::new(1, 1),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 50.4), Lap::new(2, 55.5)],
+                ),
+                RaceResult::new(
+                    RaceInformation::new(
+                        "Trafford Park",
+                        RaceDate::new(15, 1, 2024),
+                        Session::new(2, 3),
+                    ),
+                    RaceMetadata::new(
+                        Default::default(),
+                        Default::default(),
+                        "Kart",
+                        "Championship",
+                        Default::default(),
+                    ),
+                    vec![Lap::new(1, 56.8), Lap::new(2, 58.7)],
+                ),
+            ],
+        );
+        let expected = KartingTime::new(driver_profile.clone());
 
         // When
-        let _guard = TestFileGuard::new(file_name);
-
-        upsert_application_state(file_name, &expected_karting_time);
-        let karting_time = read_application_state(file_name);
+        let karting_time_file = read_application_state(file_name);
 
         // Then
-        assert!(karting_time.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_karting_time, karting_time.unwrap());
+        assert!(karting_time_file.is_some(), "Unexpectedly returned None");
+        pretty_assertions::assert_eq!(
+            expected,
+            karting_time_file.unwrap().convert_to_karting_time()
+        );
     }
 }

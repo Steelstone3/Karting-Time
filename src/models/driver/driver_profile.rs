@@ -28,6 +28,7 @@ impl DriverProfile {
         };
 
         driver_profile.filter = Filter::new_initial_state(races.clone());
+        driver_profile.filter.update_pagination();
         driver_profile.profile_statistics = ProfileStatistics::new(races.clone());
 
         driver_profile
