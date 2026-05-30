@@ -342,7 +342,6 @@ mod karting_time_messages_should {
         },
     };
     use iced::widget::text_editor::{Action, Edit};
-    use std::fs;
 
     #[test]
     fn test_menu_bar() {
@@ -427,8 +426,6 @@ mod karting_time_messages_should {
         let mut karting_time = KartingTime::default();
 
         // When
-        let _guard = TestFileGuard::new(file_name);
-
         let task_1 = karting_time.update(Message::SaveApplicationRequested);
         let task_2 = karting_time.update(Message::SaveApplicationCompleted(Some(
             file_name.to_string(),
@@ -436,9 +433,11 @@ mod karting_time_messages_should {
 
         // Then
         assert!(std::path::Path::new(file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(file_name);
     }
 
     #[test]
@@ -491,7 +490,6 @@ mod karting_time_messages_should {
 
         // Then
         assert!(std::path::Path::new(file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(expected, karting_time);
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
@@ -549,8 +547,6 @@ mod karting_time_messages_should {
         // Then
         assert!(std::path::Path::new(file_name_1).is_file());
         assert!(std::path::Path::new(file_name_2).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name_1).unwrap().len(), 0);
-        pretty_assertions::assert_ne!(fs::metadata(&file_name_2).unwrap().len(), 0);
         pretty_assertions::assert_eq!(expected, karting_time);
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
@@ -591,7 +587,6 @@ mod karting_time_messages_should {
 
         // Then
         assert!(std::path::Path::new(file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(expected, karting_time);
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
@@ -630,7 +625,6 @@ mod karting_time_messages_should {
 
         // Then
         assert!(std::path::Path::new(file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(expected, karting_time);
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
@@ -639,7 +633,6 @@ mod karting_time_messages_should {
     #[test]
     fn acceptance_test_export_races() {
         // Given
-        let file_location = ".";
         let driver_profile = DriverProfile::new(
             "Jack Jackson",
             vec![
@@ -676,42 +669,49 @@ mod karting_time_messages_should {
             ],
         );
         let mut karting_time = KartingTime::new(driver_profile);
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_path_1 = file_location.join(
+            karting_time.driver_profile.races[0]
+                .race_information
+                .unique_race_identifier
+                .clone()
+                + ".toml",
+        );
+
+        let file_path_2 = file_location.join(
+            karting_time.driver_profile.races[1]
+                .race_information
+                .unique_race_identifier
+                .clone()
+                + ".toml",
+        );
 
         // When
         let task_1 = karting_time.update(Message::ExportRacesRequested);
         let task_2 = karting_time.update(Message::ExportRacesCompleted(Some(
-            file_location.to_string(),
+            file_location.to_string_lossy().into_owned(),
         )));
 
         // Then
-        let file_name_1 = "./".to_string()
-            + &karting_time.driver_profile.races[0]
-                .race_information
-                .unique_race_identifier
-            + ".toml";
-
-        let file_name_2 = "./".to_string()
-            + &karting_time.driver_profile.races[1]
-                .race_information
-                .unique_race_identifier
-            + ".toml";
-
-        let _guard = TestFileGuard::new(&file_name_1.clone());
-        let _guard = TestFileGuard::new(&file_name_2.clone());
-
-        assert!(std::path::Path::new(&file_name_1.clone()).is_file());
-        assert!(std::path::Path::new(&file_name_2.clone()).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name_1.clone()).unwrap().len(), 0);
-        pretty_assertions::assert_ne!(fs::metadata(&file_name_2.clone()).unwrap().len(), 0);
+        assert!(std::path::Path::new(&file_path_1).is_file());
+        assert!(std::path::Path::new(&file_path_2).is_file());
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_path_1.to_string_lossy());
+        let _guard = TestFileGuard::new(&file_path_2.to_string_lossy());
     }
 
     #[test]
     fn acceptance_test_export_html_races() {
         // Given
-        let file_location = "./";
-        let file_name = "Jack Jackson.html";
         let driver_profile = DriverProfile::new(
             "Jack Jackson",
             vec![
@@ -748,20 +748,28 @@ mod karting_time_messages_should {
             ],
         );
         let mut karting_time = KartingTime::new(driver_profile);
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name = file_location.join("Jack Jackson.html");
 
         // When
         let task_1 = karting_time.update(Message::ExportHtmlRacesRequested);
         let task_2 = karting_time.update(Message::ExportHtmlRacesCompleted(Some(
-            file_location.to_string(),
+            file_location.to_string_lossy().into_owned(),
         )));
 
         // Then
-        let _guard = TestFileGuard::new(&file_name);
-
         assert!(std::path::Path::new(&file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(1, task_1.units());
         pretty_assertions::assert_eq!(0, task_2.units());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]

@@ -85,9 +85,9 @@ mod race_time_summaries_should {
         let total_times = race.calculate_total_times();
 
         // Then
-        let total_5_laps = *total_times.get(&5).unwrap();
+        let total_5_laps = total_times.get(&5);
 
-        pretty_assertions::assert_eq!(63.299995, total_5_laps);
+        pretty_assertions::assert_eq!(Some(&63.299995), total_5_laps);
     }
 
     #[test]
@@ -110,11 +110,11 @@ mod race_time_summaries_should {
         let total_times = race.calculate_total_times();
 
         // Then
-        let total_5_laps = *total_times.get(&5).unwrap();
-        let total_6_laps = *total_times.get(&6).unwrap();
+        let total_5_laps = total_times.get(&5);
+        let total_6_laps = total_times.get(&6);
 
-        pretty_assertions::assert_eq!(63.299995, total_5_laps);
-        pretty_assertions::assert_eq!(83.299995, total_6_laps);
+        pretty_assertions::assert_eq!(Some(&63.299995), total_5_laps);
+        pretty_assertions::assert_eq!(Some(&83.299995), total_6_laps);
     }
 
     #[test]
@@ -165,9 +165,9 @@ mod race_time_summaries_should {
         let total_times = race.calculate_average_total_times(&total_times);
 
         // Then
-        let average_5_laps = *total_times.get(&5).unwrap();
+        let average_5_laps = total_times.get(&5);
 
-        pretty_assertions::assert_eq!(46.5, average_5_laps);
+        pretty_assertions::assert_eq!(Some(&46.5), average_5_laps);
     }
 
     #[test]

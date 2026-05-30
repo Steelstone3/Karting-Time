@@ -37,6 +37,7 @@ opt-level = 3
 [dev-dependencies]
 rstest = "0"
 pretty_assertions = "1"
+tempfile = "3"
 
 [dependencies]
 # Fixed Version

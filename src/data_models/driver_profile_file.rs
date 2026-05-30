@@ -1,4 +1,4 @@
-use crate::models::driver::{driver_profile::DriverProfile, profile_statistics::ProfileStatistics};
+use crate::models::driver::driver_profile::DriverProfile;
 
 use super::race_result_file::RaceResultFile;
 use serde::{Deserialize, Serialize};
@@ -7,22 +7,14 @@ use serde::{Deserialize, Serialize};
 pub struct DriverProfileFile {
     pub name: String,
     pub races: Vec<RaceResultFile>,
-    #[serde(skip)]
-    pub profile_statistics: ProfileStatistics,
 }
 
 impl DriverProfileFile {
     pub fn new(name: &str, races: Vec<RaceResultFile>) -> Self {
-        let mut driver_profile_file = Self {
+        Self {
             name: name.to_string(),
             races: races.clone(),
-            profile_statistics: Default::default(),
-        };
-
-        driver_profile_file.profile_statistics =
-            ProfileStatistics::new(RaceResultFile::convert_to_race_results(races.clone()));
-
-        driver_profile_file
+        }
     }
 
     pub fn convert_to_driver_profile(&self) -> DriverProfile {

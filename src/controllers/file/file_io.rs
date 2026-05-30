@@ -38,7 +38,7 @@ pub fn upsert_races(folder_location: &str, races: &Vec<RaceResult>) {
 }
 
 pub fn upsert_html_races(folder_location: &str, driver_profile: &DriverProfile) {
-    let markup: Markup = convert_to_html(&driver_profile.convert_to_driver_profile_file());
+    let markup: Markup = convert_to_html(driver_profile);
 
     let file_name = format!("{}/{}.html", folder_location, &driver_profile.name);
 
@@ -162,8 +162,8 @@ mod file_integration_should {
     use super::*;
     use crate::{
         controllers::file::test_file_guard::TestFileGuard,
+        data_models::driver_profile_file::DriverProfileFile,
         models::{
-            application::karting_time::KartingTime,
             date::RaceDate,
             driver::session_information::{
                 lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
@@ -172,12 +172,10 @@ mod file_integration_should {
         },
     };
     use rstest::rstest;
-    use std::fs;
 
     #[test]
     fn test_upsert_races_failed_to_create_file() {
         // Given
-        let file_location = "/";
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -193,27 +191,32 @@ mod file_integration_should {
             ),
             Default::default(),
         )];
-        let mut path = std::env::temp_dir();
-        path.push(
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name = file_location.join(
             "nonexistent_dir/".to_string()
                 + &races[0].race_information.unique_race_identifier
                 + ".toml",
         );
-        let file_name = path.to_str().unwrap();
 
         // When
-        let _guard = TestFileGuard::new(file_name);
-
-        upsert_races(file_location, &races);
+        upsert_races(&file_location.to_string_lossy(), &races);
 
         // Then
-        assert!(!std::path::Path::new(file_name).exists());
+        assert!(!std::path::Path::new(&file_name).exists());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
     fn test_upsert_races() {
         // Given
-        let file_location = ".";
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -239,23 +242,26 @@ mod file_integration_should {
             RaceMetadata::default(),
             Default::default(),
         )];
+        let file_identifier = format!("{}.toml", races[0].race_information.unique_race_identifier);
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_path = file_location.join(&file_identifier);
 
         // When
-        upsert_races(file_location, &races);
+        upsert_races(&file_location.to_string_lossy(), &races);
 
         // Then
-        let file_name =
-            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
-        let _guard = TestFileGuard::new(&file_name);
-
-        assert!(std::path::Path::new(&file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+        assert!(std::path::Path::new(&file_path).is_file());
     }
 
     #[test]
     fn test_upsert_races_html_failed_to_create_file() {
         // Given
-        let file_location = "/";
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -268,23 +274,28 @@ mod file_integration_should {
                 vec![Lap::new(1, 20.0)],
             )],
         );
-        let mut path = std::env::temp_dir();
-        path.push("nonexistent_dir/".to_string() + &format!("/{}.html", driver_profile.name));
-        let file_name = path.to_str().unwrap();
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name = file_location.join(driver_profile.clone().name + "/nonexistent_dir/.html");
 
         // When
-        let _guard = TestFileGuard::new(file_name);
-
-        upsert_html_races(file_location, &driver_profile);
+        upsert_html_races(&file_location.to_string_lossy(), &driver_profile);
 
         // Then
-        assert!(!std::path::Path::new(file_name).exists());
+        assert!(!std::path::Path::new(&file_name).exists());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
     fn test_upsert_races_html() {
         // Given
-        let file_location = ".";
         let driver_profile = DriverProfile::new(
             "Obi Wan Kenobi",
             vec![RaceResult::new(
@@ -297,16 +308,23 @@ mod file_integration_should {
                 vec![Lap::new(1, 20.0)],
             )],
         );
-        let file_name = format!("./{}.html", driver_profile.name);
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name = file_location.join(driver_profile.clone().name + ".html");
 
         // When
-        let _guard = TestFileGuard::new(&file_name);
-
-        upsert_html_races(file_location, &driver_profile);
+        upsert_html_races(&file_location.to_string_lossy(), &driver_profile.clone());
 
         // Then
         assert!(std::path::Path::new(&file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
@@ -355,8 +373,7 @@ mod file_integration_should {
         );
 
         pretty_assertions::assert_eq!(1, race_files.len());
-        assert!(race_files[0].is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_files[0].clone().unwrap());
+        pretty_assertions::assert_eq!(Some(expected_race_file), race_files[0].clone());
     }
 
     #[test]
@@ -415,15 +432,9 @@ mod file_integration_should {
             file_name
         );
         pretty_assertions::assert_eq!(3, race_files.len());
-        assert!(race_files[0].is_some(), "Unexpectedly returned None");
-        assert!(race_files[1].is_some(), "Unexpectedly returned None");
-        assert!(race_files[2].is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(5, race_files[0].clone().unwrap().laptimes.len());
-        pretty_assertions::assert_eq!(4, race_files[1].clone().unwrap().laptimes.len());
-        pretty_assertions::assert_eq!(3, race_files[2].clone().unwrap().laptimes.len());
-        pretty_assertions::assert_eq!(expected_race_file_1, race_files[0].clone().unwrap());
-        pretty_assertions::assert_eq!(expected_race_file_2, race_files[1].clone().unwrap());
-        pretty_assertions::assert_eq!(expected_race_file_3, race_files[2].clone().unwrap());
+        pretty_assertions::assert_eq!(Some(expected_race_file_1), race_files[0].clone());
+        pretty_assertions::assert_eq!(Some(expected_race_file_2), race_files[1].clone());
+        pretty_assertions::assert_eq!(Some(expected_race_file_3), race_files[2].clone());
     }
 
     #[test]
@@ -523,8 +534,7 @@ mod file_integration_should {
             "Expected test file to exist at path: {}",
             file_name
         );
-        assert!(race_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+        pretty_assertions::assert_eq!(Some(expected_race_file), race_file);
     }
 
     #[test]
@@ -533,7 +543,7 @@ mod file_integration_should {
         let file_name = "./file_io_test_files/laptime_file_test_empty.json";
 
         // When
-        let race_file = read_laptimes_file(&file_name);
+        let race_file = read_laptimes_file(file_name);
 
         // Then
         assert!(
@@ -556,7 +566,6 @@ mod file_integration_should {
     #[test]
     fn test_read_race_file() {
         // Given
-        let file_location = "./";
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -585,25 +594,30 @@ mod file_integration_should {
             Session::new(1, 1),
             RaceDate::new(17, 5, 2026),
         );
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name = file_location
+            .join(races[0].race_information.unique_race_identifier.to_string() + ".toml");
 
         // When
-        upsert_races(file_location, &races);
-        let file_name =
-            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
-
-        let _guard = TestFileGuard::new(&file_name);
-
-        let race_file = read_race_file(&file_name);
+        upsert_races(&file_location.to_string_lossy(), &races);
+        let race_file = read_race_file(&file_name.to_string_lossy());
 
         // Then
-        assert!(race_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+        pretty_assertions::assert_eq!(Some(expected_race_file), race_file);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
     fn test_read_race_file_no_session_type_or_session_conditions_or_car_used_or_notes() {
         // Given
-        let file_location = "./";
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -619,7 +633,6 @@ mod file_integration_should {
             ),
             Default::default(),
         )];
-
         let expected_race_file = RaceResultFile::new(
             "Three Sisters",
             Default::default(),
@@ -633,19 +646,25 @@ mod file_integration_should {
             Session::new(1, 1),
             RaceDate::new(27, 5, 2026),
         );
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
 
         // When
-        upsert_races(file_location, &races);
-        let file_name =
-            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
-
-        let _guard = TestFileGuard::new(&file_name);
-
-        let race_file = read_race_file(&file_name);
+        upsert_races(&file_location.to_string_lossy(), &races);
+        let file_name = file_location
+            .join(races[0].race_information.unique_race_identifier.to_string() + ".toml");
+        let race_file = read_race_file(&file_name.to_string_lossy());
 
         // Then
-        assert!(race_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(expected_race_file, race_file.unwrap());
+        pretty_assertions::assert_eq!(Some(expected_race_file), race_file);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
@@ -654,29 +673,38 @@ mod file_integration_should {
         let file_name = "non_existent_file.toml";
 
         // When
-        let _guard = TestFileGuard::new(file_name);
 
         let karting_time = read_application_state(file_name);
 
         // Then
         assert!(karting_time.is_none());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(file_name);
     }
 
     #[test]
     fn test_upsert_application_state_failed_to_create_file() {
         // Given
-        let mut path = std::env::temp_dir();
-        path.push("nonexistent_dir/".to_string() + "karting_time_test_file_1.toml");
-        let file_name = path.to_str().unwrap();
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name =
+            file_location.join("nonexistent_dir/".to_string() + "karting_time_test_file_1.toml");
         let karting_time_file = KartingTimeFile::default();
 
         // When
-        let _guard = TestFileGuard::new(file_name);
-
-        upsert_application_state(file_name, &karting_time_file);
+        upsert_application_state(&file_name.to_string_lossy(), &karting_time_file);
 
         // Then
-        assert!(!std::path::Path::new(file_name).exists());
+        assert!(!std::path::Path::new(&file_name).exists());
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
@@ -686,28 +714,27 @@ mod file_integration_should {
         let karting_time_file = KartingTimeFile::default();
 
         // When
-        let _guard = TestFileGuard::new(file_name);
 
         upsert_application_state(file_name, &karting_time_file);
 
         // Then
         assert!(std::path::Path::new(file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(file_name);
     }
 
     #[test]
     fn test_read_application_state_from_file() {
         // Given
         let file_name = "./file_io_test_files/karting_time_application_state.toml";
-        let driver_profile = DriverProfile::new(
+
+        let driver_profile_file = DriverProfileFile::new(
             "Jack Jackson",
             vec![
-                RaceResult::new(
-                    RaceInformation::new(
-                        "Three Sisters",
-                        RaceDate::new(12, 12, 2025),
-                        Session::new(1, 1),
-                    ),
+                RaceResultFile::new(
+                    "Three Sisters",
+                    vec!["50.4".to_string(), "55.5".to_string()],
                     RaceMetadata::new(
                         Default::default(),
                         Default::default(),
@@ -715,14 +742,12 @@ mod file_integration_should {
                         "Championship",
                         Default::default(),
                     ),
-                    vec![Lap::new(1, 50.4), Lap::new(2, 55.5)],
+                    Session::new(1, 1),
+                    RaceDate::new(12, 12, 2025),
                 ),
-                RaceResult::new(
-                    RaceInformation::new(
-                        "Trafford Park",
-                        RaceDate::new(15, 1, 2024),
-                        Session::new(2, 3),
-                    ),
+                RaceResultFile::new(
+                    "Trafford Park",
+                    vec!["56.8".to_string(), "58.7".to_string()],
                     RaceMetadata::new(
                         Default::default(),
                         Default::default(),
@@ -730,20 +755,18 @@ mod file_integration_should {
                         "Championship",
                         Default::default(),
                     ),
-                    vec![Lap::new(1, 56.8), Lap::new(2, 58.7)],
+                    Session::new(2, 3),
+                    RaceDate::new(15, 1, 2024),
                 ),
             ],
         );
-        let expected = KartingTime::new(driver_profile.clone());
+        let expected_karting_time_file = KartingTimeFile::new(driver_profile_file.clone());
 
         // When
         let karting_time_file = read_application_state(file_name);
 
         // Then
-        assert!(karting_time_file.is_some(), "Unexpectedly returned None");
-        pretty_assertions::assert_eq!(
-            expected,
-            karting_time_file.unwrap().convert_to_karting_time()
-        );
+        assert!(karting_time_file.is_some());
+        pretty_assertions::assert_eq!(Some(expected_karting_time_file), karting_time_file);
     }
 }

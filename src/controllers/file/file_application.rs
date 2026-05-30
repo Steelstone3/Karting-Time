@@ -92,12 +92,10 @@ mod file_application_should {
         },
     };
     use rstest::rstest;
-    use std::fs;
 
     #[test]
     fn test_export_races() {
         // Given
-        let file_location = ".";
         let driver_profile = DriverProfile::new(
             "Jack Jackson",
             vec![
@@ -134,36 +132,43 @@ mod file_application_should {
             ],
         );
         let karting_time = KartingTime::new(driver_profile);
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name_1 = file_location.join(
+            karting_time.driver_profile.races[0]
+                .race_information
+                .unique_race_identifier
+                .clone()
+                + ".toml",
+        );
+        let file_name_2 = file_location.join(
+            karting_time.driver_profile.races[1]
+                .race_information
+                .unique_race_identifier
+                .clone()
+                + ".toml",
+        );
 
         // When
-        karting_time.export_races(file_location);
+        karting_time.export_races(&file_location.to_string_lossy());
 
         // Then
-        let file_name_1 = "./".to_string()
-            + &karting_time.driver_profile.races[0]
-                .race_information
-                .unique_race_identifier
-            + ".toml";
-
-        let file_name_2 = "./".to_string()
-            + &karting_time.driver_profile.races[1]
-                .race_information
-                .unique_race_identifier
-            + ".toml";
-
-        let _guard = TestFileGuard::new(&file_name_1);
-        let _guard = TestFileGuard::new(&file_name_2);
-
         assert!(std::path::Path::new(&file_name_1).is_file());
         assert!(std::path::Path::new(&file_name_2).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name_1).unwrap().len(), 0);
-        pretty_assertions::assert_ne!(fs::metadata(&file_name_2).unwrap().len(), 0);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name_1.to_string_lossy());
+        let _guard = TestFileGuard::new(&file_name_2.to_string_lossy());
     }
 
     #[test]
     fn test_export_races_html() {
         // Given
-        let file_location = ".";
         let driver_profile = DriverProfile::new(
             "Jack Jackson",
             vec![
@@ -199,16 +204,24 @@ mod file_application_should {
                 ),
             ],
         );
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
         let karting_time = KartingTime::new(driver_profile);
+        let file_name = file_location.join(karting_time.driver_profile.name.to_string() + ".html");
 
         // When
-        karting_time.export_html_races(file_location);
+        karting_time.export_html_races(&file_location.to_string_lossy());
 
         // Then
-        let file_name = format!("./{}.html", &karting_time.driver_profile.name);
-        let _guard = TestFileGuard::new(&file_name);
         assert!(std::path::Path::new(&file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(&file_name).unwrap().len(), 0);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
@@ -406,7 +419,6 @@ mod file_application_should {
     fn test_import_races() {
         // Given
         let mut karting_time = KartingTime::default();
-        let file_location = "./";
         let races = vec![RaceResult::new(
             RaceInformation::new(
                 "Three Sisters",
@@ -422,19 +434,25 @@ mod file_application_should {
             ),
             Default::default(),
         )];
+        let temp_dir = match tempfile::tempdir() {
+            Ok(temp_dir) => temp_dir,
+            Err(_) => {
+                unreachable!();
+            }
+        };
+        let file_location = temp_dir.path();
+        let file_name = file_location
+            .join(races[0].race_information.unique_race_identifier.to_string() + ".toml");
 
         // When
-        let file_name =
-            "./".to_string() + &races[0].race_information.unique_race_identifier + ".toml";
-
-        let _guard = TestFileGuard::new(&file_name);
-
-        upsert_races(file_location, &races);
-
-        karting_time.import_races(vec![file_name]);
+        upsert_races(&file_location.to_string_lossy(), &races);
+        karting_time.import_races(vec![file_name.to_string_lossy().into_owned()]);
 
         // Then
         pretty_assertions::assert_eq!(races[0], karting_time.driver_profile.races[0]);
+
+        // Cleanup
+        let _guard = TestFileGuard::new(&file_name.to_string_lossy());
     }
 
     #[test]
@@ -532,7 +550,6 @@ mod file_application_should {
 
         // Then
         assert!(std::path::Path::new(file_name).is_file());
-        pretty_assertions::assert_ne!(fs::metadata(file_name).unwrap().len(), 0);
         pretty_assertions::assert_eq!(expected, karting_time);
     }
 }

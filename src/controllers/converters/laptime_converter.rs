@@ -20,7 +20,6 @@ impl RaceResult {
         self.laptimes = converted_laptimes;
     }
 
-    // TODO investigate if this can be removed
     pub fn convert_hash_map(hash_map: HashMap<usize, f32>) -> Vec<(usize, String)> {
         // order by key
         let mut sorted: Vec<(usize, f32)> = hash_map.into_iter().collect();
@@ -97,7 +96,6 @@ mod laptime_converter_should {
         pretty_assertions::assert_eq!(expected_laps, race.laptimes)
     }
 
-    // TODO see if this can be removed
     #[test]
     fn test_convert_hash_map() {
         // Given

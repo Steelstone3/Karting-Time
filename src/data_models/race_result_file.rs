@@ -4,7 +4,7 @@ use crate::{
         date::RaceDate,
         driver::session_information::{
             race_information::RaceInformation, race_metadata::RaceMetadata,
-            race_result::RaceResult, race_statistics::RaceStatistics, session::Session,
+            race_result::RaceResult, session::Session,
         },
     },
 };
@@ -24,8 +24,6 @@ pub struct RaceResultFile {
     pub car_used: Option<String>,
     pub championship: Option<String>,
     pub notes: Option<String>,
-    #[serde(skip)]
-    pub race_statistics: RaceStatistics,
 }
 
 impl RaceResultFile {
@@ -69,7 +67,7 @@ impl RaceResultFile {
             notes = Some(race_metadata.notes)
         }
 
-        let mut race_file = Self {
+        Self {
             laptimes,
             day: date.day,
             month: date.month,
@@ -82,22 +80,7 @@ impl RaceResultFile {
             car_used,
             championship,
             notes,
-            race_statistics: Default::default(),
-        };
-
-        race_file.race_statistics = RaceStatistics::new(&race_file.convert_to_race_result());
-
-        race_file
-    }
-
-    pub fn convert_to_race_results(race_files: Vec<RaceResultFile>) -> Vec<RaceResult> {
-        let mut race_results = vec![];
-
-        for race_file in race_files {
-            race_results.push(race_file.convert_to_race_result());
         }
-
-        race_results
     }
 
     pub fn convert_to_race_result(&self) -> RaceResult {

@@ -153,7 +153,7 @@ mod date_should {
         let ordering = date.partial_cmp(&comparison_date);
 
         // Then
-        pretty_assertions::assert_eq!(expected_ordering, ordering.unwrap())
+        pretty_assertions::assert_eq!(Some(expected_ordering), ordering);
     }
 
     #[test]

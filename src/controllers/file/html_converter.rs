@@ -1,10 +1,9 @@
-use crate::{
-    data_models::driver_profile_file::DriverProfileFile,
-    models::driver::session_information::race_result::RaceResult,
+use crate::models::driver::{
+    driver_profile::DriverProfile, session_information::race_result::RaceResult,
 };
 use maud::{DOCTYPE, Markup, html};
 
-pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
+pub fn convert_to_html(driver_profile: &DriverProfile) -> Markup {
     html! {
         (DOCTYPE)
         html lang="en" {
@@ -81,13 +80,11 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                         tbody {
                             @for race in &driver_profile.races {
                             tr {
-                                td data-label="Track Name" { ( &race.track_name ) }
-                                td data-label="Date" { ( &race.day ) "/" ( &race.month ) "/" ( &race.year ) }
-                                td data-label="Session" { ( &race.session_id ) }
-                                @if let Some(car_used) = &race.car_used {
-                                    td data-label="Car Used" { ( car_used ) }
-                                }
-                                td data-label="Race Position" { ( &race.race_position ) }
+                                td data-label="Track Name" { ( &race.race_information.track_name ) }
+                                td data-label="Date" { ( &race.race_information.date.day ) "/" ( &race.race_information.date.month ) "/" ( &race.race_information.date.year ) }
+                                td data-label="Session" { ( &race.race_information.session.session_id ) }
+                                td data-label="Car Used" { ( &race.race_metadata.car_used ) }
+                                td data-label="Race Position" { ( &race.race_information.session.race_position ) }
                                 td data-label="Fastest Lap" { ( race.race_statistics.fastest_lap ) }
 
                                 td data-label="Average Lap 5" { ( RaceResult::get_time_by_key( &race.race_statistics.average_times_table, 5 ) ) }
@@ -106,7 +103,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                 @for race in &driver_profile.races {
                     // Races
                     h2 {
-                        ( &race.track_name ) " Session: " ( &race.session_id ) " Date: " ( race.day ) "/" ( race.month ) "/" ( race.year )
+                        ( &race.race_information.track_name ) " Session: " ( &race.race_information.session.session_id ) " Date: " ( &race.race_information.date.day ) "/" ( race.race_information.date.month ) "/" ( race.race_information.date.year )
                     }
                     h3 { "Race" }
                     table {
@@ -131,7 +128,7 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                         tbody {
                             tr {
                                 td data-label="Race Summary" { "Race position" }
-                                td data-label="Race Statistic" { ( race.race_position ) }
+                                td data-label="Race Statistic" { ( race.race_information.session.race_position ) }
                             }
                             tr {
                                 td data-label="Race Summary" { "Number of laps" }
@@ -185,34 +182,24 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
                         }
                         tbody {
                             tr {
-                                @if let Some(session_type) = &race.session_type {
-                                    td data-label="Metadata" { "Session type" }
-                                    td data-label="Value" { ( session_type ) }
-                                }
+                                td data-label="Metadata" { "Session type" }
+                                td data-label="Value" { ( &race.race_metadata.session_type ) }
                             }
                             tr {
-                                @if let Some(track_conditions) = &race.track_conditions {
-                                     td data-label="Metadata" { "Track condition" }
-                                     td data-label="Value" { ( track_conditions ) }
-                                }
+                                td data-label="Metadata" { "Track condition" }
+                                td data-label="Value" { ( &race.race_metadata.track_conditions ) }
                             }
                             tr {
-                                @if let Some(car_used) = &race.car_used {
-                                    td data-label="Metadata" { "Car used" }
-                                    td data-label="Value" { ( car_used ) }
-                                }
+                                td data-label="Metadata" { "Car used" }
+                                td data-label="Value" { (  &race.race_metadata.car_used  ) }
                             }
                             tr {
-                                @if let Some(championship) = &race.championship {
-                                    td data-label="Metadata" { "Championship" }
-                                    td data-label="Value" { ( championship ) }
-                                }
+                                td data-label="Metadata" { "Championship" }
+                                td data-label="Value" { (&race.race_metadata.championship  ) }
                             }
                         }
                     }
-                    @if let Some(notes) = &race.notes {
-                            p { strong { "Notes: " } ( notes ) }
-                    }
+                    p { strong { "Notes: " } ( &race.race_metadata.notes ) }
 
                     hr {}
                 }
@@ -225,28 +212,29 @@ pub fn convert_to_html(driver_profile: &DriverProfileFile) -> Markup {
 mod html_converter_should {
     use crate::{
         controllers::file::html_converter::convert_to_html,
-        data_models::{driver_profile_file::DriverProfileFile, race_result_file::RaceResultFile},
         models::{
             date::RaceDate,
-            driver::session_information::{race_metadata::RaceMetadata, session::Session},
+            driver::{
+                driver_profile::DriverProfile,
+                session_information::{
+                    lap::Lap, race_information::RaceInformation, race_metadata::RaceMetadata,
+                    race_result::RaceResult, session::Session,
+                },
+            },
         },
     };
 
     #[test]
     fn test_convert_profile_summary_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -254,13 +242,19 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
@@ -269,14 +263,12 @@ mod html_converter_should {
         assert!(markdown_string.contains("<title>Race Results</title"));
 
         // Driver Profile Heading
-        assert!(
-            markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile_file.name.clone()))
-        );
+        assert!(markdown_string.contains(&format!("<h1>{}</h1>", &driver_profile.name.clone())));
 
         // Profile Summary Table
         assert!(markdown_string.contains(&format!(
             "<h2>{} Profile Summary</h2>",
-            &driver_profile_file.name
+            &driver_profile.name
         )));
         assert!(markdown_string.contains("<th>Profile Summary</th><th>Driver Statistic</th>"));
         assert!(markdown_string.contains("<td data-label=\"Profile Summary\">Races</td>"));
@@ -298,18 +290,14 @@ mod html_converter_should {
     #[test]
     fn test_convert_profile_races_summary_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -317,13 +305,19 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
@@ -332,33 +326,34 @@ mod html_converter_should {
         assert!(markdown_string.contains("<title>Race Results</title"));
 
         // Profile Summary Table
-        assert!(markdown_string.contains(&format!(
-            "<h2>{} Race Summary</h2>",
-            &driver_profile_file.name
-        )));
+        assert!(
+            markdown_string.contains(&format!("<h2>{} Race Summary</h2>", &driver_profile.name))
+        );
 
         assert!(markdown_string.contains("<th>Track Name</th><th>Date</th><th>Session</th><th>Car Used</th><th>Race Position</th><th>Fastest Lap</th><th>Average Lap 5</th><th>Average Lap 10</th><th>Average Lap 15</th><th>Total Lap 5</th><th>Total Lap 10</th><th>Total Lap 15</th><th>Total Time</th>"));
 
-        for race in driver_profile_file.races {
+        for race in driver_profile.races {
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Track Name\">{}</td>",
-                &race.track_name
+                &race.race_information.track_name
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Date\">{}/{}/{}</td>",
-                &race.day, &race.month, &race.year
+                &race.race_information.date.day,
+                &race.race_information.date.month,
+                &race.race_information.date.year
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Session\">{}</td>",
-                &race.session_id
+                &race.race_information.session.session_id
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Car Used\">{}</td>",
-                &race.car_used.unwrap_or_default()
+                &race.race_metadata.car_used
             )));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Race Position\">{}</td>",
-                &race.race_position
+                &race.race_information.session.race_position
             )));
             assert!(markdown_string.contains("<td data-label=\"Fastest Lap\">5.00</td>",));
             assert!(markdown_string.contains("<td data-label=\"Average Lap 5\">15.00</td>",));
@@ -374,18 +369,14 @@ mod html_converter_should {
     #[test]
     fn test_convert_race_summary_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -393,18 +384,24 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
 
-        for _ in driver_profile_file.races {
+        for _ in driver_profile.races {
             // Race Summary Table
             assert!(markdown_string.contains("<h3>Race Summary</h3>"));
             assert!(markdown_string.contains("<th>Race Summary</th><th>Race Statistic</th>"));
@@ -429,18 +426,14 @@ mod html_converter_should {
     #[test]
     fn test_convert_race_pace_total_times_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -448,18 +441,24 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
 
-        for _ in driver_profile_file.races {
+        for _ in driver_profile.races {
             // Race Pace Table
             assert!(markdown_string.contains("<h3>Race Pace</h3>"));
 
@@ -476,18 +475,14 @@ mod html_converter_should {
     #[test]
     fn test_convert_race_pace_average_times_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -495,18 +490,24 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
 
-        for _ in driver_profile_file.races {
+        for _ in driver_profile.races {
             // Race Pace Table
             assert!(markdown_string.contains("<h3>Race Pace</h3>"));
 
@@ -523,18 +524,14 @@ mod html_converter_should {
     #[test]
     fn test_convert_laptime_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -542,24 +539,34 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
 
-        for race in driver_profile_file.races {
+        for race in driver_profile.races {
             // Laptime Table
             assert!(
                 markdown_string.contains(
                     &format!(
                         "<h2>{} Session: {} Date: {}/{}/{}</h2>",
-                        race.track_name, race.session_id, race.day, race.month, race.year
+                        race.race_information.track_name,
+                        race.race_information.session.session_id,
+                        race.race_information.date.day,
+                        race.race_information.date.month,
+                        race.race_information.date.year
                     )
                     .clone(),
                 )
@@ -601,18 +608,14 @@ mod html_converter_should {
     #[test]
     fn test_convert_metadata_table() {
         // Given
-        let driver_profile_file = DriverProfileFile::new(
+        let driver_profile = DriverProfile::new(
             "Derek",
-            vec![RaceResultFile::new(
-                "Three Brothers",
-                vec![
-                    "5.0".to_string(),
-                    "10.0".to_string(),
-                    "15.0".to_string(),
-                    "20.0".to_string(),
-                    "25.0".to_string(),
-                    "30.0".to_string(),
-                ],
+            vec![RaceResult::new(
+                RaceInformation::new(
+                    "Three Brothers",
+                    RaceDate::new(24, 12, 2025),
+                    Session::new(1, 1),
+                ),
                 RaceMetadata::new(
                     "Race",
                     "Dry",
@@ -620,47 +623,53 @@ mod html_converter_should {
                     "GT World Challenge",
                     "No comment",
                 ),
-                Session::new(1, 1),
-                RaceDate::new(24, 12, 2025),
+                vec![
+                    Lap::new(1, 5.0),
+                    Lap::new(2, 10.0),
+                    Lap::new(3, 15.0),
+                    Lap::new(4, 20.0),
+                    Lap::new(5, 25.0),
+                    Lap::new(6, 30.0),
+                ],
             )],
         );
 
         // When
-        let markdown = convert_to_html(&driver_profile_file);
+        let markdown = convert_to_html(&driver_profile);
 
         // Then
         let markdown_string = markdown.into_string();
 
-        for race in driver_profile_file.races {
+        for race in driver_profile.races {
             // Race Metadata Table
             assert!(markdown_string.contains("<h3>Metadata</h3>"));
             assert!(markdown_string.contains("<th>Metadata</th><th>Value</th>"));
             assert!(markdown_string.contains("<td data-label=\"Metadata\">Session type</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Value\">{}</td>",
-                &race.session_type.unwrap_or_default()
+                &race.race_metadata.session_type
             )));
             assert!(markdown_string.contains("<td data-label=\"Metadata\">Track condition</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Value\">{}</td>",
-                &race.track_conditions.unwrap_or_default()
+                &race.race_metadata.track_conditions
             )));
 
             assert!(markdown_string.contains("<td data-label=\"Metadata\">Car used</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Value\">{}</td>",
-                &race.car_used.unwrap_or_default()
+                &race.race_metadata.car_used
             )));
 
             assert!(markdown_string.contains("<td data-label=\"Metadata\">Championship</td>"));
             assert!(markdown_string.contains(&format!(
                 "<td data-label=\"Value\">{}</td>",
-                &race.championship.unwrap_or_default()
+                &race.race_metadata.championship
             )));
 
             assert!(markdown_string.contains(&format!(
                 "<strong>Notes: </strong>{}",
-                &race.notes.unwrap_or_default()
+                &race.race_metadata.notes
             )));
         }
     }
