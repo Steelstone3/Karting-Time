@@ -329,7 +329,7 @@ mod karting_time_messages_should {
     use super::*;
     use crate::{
         commands::tab_identifiers::TabIdentifier::{self},
-        controllers::file::test_file_guard::TestFileGuard,
+        controllers::file::test_file_guard::test_file_guard::TestFileGuard,
         models::{
             date::RaceDate,
             driver::{

@@ -78,7 +78,7 @@ impl KartingTime {
 mod file_application_should {
     use super::*;
     use crate::{
-        controllers::file::test_file_guard::TestFileGuard,
+        controllers::file::test_file_guard::test_file_guard::TestFileGuard,
         data_models::race_result_file::RaceResultFile,
         models::{
             date::RaceDate,

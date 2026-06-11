@@ -47,7 +47,7 @@ impl DriverProfile {
         self.profile_statistics = ProfileStatistics::new(self.filter.filtered_races.clone());
     }
 
-    #[allow(dead_code)]
+    #[cfg(test)]
     pub fn new_with_new_race(name: &str, new_race: RaceResult, races: Vec<RaceResult>) -> Self {
         let mut driver_profile = DriverProfile::new(name, races);
         driver_profile.new_race = new_race;

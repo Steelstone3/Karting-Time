@@ -9,7 +9,7 @@ pub struct AccLap {
 }
 
 impl AccLap {
-    #[allow(dead_code)]
+    #[cfg(test)]
     pub fn new(driver_index: u32, laptime: f32) -> Self {
         Self {
             driver_index,

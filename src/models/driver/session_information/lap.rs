@@ -5,7 +5,6 @@ pub struct Lap {
 }
 
 impl Lap {
-    #[allow(dead_code)]
     pub fn new(lap_number: u32, time: f32) -> Self {
         Self { lap_number, time }
     }

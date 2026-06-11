@@ -15,7 +15,6 @@ pub struct Filter {
 }
 
 impl Filter {
-    #[allow(dead_code)]
     pub fn new(
         is_filter_visible: bool,
         track_query: &str,

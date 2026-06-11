@@ -10,7 +10,6 @@ pub struct RaceDate {
 }
 
 impl RaceDate {
-    #[allow(dead_code)]
     pub fn new(day: u32, month: u32, year: i32) -> Self {
         Self { day, month, year }
     }
